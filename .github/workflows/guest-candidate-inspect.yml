@@ -1,0 +1,98 @@
+name: Inspect existing guest candidate evidence
+on:
+  workflow_dispatch:
+  push:
+    branches: ['diagnostic/stitch-guest-evidence']
+    paths: ['.github/workflows/guest-candidate-inspect.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  inspect:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ github.token }}
+      SOURCE_RUN: '42906244489'
+      SOURCE_ARTIFACT: guest-candidate-42906244489-1
+      SOURCE_ARTIFACT_ID: '13810385970'
+      SOURCE_ZIP_SHA256: 91e8c082de05e97e0781e97f5636ae89a7b0095001192b3019ab9ff7054fc714
+    steps:
+      - name: Download existing evidence without rebuilding
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$RUNNER_TEMP/original" "$RUNNER_TEMP/inspection"
+          gh api "repos/$GITHUB_REPOSITORY/actions/artifacts/$SOURCE_ARTIFACT_ID/zip" > "$RUNNER_TEMP/original.zip"
+          printf '%s  %s\n' "$SOURCE_ZIP_SHA256" "$RUNNER_TEMP/original.zip" | sha256sum -c -
+          unzip -q "$RUNNER_TEMP/original.zip" -d "$RUNNER_TEMP/original"
+          (cd "$RUNNER_TEMP/original"; sha256sum -c SHA256SUMS) > "$RUNNER_TEMP/inspection/integrity.log" 2>&1
+      - name: Extract bounded runtime and source inventory evidence
+        if: always()
+        shell: bash
+        run: |
+          set -euo pipefail
+          original="$RUNNER_TEMP/original"
+          inspect="$RUNNER_TEMP/inspection"
+          mkdir -p "$inspect"
+          printf 'Original run: %s\nArtifact: %s\nNo image build, runtime replacement, release or clearance performed.\n' "$SOURCE_RUN" "$SOURCE_ARTIFACT" > "$inspect/ORIGIN.txt"
+          for file in runtime.log host-tools.log buildroot.config STATUS.txt SHA256SUMS; do
+            test ! -f "$original/$file" || cp "$original/$file" "$inspect/$file"
+          done
+          printf 'Artifact ID: %s\nOriginal ZIP SHA256: %s\n' "$SOURCE_ARTIFACT_ID" "$SOURCE_ZIP_SHA256" >> "$inspect/ORIGIN.txt"
+          test ! -f "$original/build.log" || tail -n 350 "$original/build.log" > "$inspect/build-tail.log"
+          test ! -d "$original/build" || cp -a "$original/build" "$inspect/resolved-configs"
+          source="$original/sources-and-licenses.tar.gz"
+          if test -f "$source"; then
+            tar -tzf "$source" > "$inspect/source-inventory.txt"
+            mkdir -p "$inspect/source-metadata"
+            for file in legal-info/README legal-info/manifest.csv legal-info/host-manifest.csv release-materials/SHA256SUMS release-materials/buildroot.config; do
+              if grep -Fxq "$file" "$inspect/source-inventory.txt"; then
+                tar -xzf "$source" -C "$inspect/source-metadata" "$file"
+              fi
+            done
+            # Existing source archive remains unchanged. Bounded pieces permit
+            # tool downloads without the original >512MiB artifact limitation.
+            split -b 375M "$source" "$RUNNER_TEMP/guest-source-part-"
+            test ! -e "$RUNNER_TEMP/guest-source-part-ac"
+            original_sha=$(sha256sum "$source" | cut -d ' ' -f 1)
+            reassembled_sha=$(cat "$RUNNER_TEMP"/guest-source-part-* | sha256sum | cut -d ' ' -f 1)
+            test "$original_sha" = "$reassembled_sha"
+            (cd "$RUNNER_TEMP"; sha256sum guest-source-part-*) > "$inspect/SOURCE-PARTS.sha256"
+            sha256sum "$source" | sed 's| .*|  sources-and-licenses.tar.gz|' > "$inspect/SOURCE-ARCHIVE.sha256"
+          fi
+          test ! -f "$inspect/runtime.log" || cat "$inspect/runtime.log"
+      - name: Upload small inspection bundle and candidate
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: guest-candidate-inspection-${{ github.run_id }}
+          path: ${{ runner.temp }}/inspection/
+          include-hidden-files: true
+          retention-days: 14
+      - name: Upload original candidate image separately
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: guest-image-from-42906244489-${{ github.run_id }}
+          path: ${{ runner.temp }}/original/stitch-guest-candidate.bin
+          if-no-files-found: ignore
+          retention-days: 14
+      - name: Upload original source archive part aa
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: guest-source-part-aa-${{ github.run_id }}
+          path: ${{ runner.temp }}/guest-source-part-aa
+          if-no-files-found: ignore
+          compression-level: 0
+          retention-days: 14
+      - name: Upload original source archive part ab
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: guest-source-part-ab-${{ github.run_id }}
+          path: ${{ runner.temp }}/guest-source-part-ab
+          if-no-files-found: ignore
+          compression-level: 0
+          retention-days: 14
