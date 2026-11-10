@@ -1,66 +1,32 @@
-# Stitch
+# Stitch guest corresponding source
 
-Recover exact objects and resume deterministic computation while the available peers change.
+This dedicated source-distribution branch preserves the source and license materials for the guest built at Stitch commit `d17aa7f3ffc6944b799ac43f6a5bab04ab3b82ef`. It is not a Stitch product release and does not replace the runtime image on any product branch.
 
-Stitch retains its five layers: object/ring operations, scheduling, storage, compute, and transport. A Prism/LexLean model defines the state and acceptance rules across those layers. The browser applies model-derived admission predicates and independently checks bytes and execution before accepting them.
+## Download and reconstruct
 
-## What changed
-
-- **Objects have full cryptographic commitments.** Canonical manifests bind raw encoding, byte lengths, indexed XOR fragments and every required dependency. Legacy FNV addresses remain in regression/conformance simulations.
-- **Placement is explicit.** Requested transfers are not stored copies. Acknowledgments bind checked fragment bytes to a request and holder. Committed placement, superseded copies and expiry are accounted separately. Different peer IDs do not prove independent failure domains.
-- **Jobs carry their program and input.** Every checkpoint is digest-checked and semantically replayed through model-derived ring operations. A well-formed but impossible state is refused. Versioned programs include full-width modular POW and width-tracked byte CONCAT with explicit capacity/work admission. This does not certify arbitrary Linux VM effects.
-- **Pointers have a single-writer contract.** A separately pinned Ed25519 authority, full object root, exact revision/predecessor and validity interval are required. Observer-local admission is not consensus.
-- **Policies propose; admission enforces limits.** Multidimensional budgets reserve before effects. Ambiguous effects remain charged. The live refresh scheduler uses elapsed monotonic time and enforces its own cap.
-- **Host failures have explicit recovery paths.** Mesh generations reject stale callbacks, DNS publication reconciles unknown writes before another mutation, and failed VM startup can be explicitly retried.
-- **The operator interface follows modeled journeys.** Relevant controls, persistent labels and local results appear for the current journey. Restarted publication and every retained VM command have explicit reconciliation paths; shell output has a text view.
-- **Internet formats are implemented at the byte boundary.** JCS input/encoding, DNS-message DoH and bounded ntfy framing replace the earlier partial formats. Concrete interoperability tests remain distinct from browser/provider qualification.
-- **The public relay is opt-in.** Publishing sufficient fragments or a checkpoint discloses its content. A channel name is not a privacy control.
-
-Origin-local signing authority, explicitly accepted exact trust anchors and publication intent can be restored after reload. [Browser authority controls](docs/browser-authority.md) provide explicit local key rotation/revocation, independently confirmed anchor migration and conservative storage/journal care. This is not a private-key backup, cross-device authority or protection against origin storage loss.
-
-See the [operator journeys](docs/operator-experience.md), [lifecycle bindings](docs/lifecycle-effects.md), [JCS codec](docs/canonical-json.md), [DNS client](docs/dns-client.md), and [relay framing](docs/relay-framing.md).
-
-Read the [model contract and evidence boundaries](docs/prism-model.md), the [product projection and host contracts](docs/product-projection.md), and the [vendor provenance findings](docs/vendor-provenance.md). [Historical benchmarks](docs/legacy-benchmarks.md) remain available with their limitations. The existing [falsification contract](CONTRACT.json) is retained rather than relabeling simulation as network proof.
-
-## Run and test
-
-Node.js 22 or later:
+Download this branch as a ZIP using GitHub's **Code → Download ZIP**, extract it, and run from the extracted directory:
 
 ```sh
-npm ci --ignore-scripts
-npm test
-python3 scripts/verify-custody.py
-make serve
+python3 reassemble.py
 ```
 
-Open `http://localhost:8080`. Join a mesh to exchange data with peers. Enable the public relay only for intentionally public demonstration data. Fewer than three eligible remote peers means partial placement, not fabricated redundancy.
+Alternatively clone this branch without checking out product history. Python 3 and approximately 1 GB of free disk space are sufficient to reconstruct the archive (additional space is needed to extract all sources). No package installation, build, network access, or execution of vendor source is performed by the reassembler.
 
-The original Rust UOR conformance check is `cargo test --locked`. Both the Node/Python runtime checks and Rust conformance passed in [the initial fork CI run](https://github.com/afflom/stitch/actions/runs/42797265770); that historical formal SDK stage did not pass. The expanded 23-module source has now passed actual pinned LexLean/Lean/leanchecker/axiom verification, recorded in [the exact-source summary](product/source-verification.json) and [actual verifier attestation](product/source-attestation.json); native Prism artifacts and real-host qualification remain separate pending stages. This is still an unqualified development checkpoint. `make test` runs Node and Rust checks. JavaScript tests use deterministic in-process transports, not physical WebRTC/NAT trials.
+The script verifies every part's byte count, SHA-256 and Git blob SHA, then verifies the complete archive before atomically saving `stitch-guest-corresponding-source.tar.gz`. It refuses to overwrite an existing output. Use `--output /path/to/archive.tar.gz` to choose a destination. Do not concatenate parts in filesystem ordering or omit the final part. `manifest.json` records the exact ordered parts and final identity.
 
-## Model and verification
+- Archive: **398,457,213 bytes**
+- Archive SHA-256: `fbc04b0c55f8421ca9bcf9e9dbac1952c07a1a2d82fd644ac67e66415b0106bc`
+- Included guest image: **8,053,248 bytes**
+- Guest SHA-256: `313a6b545290a2b47856b49bfcc4c7577469749b315932ae008d39fe70fc7f07`
 
-- `app/src/Stitch/`: typed domain models and theorem obligations.
-- `app/src/Product/`: complete component/flow, capability, deployment and dependency contracts, projected through the official architecture facet.
-- `product/contracts.json`: source-bound project-owned contract/asset inventory, not a certificate.
-- `app/language/`: versioned project vocabulary using LexLean extensibility.
-- `src/layer1-uor/generated-model.js`: pure behavior extracted from the model with exact source binding. It is an application adapter, not a replacement Prism compiler or proof certificate.
-- `scripts/check-model.mjs`: validates/regenerates the adapter and detects drift.
-- `prismpm.lock`, `standards.lock`: exact SDK/standards pins from the official Prism template.
-- `.github/workflows/prism.yml`: runtime conformance and SDK model verification on the submitted revision.
+## Contents and provenance
 
-```sh
-node scripts/check-model.mjs
-sh scripts/check-model-sdk.sh
-```
+The archive includes all reviewed `legal-info` target and host source archives, patches and license texts, original `release-materials`, resolved Linux and BusyBox configurations, origin records and a checked file inventory. Only duplicate download/VCS caches were removed from the original artifact. Source obligations and applicable licenses remain those in the supplied upstream source and license files; this branch does not relicense them.
 
-The second command requires the pinned SDK environment. It must run real LexLean/Lean and PrismPM gates; extraction or runtime tests alone do not establish that theorems compiled. No externally hosted verifier is required. Formal acceptance is reported only from an actual successful SDK run. See the [native build diagnosis and passing-project comparison](docs/native-build-diagnosis.md) for the reproduced compiler issue; no native gate was replaced or weakened.
+The guest uses Linux 6.18.7, BusyBox 1.38.0, glibc 2.44 snapshot `34106fee698c83eb0af71d4d0381e66b399be746`, and GCC 15.3 runtime components. Buildroot 2026.08.1 is pinned to `7fdeadb3b9f12f78e5fccca914d7fef47090ab9a`. Its source, which automatic legal-info did not save, is explicitly included at `release-materials/buildroot-source.tar.gz`. The external build tree, configurations, patches, licenses and build instructions accompany the source. The exact candidate needs the host command-line override `rdinit=/init` to run the initramfs wrapper; building another image is not required to retrieve its source.
 
-## Nonclaims
+Original evidence: [GitHub Actions run 42906244489](https://github.com/afflom/stitch/actions/runs/42906244489), artifact `guest-candidate-42906244489-1`, ID `13810385970`.
+Original artifact ZIP: 758,474,204 bytes, SHA-256 `91e8c082de05e97e0781e97f5636ae89a7b0095001192b3019ab9ff7054fc714`.
+The temporary Actions artifact expires; these repository-backed parts preserve the reviewed compact archive independently. The exact parts are ordinary Git blobs, not Git LFS pointers or external download stubs.
 
-SHA-256 and Ed25519 establish integrity and signature validity under their security assumptions, not retention or honest peer identity. DNS is discovery, not globally ordered state. The browser VM, STUN, WebRTC, DNS, signaling, relay availability and clocks remain modeled host boundaries.
-
-This implementation does not claim private relay storage, persistence after total information loss, exclusive job ownership during partitions, exactly-once effects, multi-writer consistency, optimal scheduling, or storage inside internet routers. New encodings, policies and transports must preserve admission obligations and disclose dependencies.
-
-## License
-
-Project source: MIT © [Syntra Labs](https://github.com/Syntra-Labs). Bundled third-party assets retain their respective licenses; see the [provenance and packaging status](docs/vendor-provenance.md) before redistribution.
+Source availability is separate from runtime qualification and product readiness. This source branch alone claims neither complete product verification nor legal certification. Statements of outstanding publication/qualification in historical bundled evidence describe the time of that evidence, not a new runtime result.

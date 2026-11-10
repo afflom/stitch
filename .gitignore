@@ -1,9 +1,0 @@
-/target
-/node_modules
-*.log
-
-node_modules/
-app/.lexlean/
-app/.prism/
-app/.lake/
-verification-output/
