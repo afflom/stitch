@@ -34,6 +34,7 @@ jobs:
           git rev-parse HEAD > writer-output/source-commit.txt
           git rev-parse HEAD^{tree} > writer-output/source-tree.txt
           cat > crates/conformance/src/bin/native-fixture-writer.rs <<'RS'
+          //! Run the unchanged fixture owner for the two observed native-output drifts.
           fn main() {
               let root = repo_model::repo_root();
               for name in ["certificate-resource-exhausted", "preservation-drift"] {
