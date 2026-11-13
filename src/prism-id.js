@@ -10,6 +10,10 @@
  * kappa = "sha256:" + lowercase hex SHA-256 of uor-addr canonical JSON:
  * RFC 8785 shape, strings must already be NFC, integers only, object members
  * ordered by the UTF-8 bytes of their names.
+ *
+ * Only P-256 ECDSA/ECDH, HKDF-SHA-256, HMAC-SHA-256, AES-256-GCM and SHA-256
+ * are used, so native, mobile (Secure Enclave, Android Keystore), TPM 2.0 and
+ * secure-element devices can implement the same protocol; see docs/prism-id.md.
  */
 import { model } from './layer1-uor/generated-model.js';
 
@@ -29,8 +33,18 @@ export const KIND = Object.freeze({
   rendezvous: 'prism/rendezvous/1',
   sync: 'prism/sync/1',
   sealed: 'prism/sealed/1',
-  boundary: 'prism/boundary/1'
+  boundary: 'prism/boundary/1',
+  action: 'prism/action/1',
+  linkCode: 'prism/link-code/1',
+  keyring: 'prism/keyring/1'
 });
+
+/** Kinds of device that take part. Every one uses the same records and primitives. */
+export const DEVICE_CLASSES = Object.freeze(['browser', 'native', 'mobile', 'embedded', 'recovery']);
+/** Where a device says its private keys live. Self-asserted unless an attestation verifier confirms it. */
+export const KEY_PROTECTION = Object.freeze(['software', 'platform', 'secure-element']);
+/** member: full device of the prism. delegate: scoped device that never holds the private boundary. */
+export const ROLES = Object.freeze(['member', 'delegate']);
 
 export class PrismIdError extends Error {
   constructor(code, message) { super(message); this.name = 'PrismIdError'; this.code = code; }
@@ -109,6 +123,7 @@ export function fromBase64Url(text) {
 }
 const random = n => globalThis.crypto.getRandomValues(new Uint8Array(n));
 
+
 // ---------------------------------------------------------------- devices
 
 const SIGN = { name: 'ECDSA', namedCurve: 'P-256' };
@@ -119,21 +134,28 @@ const publicJwk = ({ kty, crv, x, y }) => ({ crv, kty, x, y });
 /**
  * A device holds two non-extractable private keys: one signs prism records,
  * one agrees keys for wrapping. Only its public record leaves the device.
+ * `deviceClass` and `protection` are claims the device makes about itself.
  */
-export async function createDevice() {
+export async function createDevice({ deviceClass = 'browser', protection = 'software' } = {}) {
+  if (!DEVICE_CLASSES.includes(deviceClass)) refuse('device', `unknown device class ${deviceClass}`);
+  if (!KEY_PROTECTION.includes(protection)) refuse('device', `unknown key protection ${protection}`);
   const signing = await subtle.generateKey(SIGN, false, ['sign', 'verify']);
   const agreement = await subtle.generateKey(AGREE, false, ['deriveBits']);
   const record = {
     kind: KIND.device,
+    class: deviceClass,
+    protection,
     sign: publicJwk(await subtle.exportKey('jwk', signing.publicKey)),
     agree: publicJwk(await subtle.exportKey('jwk', agreement.publicKey))
   };
   return Object.freeze({ id: await kappa(record), record, signingKey: signing.privateKey, agreementKey: agreement.privateKey });
 }
 
-function checkDeviceRecord(record) {
-  const okKey = k => k && k.kty === 'EC' && k.crv === 'P-256' && typeof k.x === 'string' && typeof k.y === 'string' && Object.keys(k).length === 4;
-  if (!record || record.kind !== KIND.device || !okKey(record.sign) || !okKey(record.agree) || Object.keys(record).length !== 3) refuse('device', 'malformed device record');
+const okKey = k => k && k.kty === 'EC' && k.crv === 'P-256' && typeof k.x === 'string' && typeof k.y === 'string' && Object.keys(k).length === 4;
+
+export function checkDeviceRecord(record) {
+  if (!record || record.kind !== KIND.device || Object.keys(record).length !== 5 || !DEVICE_CLASSES.includes(record.class) ||
+    !KEY_PROTECTION.includes(record.protection) || !okKey(record.sign) || !okKey(record.agree)) refuse('device', 'malformed device record');
   return record;
 }
 
@@ -174,40 +196,58 @@ export async function logRoot(log) {
   return kappa({ kind: KIND.log, records: [...log.keys()].sort() });
 }
 
+/** Admission bounds for logs and sync messages from peers, checked before any parsing or signature work. */
+export const MAX_LOG_RECORDS = 4096;
+export const MAX_SYNC_BYTES = 4 * 1024 * 1024;
+
 export async function logFromRecords(records) {
+  if (!Array.isArray(records)) refuse('log', 'records must be an array');
+  if (records.length > MAX_LOG_RECORDS) refuse('log', `log exceeds ${MAX_LOG_RECORDS} records`);
   let log = new Map();
   for (const r of records) log = await addRecord(log, r);
   return log;
 }
 
+const byKey = ([a], [b]) => (a < b ? -1 : a > b ? 1 : 0);
+const sameSet = (a, b) => a.size === b.size && [...a].every(x => b.has(x));
+
+function bindShape(body) {
+  return ROLES.includes(body.role) && Array.isArray(body.scope) && body.scope.every(x => typeof x === 'string') &&
+    (body.role === 'delegate' ? body.scope.length > 0 : body.scope.length === 0);
+}
+
 /**
- * Resolve which devices may act for the prism.
+ * Resolve which devices may act for the prism, with what role and scope, and
+ * which boundary key is current.
  *
- * A bind is accepted only when Stitch.PrismId.bindAllowed holds: its signer is
- * linked, its signature verifies, it names this prism, and its signer has not
- * been revoked unless a revocation explicitly kept that bind. Revocation wins
- * over a concurrent bind: binds a revoked device made that its revoker did not
- * know of are dropped. Rotation (revoking the genesis device) keeps every bind
- * the revoker listed, so the remaining devices stay linked.
+ * - A bind counts only when Stitch.PrismId.bindAllowed holds: the signer is a
+ *   linked member (not a delegate), its signature verifies, it names this
+ *   prism, and the signer is not revoked unless a revocation kept that bind.
+ * - Revocation wins over a concurrent bind: binds a revoked device made that
+ *   the revoker did not list in `keep` are dropped. Revocations are counted
+ *   from every linked member, revoked or not, so two members that revoke each
+ *   other are both revoked (recovery is the way out).
+ * - Every revocation carries a new boundary key (`epoch`, `wraps`). The
+ *   current key is the one with the highest epoch; ties go to the smaller kappa.
  */
 export async function resolvePrism(prism, log) {
-  const entries = [...log.entries()].sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0));
+  const entries = [...log.entries()].sort(byKey);
   const geneses = [];
   for (const [, e] of entries) if (e?.body?.kind === KIND.genesis && await kappa(e.body) === prism) geneses.push(e);
   if (geneses.length !== 1) refuse('genesis', 'the log does not hold exactly one genesis for this prism');
   const genesis = geneses[0];
-  const genesisDevice = genesis.body.device;
-  if (!await signatureValid(genesis, genesisDevice)) refuse('genesis', 'genesis signature does not verify');
+  if (!await signatureValid(genesis, genesis.body.device)) refuse('genesis', 'genesis signature does not verify');
 
-  const devices = new Map([[genesis.signer, genesisDevice]]);
+  const devices = new Map([[genesis.signer, genesis.body.device]]);
   const binds = [], revokes = [];
   for (const [id, e] of entries) {
-    const kind = e?.body?.kind;
-    if (kind === KIND.bind) binds.push({ id, e });
-    else if (kind === KIND.revoke) revokes.push({ id, e });
-  }
-  for (const { e } of binds) {
-    try { const r = checkDeviceRecord(e.body.device); devices.set(await kappa(r), r); } catch (error) { if (!(error instanceof PrismIdError)) throw error; }
+    const body = e?.body;
+    if (body?.prism !== prism) continue;
+    if (body.kind === KIND.bind && bindShape(body)) {
+      try { const r = checkDeviceRecord(body.device); const target = await kappa(r); devices.set(target, r); binds.push({ id, e, target }); }
+      catch (error) { if (!(error instanceof PrismIdError)) throw error; }
+    } else if (body.kind === KIND.revoke && typeof body.device === 'string' && Array.isArray(body.keep) &&
+      Number.isSafeInteger(body.epoch) && body.epoch > 0 && Array.isArray(body.wraps)) revokes.push({ id, e });
   }
   const verified = new Map();
   const verify = async (id, e) => {
@@ -215,40 +255,49 @@ export async function resolvePrism(prism, log) {
     return verified.get(id);
   };
 
-  let linked = new Set([genesis.signer]);
-  let revocations = new Map();
+  let linked = new Set([genesis.signer]), roles = new Map([[genesis.signer, 'member']]), revocations = new Map();
   for (let round = 0; round <= log.size + 1; round++) {
-    // Revocations count only when signed by a linked device of this prism.
     const nextRevocations = new Map();
     for (const { id, e } of revokes) {
-      if (e.body.prism !== prism || !linked.has(e.signer) || !await verify(id, e)) continue;
-      const kept = nextRevocations.get(e.body.device) ?? new Set();
-      for (const k of Array.isArray(e.body.keep) ? e.body.keep : []) kept.add(k);
-      nextRevocations.set(e.body.device, kept);
+      const signerDelegate = roles.get(e.signer) !== 'member';
+      if (!model['Stitch.PrismId.mayAdminister'](linked.has(e.signer), false, signerDelegate) || !await verify(id, e)) continue;
+      const entry = nextRevocations.get(e.body.device) ?? { keep: new Set(), by: [] };
+      for (const k of e.body.keep) entry.keep.add(k);
+      entry.by.push({ id, e });
+      nextRevocations.set(e.body.device, entry);
     }
-    const nextLinked = new Set([genesis.signer]);
+    const nextLinked = new Set([genesis.signer]), nextRoles = new Map([[genesis.signer, 'member']]), scopes = new Map();
     for (let grew = true; grew;) {
       grew = false;
-      for (const { id, e } of binds) {
-        const target = await kappa(e.body.device).catch(() => null);
-        if (!target || nextLinked.has(target)) continue;
+      for (const { id, e, target } of binds) {
+        if (nextRoles.get(target) === 'member' || (nextRoles.get(target) === 'delegate' && e.body.role === 'delegate')) continue;
         const revocation = nextRevocations.get(e.signer);
-        const signerRevoked = revocation !== undefined && !revocation.has(id);
-        if (model['Stitch.PrismId.bindAllowed'](nextLinked.has(e.signer), signerRevoked, await verify(id, e), e.body.prism === prism)) {
-          nextLinked.add(target); grew = true;
+        const signerRevoked = revocation !== undefined && !revocation.keep.has(id);
+        const allowed = model['Stitch.PrismId.bindAllowed'](nextLinked.has(e.signer), signerRevoked,
+          nextRoles.get(e.signer) !== 'member', await verify(id, e), true);
+        if (allowed) {
+          nextLinked.add(target); nextRoles.set(target, e.body.role);
+          if (e.body.role === 'delegate') scopes.set(target, [...e.body.scope].sort()); else scopes.delete(target);
+          grew = true;
         }
       }
     }
-    const same = nextLinked.size === linked.size && [...nextLinked].every(d => linked.has(d)) &&
-      nextRevocations.size === revocations.size && [...nextRevocations.keys()].every(d => revocations.has(d));
-    linked = nextLinked; revocations = nextRevocations;
-    if (same) {
+    const settled = sameSet(nextLinked, linked) && sameSet(new Set(nextRevocations.keys()), new Set(revocations.keys())) &&
+      [...nextRoles].every(([d, r]) => roles.get(d) === r);
+    linked = nextLinked; roles = nextRoles; revocations = nextRevocations;
+    if (settled) {
       const active = [...linked].filter(d => model['Stitch.PrismId.deviceMaySign'](true, revocations.has(d))).sort();
+      const rekeys = [...revocations.values()].flatMap(r => r.by).sort((a, b) => b.e.body.epoch - a.e.body.epoch || (a.id < b.id ? -1 : 1));
+      const boundary = rekeys.length ? { epoch: rekeys[0].e.body.epoch, keyId: rekeys[0].id } : { epoch: 0, keyId: prism };
       return Object.freeze({
         prism,
         active,
         revoked: [...revocations.keys()].sort(),
-        devices: Object.freeze(Object.fromEntries(active.map(d => [d, devices.get(d)])))
+        roles: Object.freeze(Object.fromEntries(active.map(d => [d, roles.get(d)]))),
+        scopes: Object.freeze(Object.fromEntries(active.filter(d => roles.get(d) === 'delegate').map(d => [d, scopes.get(d)]))),
+        devices: Object.freeze(Object.fromEntries(active.map(d => [d, devices.get(d)]))),
+        boundary: Object.freeze(boundary),
+        rekeys: rekeys.map(r => ({ keyId: r.id, epoch: r.e.body.epoch, wraps: r.e.body.wraps }))
       });
     }
   }
@@ -260,31 +309,109 @@ export async function canSign(prism, log, deviceId) {
   return model['Stitch.PrismId.deviceMaySign'](state.active.includes(deviceId) || state.revoked.includes(deviceId), state.revoked.includes(deviceId));
 }
 
+async function mayAdminister(session) {
+  const state = await resolvePrism(session.prism, session.log);
+  const id = session.device.id;
+  if (!model['Stitch.PrismId.mayAdminister'](state.active.includes(id), state.revoked.includes(id), state.roles[id] !== 'member'))
+    refuse('unauthorized', 'this device may not administer the prism');
+  return state;
+}
+
+// ---------------------------------------------------------------- key wrapping
+
+async function deriveWrapKey(privateKey, peerJwk, salt, info) {
+  const peer = await subtle.importKey('jwk', { ...peerJwk, ext: true }, AGREE, false, []);
+  const shared = await subtle.deriveBits({ name: 'ECDH', public: peer }, privateKey, 256);
+  const material = await subtle.importKey('raw', shared, 'HKDF', false, ['deriveKey']);
+  return subtle.deriveKey({ name: 'HKDF', hash: 'SHA-256', salt, info: encoder.encode(info) },
+    material, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+}
+
+async function encryptWith(key, bytes, aad) {
+  const iv = random(12);
+  const ciphertext = await subtle.encrypt({ name: 'AES-GCM', iv, additionalData: encoder.encode(aad) }, key, bytes);
+  return { iv: toBase64Url(iv), ciphertext: toBase64Url(ciphertext) };
+}
+async function decryptWith(key, box, aad) {
+  return new Uint8Array(await subtle.decrypt({ name: 'AES-GCM', iv: fromBase64Url(box.iv), additionalData: encoder.encode(aad) }, key, fromBase64Url(box.ciphertext)));
+}
+const importBoundaryKey = raw => subtle.importKey('raw', raw, { name: 'AES-GCM' }, true, ['encrypt', 'decrypt']);
+const newBoundaryKey = () => subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+
+async function exportKeyring(keyring) {
+  const keys = {};
+  for (const [id, key] of keyring) keys[id] = toBase64Url(await subtle.exportKey('raw', key));
+  return canonicalBytes({ kind: KIND.keyring, keys });
+}
+async function importKeyring(bytes) {
+  const value = JSON.parse(decoder.decode(bytes));
+  if (value.kind !== KIND.keyring) refuse('keyring', 'malformed keyring');
+  const keyring = new Map();
+  for (const [id, raw] of Object.entries(value.keys)) keyring.set(id, await importBoundaryKey(fromBase64Url(raw)));
+  return keyring;
+}
+
+/** Take up any boundary keys wrapped to this device by revocations it has not yet absorbed. */
+async function absorbRekeys(session, state) {
+  const keyring = new Map(session.keyring);
+  for (const rekey of state.rekeys) {
+    if (keyring.has(rekey.keyId)) continue;
+    const wrap = rekey.wraps.find(w => w?.device === session.device.id);
+    if (!wrap) continue;
+    const key = await deriveWrapKey(session.device.agreementKey, wrap.agree, encoder.encode(session.prism), `prism/rekey-wrap/1 ${wrap.device}`);
+    keyring.set(rekey.keyId, await importBoundaryKey(await decryptWith(key, wrap, `${session.prism} ${rekey.epoch}`)));
+  }
+  return keyring;
+}
+
+/** The boundary key this device must seal with. Refuses a stale key (Stitch.PrismId.boundaryKeyAdmitted). */
+export async function currentBoundary(session) {
+  const state = await resolvePrism(session.prism, session.log);
+  const epochOf = id => (id === session.prism ? 0 : state.rekeys.find(r => r.keyId === id)?.epoch);
+  const heldEpoch = Math.max(-1, ...[...session.keyring.keys()].map(epochOf).filter(Number.isSafeInteger));
+  if (heldEpoch < 0 || !model['Stitch.PrismId.boundaryKeyAdmitted'](heldEpoch, state.boundary.epoch) || !session.keyring.has(state.boundary.keyId))
+    refuse('stale-key', 'this device does not hold the current private boundary key');
+  return { keyId: state.boundary.keyId, epoch: state.boundary.epoch, key: session.keyring.get(state.boundary.keyId) };
+}
+
 // ---------------------------------------------------------------- sessions
 
 /**
  * Create a prism on this device. No account, server or third party is involved.
- * The private boundary key never leaves a linked device unwrapped.
+ * The private boundary key never leaves a member device unwrapped.
  */
-export async function createPrism() {
-  const device = await createDevice();
-  const boundaryKey = await subtle.generateKey({ name: 'AES-GCM', length: 256 }, true, ['encrypt', 'decrypt']);
+export async function createPrism(deviceOptions) {
+  const device = await createDevice(deviceOptions);
   const genesis = await signRecord(device, { kind: KIND.genesis, device: device.record, nonce: toBase64Url(random(16)) });
   const prism = await kappa(genesis.body);
-  return { prism, device, boundaryKey, log: await logFromRecords([genesis]) };
+  return { prism, device, keyring: new Map([[prism, await newBoundaryKey()]]), log: await logFromRecords([genesis]) };
 }
 
-async function requireActive(session) {
-  if (!await canSign(session.prism, session.log, session.device.id)) refuse('unauthorized', 'this device may not sign for the prism');
-}
-
-/** Revoke a device. Binds it made that this device knows of are kept. */
+/**
+ * Revoke a device and rotate the private boundary key. The new key is wrapped
+ * to every remaining member device, never to the revoked device or delegates.
+ * Binds the revoked device made that this device knows of are kept.
+ */
 export async function revokeDevice(session, deviceId) {
-  await requireActive(session);
+  const state = await mayAdminister(session);
   const keep = [];
   for (const [id, e] of session.log) if (e.body.kind === KIND.bind && e.signer === deviceId) keep.push(id);
-  const envelope = await signRecord(session.device, { kind: KIND.revoke, prism: session.prism, device: deviceId, keep: keep.sort() });
-  return { ...session, log: await addRecord(session.log, envelope) };
+  const epoch = state.boundary.epoch + 1;
+  const key = await newBoundaryKey();
+  const raw = await subtle.exportKey('raw', key);
+  const ephemeral = await subtle.generateKey(AGREE, false, ['deriveBits']);
+  const agree = publicJwk(await subtle.exportKey('jwk', ephemeral.publicKey));
+  const wraps = [];
+  for (const id of state.active) {
+    if (id === deviceId || !model['Stitch.PrismId.receivesPrivateBoundary'](state.roles[id] !== 'member')) continue;
+    const wrapKey = await deriveWrapKey(ephemeral.privateKey, state.devices[id].agree, encoder.encode(session.prism), `prism/rekey-wrap/1 ${id}`);
+    wraps.push({ device: id, agree, ...await encryptWith(wrapKey, raw, `${session.prism} ${epoch}`) });
+  }
+  const envelope = await signRecord(session.device, { kind: KIND.revoke, prism: session.prism, device: deviceId, keep: keep.sort(), epoch, wraps });
+  const log = await addRecord(session.log, envelope);
+  const next = { ...session, log };
+  next.keyring = await absorbRekeys(next, await resolvePrism(session.prism, log));
+  return next;
 }
 
 // ---------------------------------------------------------------- out-of-band linking
@@ -301,15 +428,29 @@ export async function rendezvousTopic(secret) {
 }
 
 /**
- * Offer to link a new device. The returned URI is what the QR code carries.
- * The pending half stays on this device and is used exactly once.
+ * Six-digit code both devices show before the link is accepted. It binds the
+ * secret to the joining device, so a device that read the QR code first shows
+ * a code that does not match the one on the device the person is holding.
  */
-export async function createLinkOffer(session, { now, ttl = 300000 }) {
-  await requireActive(session);
+export async function linkCode(secret, deviceRecord) {
+  const digest = new Uint8Array(await subtle.digest('SHA-256', canonicalBytes({ kind: KIND.linkCode, secret, device: await kappa(deviceRecord) })));
+  return String(new DataView(digest.buffer).getUint32(0) % 1000000).padStart(6, '0');
+}
+
+/**
+ * Offer to link a new device. The returned URI is what the QR code (or NFC tag,
+ * USB/serial line, or typed text) carries. The pending half stays here and is
+ * used exactly once. A delegate offer names the actions the device may take.
+ */
+export async function createLinkOffer(session, { now, ttl = 300000, role = 'member', scope = [] }) {
+  await mayAdminister(session);
+  if (!bindShape({ role, scope })) refuse('offer', 'a member has no scope; a delegate needs at least one action');
   const ephemeral = await subtle.generateKey(AGREE, false, ['deriveBits']);
   const offer = {
     kind: KIND.offer,
     prism: session.prism,
+    role,
+    scope: [...scope].sort(),
     secret: toBase64Url(random(32)),
     agree: publicJwk(await subtle.exportKey('jwk', ephemeral.publicKey)),
     expires: now + ttl
@@ -320,7 +461,8 @@ export async function createLinkOffer(session, { now, ttl = 300000 }) {
 export function parseLinkUri(uri) {
   if (typeof uri !== 'string' || !uri.startsWith(LINK_URI)) refuse('offer', 'not a prism link');
   const offer = JSON.parse(decoder.decode(fromBase64Url(uri.slice(LINK_URI.length))));
-  if (offer.kind !== KIND.offer || !isKappa(offer.prism) || !Number.isSafeInteger(offer.expires)) refuse('offer', 'malformed link offer');
+  if (offer.kind !== KIND.offer || !isKappa(offer.prism) || !Number.isSafeInteger(offer.expires) || !bindShape(offer) ||
+    typeof offer.secret !== 'string' || !okKey(offer.agree)) refuse('offer', 'malformed link offer');
   return offer;
 }
 
@@ -333,52 +475,98 @@ export async function requestLink(device, offer) {
   return { kind: KIND.request, prism: offer.prism, device: device.record, proof: toBase64Url(proof) };
 }
 
-async function wrapKey(privateKey, publicJwkValue, secret) {
-  const peer = await subtle.importKey('jwk', { ...publicJwkValue, ext: true }, AGREE, false, []);
-  const shared = await subtle.deriveBits({ name: 'ECDH', public: peer }, privateKey, 256);
-  const material = await subtle.importKey('raw', shared, 'HKDF', false, ['deriveKey']);
-  return subtle.deriveKey(
-    { name: 'HKDF', hash: 'SHA-256', salt: fromBase64Url(secret), info: encoder.encode('prism/link-wrap/1') },
-    material, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
-}
-
 /**
- * Existing device: accept a link request. Refuses unless
- * Stitch.PrismId.linkOfferAccepted holds for the secret, single use and expiry.
+ * Existing member device: accept a link request. Refuses unless
+ * Stitch.PrismId.linkOfferAccepted holds: the person confirmed the matching
+ * six-digit code, the secret matches, the offer is unused and unexpired.
+ * A member receives the keyring; a delegate receives no boundary key.
  */
-export async function acceptLinkRequest(session, pending, request, { now }) {
-  await requireActive(session);
+export async function acceptLinkRequest(session, pending, request, { now, confirmCode }) {
+  await mayAdminister(session);
   const { offer } = pending;
-  let secretMatches = false;
+  let secretMatches = false, userConfirmed = false;
   if (request?.kind === KIND.request && request.prism === offer.prism) {
     try {
       checkDeviceRecord(request.device);
       const key = await hmacKey(fromBase64Url(offer.secret), ['verify']);
       secretMatches = await subtle.verify('HMAC', key, fromBase64Url(request.proof), canonicalBytes(requestProofBody(request.prism, request.device)));
+      userConfirmed = typeof confirmCode === 'string' && confirmCode === await linkCode(offer.secret, request.device);
     } catch (error) { if (!(error instanceof PrismIdError)) throw error; }
   }
-  if (!model['Stitch.PrismId.linkOfferAccepted'](secretMatches, pending.used, offer.expires, now)) refuse('offer', 'link request refused');
+  if (!model['Stitch.PrismId.linkOfferAccepted'](userConfirmed, pending.used, secretMatches, offer.expires, now)) refuse('offer', 'link request refused');
   pending.used = true;
-  const bind = await signRecord(session.device, { kind: KIND.bind, prism: session.prism, device: request.device });
+  const bind = await signRecord(session.device, { kind: KIND.bind, prism: session.prism, device: request.device, role: offer.role, scope: offer.scope });
   const log = await addRecord(session.log, bind);
-  const wrapping = await wrapKey(pending.ephemeralKey, request.device.agree, offer.secret);
-  const iv = random(12);
-  const raw = await subtle.exportKey('raw', session.boundaryKey);
-  const ciphertext = await subtle.encrypt({ name: 'AES-GCM', iv, additionalData: encoder.encode(session.prism) }, wrapping, raw);
-  const response = { kind: KIND.response, prism: session.prism, records: [...log.values()], wrap: { iv: toBase64Url(iv), ciphertext: toBase64Url(ciphertext) } };
+  let wrap = null;
+  if (model['Stitch.PrismId.receivesPrivateBoundary'](offer.role === 'delegate')) {
+    const wrapping = await deriveWrapKey(pending.ephemeralKey, request.device.agree, fromBase64Url(offer.secret), 'prism/link-wrap/1');
+    wrap = await encryptWith(wrapping, await exportKeyring(session.keyring), session.prism);
+  }
+  const response = { kind: KIND.response, prism: session.prism, records: [...log.values()], wrap };
   return { session: { ...session, log }, response };
 }
 
-/** New device: finish linking. Verifies that the prism now lists this device. */
+/** New device: finish linking. Verifies that the prism now lists this device with the offered role. */
 export async function completeLink(device, offer, response) {
   if (response?.kind !== KIND.response || response.prism !== offer.prism) refuse('response', 'response is for another prism');
   const log = await logFromRecords(response.records);
   const state = await resolvePrism(offer.prism, log);
-  if (!state.active.includes(device.id)) refuse('response', 'the prism did not bind this device');
-  const wrapping = await wrapKey(device.agreementKey, offer.agree, offer.secret);
-  const raw = await subtle.decrypt({ name: 'AES-GCM', iv: fromBase64Url(response.wrap.iv), additionalData: encoder.encode(offer.prism) }, wrapping, fromBase64Url(response.wrap.ciphertext));
-  const boundaryKey = await subtle.importKey('raw', raw, { name: 'AES-GCM' }, true, ['encrypt', 'decrypt']);
-  return { prism: offer.prism, device, boundaryKey, log };
+  if (!state.active.includes(device.id) || state.roles[device.id] !== offer.role) refuse('response', 'the prism did not bind this device');
+  let keyring = new Map();
+  if (offer.role === 'member') {
+    if (!response.wrap) refuse('response', 'member link without the private boundary');
+    const wrapping = await deriveWrapKey(device.agreementKey, offer.agree, fromBase64Url(offer.secret), 'prism/link-wrap/1');
+    keyring = await importKeyring(await decryptWith(wrapping, response.wrap, offer.prism));
+  }
+  const session = { prism: offer.prism, device, keyring, log };
+  session.keyring = await absorbRekeys(session, state);
+  return session;
+}
+
+// ---------------------------------------------------------------- scoped actions and host admission
+
+/**
+ * Sign an action for a host (a foundry page, a native service, an embedded
+ * sink). `audience` names the host, so the envelope is useless anywhere else;
+ * a fresh nonce lets the host refuse replays.
+ */
+export async function signAction(session, action, payload, { now, audience }) {
+  if (typeof action !== 'string' || !action) refuse('action', 'action must be a name');
+  if (typeof audience !== 'string' || !audience) refuse('action', 'action must name its audience');
+  return signRecord(session.device, { kind: KIND.action, prism: session.prism, action, audience, payload, at: now, nonce: toBase64Url(random(16)) });
+}
+
+/**
+ * Host side. Allowed only when Stitch.PrismId.actionFresh holds (this
+ * audience, nonce not seen, issued within `window` of now) and
+ * Stitch.PrismId.actionAllowed holds (an active device, and for a delegate an
+ * action inside its scope). `seen` is the host's replay set for the window.
+ */
+export async function verifyAction(prism, log, envelope, { audience, now, window = 60000, seen = new Set() }) {
+  const body = envelope?.body;
+  if (body?.kind !== KIND.action || body.prism !== prism || !Number.isSafeInteger(body.at) || body.at < 0 || typeof body.nonce !== 'string')
+    return { allowed: false, reason: 'not an action of this prism' };
+  const state = await resolvePrism(prism, log);
+  const id = envelope.signer;
+  if (!state.devices[id] && !state.revoked.includes(id)) return { allowed: false, reason: 'unknown device' };
+  if (!state.devices[id] || !await signatureValid(envelope, state.devices[id])) return { allowed: false, reason: 'signature or revocation' };
+  const replayKey = `${id} ${body.nonce}`;
+  if (!model['Stitch.PrismId.actionFresh'](body.audience === audience, !seen.has(replayKey), body.at, now, window))
+    return { allowed: false, reason: 'audience, replay or time window' };
+  const delegate = state.roles[id] === 'delegate';
+  const allowed = model['Stitch.PrismId.actionAllowed'](true, state.revoked.includes(id), delegate, delegate && state.scopes[id].includes(body.action));
+  if (allowed) seen.add(replayKey);
+  return { allowed, reason: allowed ? 'ok' : 'scope', device: state.devices[id], role: state.roles[id] };
+}
+
+/**
+ * Host policy for a device. A host that requires hardware-held keys admits a
+ * device only with an attestation the host verified itself (Android key
+ * attestation, Apple App Attest, a TPM quote, a secure-element certificate).
+ * The device record's own `protection` field is a claim, never evidence.
+ */
+export function hostAdmitsDevice({ requiresHardwareKey = false } = {}, { attestedHardwareKey = false } = {}) {
+  return model['Stitch.PrismId.hostAdmitsDevice'](requiresHardwareKey === true, attestedHardwareKey === true);
 }
 
 // ---------------------------------------------------------------- boundaries and sealed content
@@ -398,40 +586,59 @@ export function boundaryVisibleTo(boundary, prism) {
   return model['Stitch.PrismId.boundaryVisibleTo'](boundary.members.includes(prism), boundary.published === true);
 }
 
-/** Seal a JSON value in the private boundary. The sealed object's kappa is its address. */
+/** Seal a JSON value under the current private boundary key. The sealed object's kappa is its address. */
 export async function sealPrivate(session, value) {
-  const iv = random(12);
-  const ciphertext = await subtle.encrypt({ name: 'AES-GCM', iv, additionalData: encoder.encode(session.prism) }, session.boundaryKey, canonicalBytes(value));
-  const sealed = { kind: KIND.sealed, boundary: 'private', iv: toBase64Url(iv), ciphertext: toBase64Url(ciphertext) };
+  const { keyId } = await currentBoundary(session);
+  return sealWith(session, keyId, value);
+}
+
+async function sealWith(session, keyId, value) {
+  const key = session.keyring.get(keyId);
+  if (!key) refuse('stale-key', 'this device does not hold that boundary key');
+  const sealed = { kind: KIND.sealed, boundary: 'private', key: keyId, ...await encryptWith(key, canonicalBytes(value), session.prism) };
   return { address: await kappa(sealed), sealed };
 }
 
+/** Open sealed content with whichever key it names, including keys from before a rotation. */
 export async function openPrivate(session, sealed) {
-  const bytes = await subtle.decrypt({ name: 'AES-GCM', iv: fromBase64Url(sealed.iv), additionalData: encoder.encode(session.prism) }, session.boundaryKey, fromBase64Url(sealed.ciphertext));
-  return JSON.parse(decoder.decode(bytes));
+  const key = session.keyring.get(sealed?.key);
+  if (!key) refuse('stale-key', 'this device does not hold that boundary key');
+  return JSON.parse(decoder.decode(await decryptWith(key, sealed, session.prism)));
 }
 
 // ---------------------------------------------------------------- substrate sync
 
-/** The sync topic is derived from the private boundary key, so only linked devices can find it. */
-export async function syncTopic(session) {
-  const key = await hmacKey(await subtle.exportKey('raw', session.boundaryKey), ['sign']);
-  return 'prism-sync:' + hex(await subtle.sign('HMAC', key, canonicalBytes({ kind: KIND.sync, prism: session.prism })));
+/** The sync topic for a boundary key. Only devices holding that key can derive it. */
+export async function syncTopic(session, keyId) {
+  const id = keyId ?? (await currentBoundary(session)).keyId;
+  const key = session.keyring.get(id);
+  if (!key) refuse('stale-key', 'this device does not hold that boundary key');
+  const mac = await hmacKey(await subtle.exportKey('raw', key), ['sign']);
+  return 'prism-sync:' + hex(await subtle.sign('HMAC', mac, canonicalBytes({ kind: KIND.sync, prism: session.prism })));
 }
 
-/** Publish this device's log to its other devices, sealed in the private boundary. */
-export async function publishSync(session, bus) {
-  const { sealed } = await sealPrivate(session, { kind: KIND.sync, prism: session.prism, records: [...session.log.values()] });
-  await bus.publish(await syncTopic(session), canonicalBytes(sealed));
+/**
+ * Publish this device's log to its other member devices, sealed in the private
+ * boundary. After a rotation, publish once under the previous key so devices
+ * still listening there can take up the new key.
+ */
+export async function publishSync(session, bus, { keyId } = {}) {
+  const id = keyId ?? (await currentBoundary(session)).keyId;
+  const { sealed } = await sealWith(session, id, { kind: KIND.sync, prism: session.prism, records: [...session.log.values()] });
+  await bus.publish(await syncTopic(session, id), canonicalBytes(sealed));
 }
 
 /** Merge a sync message. Records that do not resolve for this prism are refused. */
 export async function receiveSync(session, bytes) {
+  if (!(bytes instanceof Uint8Array) || bytes.length > MAX_SYNC_BYTES) refuse('sync', `sync message exceeds ${MAX_SYNC_BYTES} bytes`);
   const message = await openPrivate(session, JSON.parse(decoder.decode(bytes)));
   if (message.kind !== KIND.sync || message.prism !== session.prism) refuse('sync', 'sync message for another prism');
   const log = mergeLogs(session.log, await logFromRecords(message.records));
-  await resolvePrism(session.prism, log);
-  return { ...session, log };
+  if (log.size > MAX_LOG_RECORDS) refuse('log', `log exceeds ${MAX_LOG_RECORDS} records`);
+  const state = await resolvePrism(session.prism, log);
+  const next = { ...session, log };
+  next.keyring = await absorbRekeys(next, state);
+  return next;
 }
 
 /**
@@ -531,6 +738,8 @@ async function createEscrowedDevice() {
   const agreement = await subtle.generateKey(AGREE, true, ['deriveBits']);
   const record = {
     kind: KIND.device,
+    class: 'recovery',
+    protection: 'software',
     sign: publicJwk(await subtle.exportKey('jwk', signing.publicKey)),
     agree: publicJwk(await subtle.exportKey('jwk', agreement.publicKey))
   };
@@ -542,15 +751,16 @@ async function linkLocally(session, device, now) {
   const { uri, pending } = await createLinkOffer(session, { now });
   const offer = parseLinkUri(uri);
   const request = await requestLink(device, offer);
-  const accepted = await acceptLinkRequest(session, pending, request, { now });
+  const confirmCode = await linkCode(offer.secret, device.record);
+  const accepted = await acceptLinkRequest(session, pending, request, { now, confirmCode });
   const joined = await completeLink(device, offer, accepted.response);
   return { session: accepted.session, joined };
 }
 
 /**
  * Make a recovery code for the prism of `session` (an active device). Links a
- * new recovery device, then seals its private keys, the private boundary and
- * the log in an escrow. Returns the code (show it once, store it nowhere),
+ * new recovery device, then seals its private keys, every private boundary key
+ * it holds and the log in an escrow. Returns the code (show it once, store it nowhere),
  * the escrow (keep it anywhere; its locator finds it) and the session with
  * the recovery device's bind in its log.
  */
@@ -564,7 +774,7 @@ export async function createRecovery(session, { now }) {
     device: recoveryDevice.record,
     sign: toBase64Url(await subtle.exportKey('pkcs8', recoveryDevice.signingKey)),
     agree: toBase64Url(await subtle.exportKey('pkcs8', recoveryDevice.agreementKey)),
-    boundary: toBase64Url(await subtle.exportKey('raw', joined.boundaryKey)),
+    keyring: toBase64Url(await exportKeyring(joined.keyring)),
     records: [...joined.log.values()]
   };
   const locator = await recoveryLocator(seed);
@@ -600,10 +810,10 @@ export async function openRecovery(code, escrow) {
     signingKey: await subtle.importKey('pkcs8', fromBase64Url(sealed.sign), SIGN, false, ['sign']),
     agreementKey: await subtle.importKey('pkcs8', fromBase64Url(sealed.agree), AGREE, false, ['deriveBits'])
   };
-  const boundaryKey = await subtle.importKey('raw', fromBase64Url(sealed.boundary), { name: 'AES-GCM' }, true, ['encrypt', 'decrypt']);
+  const keyring = await importKeyring(fromBase64Url(sealed.keyring));
   const log = await logFromRecords(sealed.records);
   await resolvePrism(sealed.prism, log);
-  return { prism: sealed.prism, device, boundaryKey, log };
+  return { prism: sealed.prism, device, keyring, log };
 }
 
 /**
@@ -615,7 +825,8 @@ export async function openRecovery(code, escrow) {
 export async function recoverOnto(code, escrow, device, { now, log } = {}) {
   const recovery = await openRecovery(code, escrow);
   if (log) {
-    for (const [k, v] of log) recovery.log.set(k, v);
+    recovery.log = mergeLogs(recovery.log, log);
+    recovery.keyring = await absorbRekeys(recovery, await resolvePrism(recovery.prism, recovery.log));
   }
   const { joined } = await linkLocally(recovery, device, now);
   return joined;

@@ -58,3 +58,14 @@ test('a revoked recovery code links nothing', async () => {
   const revoked = await revokeDevice(made.session, made.device);
   await assert.rejects(recoverOnto(made.code, made.escrow, await createDevice(), { now: NOW, log: revoked.log }), refused('unauthorized'));
 });
+
+test('a code made before a rotation still opens what was sealed after it', async () => {
+  const session = await createPrism();
+  const other = await createRecovery(session, { now: NOW });
+  const made = await createRecovery(other.session, { now: NOW });
+  const rotated = await revokeDevice(made.session, other.device);
+  const later = await sealPrivate(rotated, { note: 'sealed under the new key' });
+  const joined = await recoverOnto(made.code, made.escrow, await createDevice(), { now: NOW, log: rotated.log });
+  assert.deepEqual(await openPrivate(joined, later.sealed), { note: 'sealed under the new key' });
+  await assert.rejects(recoverOnto(other.code, other.escrow, await createDevice(), { now: NOW, log: rotated.log }), refused('unauthorized'));
+});

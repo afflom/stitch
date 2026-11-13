@@ -12,17 +12,92 @@ definition{
 }
 
 definition{
-  name: bindAllowed,
-  parameters: [signerLinked : Bool, signerRevoked : Bool, signatureValid : Bool, samePrism : Bool],
+  name: mayAdminister,
+  parameters: [linked : Bool, revoked : Bool, delegate : Bool],
   result: Bool,
-  body: ((deviceMaySign signerLinked signerRevoked) && (signatureValid && samePrism))
+  body: ((deviceMaySign linked revoked) && (not delegate))
+}
+
+definition{
+  name: bindAllowed,
+  parameters: [
+    signerLinked : Bool,
+    signerRevoked : Bool,
+    signerDelegate : Bool,
+    signatureValid : Bool,
+    samePrism : Bool
+  ],
+  result: Bool,
+  body: ((mayAdminister signerLinked signerRevoked signerDelegate) && (signatureValid && samePrism))
+}
+
+definition{
+  name: linkGate,
+  parameters: [userConfirmed : Bool, alreadyUsed : Bool, secretMatches : Bool, fresh : Bool],
+  result: Bool,
+  body: (userConfirmed && ((not alreadyUsed) && (secretMatches && fresh)))
 }
 
 definition{
   name: linkOfferAccepted,
-  parameters: [secretMatches : Bool, alreadyUsed : Bool, expires : Nat, now : Nat],
+  parameters: [
+    userConfirmed : Bool,
+    alreadyUsed : Bool,
+    secretMatches : Bool,
+    expires : Nat,
+    now : Nat
+  ],
   result: Bool,
-  body: ((not alreadyUsed) && (secretMatches && (now <? expires)))
+  body: (linkGate userConfirmed alreadyUsed secretMatches (now <? expires))
+}
+
+definition{
+  name: receivesPrivateBoundary,
+  parameters: [delegate : Bool],
+  result: Bool,
+  body: (not delegate)
+}
+
+definition{
+  name: scopeAdmits,
+  parameters: [delegate : Bool, inScope : Bool],
+  result: Bool,
+  body: ((not delegate) || inScope)
+}
+
+definition{
+  name: actionAllowed,
+  parameters: [linked : Bool, revoked : Bool, delegate : Bool, inScope : Bool],
+  result: Bool,
+  body: ((deviceMaySign linked revoked) && (scopeAdmits delegate inScope))
+}
+
+definition{
+  name: actionGate,
+  parameters: [audienceMatches : Bool, unseen : Bool, inWindow : Bool],
+  result: Bool,
+  body: (audienceMatches && (unseen && inWindow))
+}
+
+definition{
+  name: actionFresh,
+  parameters: [audienceMatches : Bool, unseen : Bool, issued : Nat, now : Nat, window : Nat],
+  result: Bool,
+  body: (actionGate audienceMatches unseen ((now <=? (issued + window)) && (issued <=? (now + window))))
+}
+
+definition{
+  name: hostAdmitsDevice,
+  parameters: [requiresHardwareKey : Bool, attestedHardwareKey : Bool],
+  result: Bool,
+  body: ((not requiresHardwareKey) || attestedHardwareKey)
+}
+
+definition{
+  name: boundaryKeyAdmitted,
+  parameters: [keyEpoch : Nat, requiredEpoch : Nat],
+  result: Bool,
+  body: (requiredEpoch <=? keyEpoch)
 }
 
 definition{
@@ -55,30 +130,127 @@ theorem{
 
 theorem{
   name: unlinkedSignerCannotBind,
-  parameters: [signerRevoked : Bool, signatureValid : Bool, samePrism : Bool],
-  statement: ((bindAllowed false signerRevoked signatureValid samePrism) = false),
+  parameters: [
+    signerRevoked : Bool,
+    signerDelegate : Bool,
+    signatureValid : Bool,
+    samePrism : Bool
+  ],
+  statement: ((bindAllowed false signerRevoked signerDelegate signatureValid samePrism) = false),
   proof: reflexivity{}
+}
+
+theorem{
+  name: delegateCannotBind,
+  parameters: [],
+  statement: (forall (signerLinked : Bool), (forall (signerRevoked : Bool), (forall (signatureValid : Bool), (forall (samePrism : Bool), ((bindAllowed signerLinked signerRevoked true signatureValid samePrism) = false))))),
+  proof: decide{}
 }
 
 theorem{
   name: invalidBindSignatureRefused,
   parameters: [],
-  statement: (forall (signerLinked : Bool), (forall (signerRevoked : Bool), (forall (samePrism : Bool), ((bindAllowed signerLinked signerRevoked false samePrism) = false)))),
+  statement: (forall (signerLinked : Bool), (forall (signerRevoked : Bool), (forall (signerDelegate : Bool), (forall (samePrism : Bool), ((bindAllowed signerLinked signerRevoked signerDelegate false samePrism) = false))))),
   proof: decide{}
 }
 
 theorem{
-  name: usedOfferRefused,
-  parameters: [secretMatches : Bool, expires : Nat, now : Nat],
-  statement: ((linkOfferAccepted secretMatches true expires now) = false),
+  name: foreignPrismBindRefused,
+  parameters: [],
+  statement: (forall (signerLinked : Bool), (forall (signerRevoked : Bool), (forall (signerDelegate : Bool), (forall (signatureValid : Bool), ((bindAllowed signerLinked signerRevoked signerDelegate signatureValid false) = false))))),
+  proof: decide{}
+}
+
+theorem{
+  name: unconfirmedLinkRefused,
+  parameters: [alreadyUsed : Bool, secretMatches : Bool, fresh : Bool],
+  statement: ((linkGate false alreadyUsed secretMatches fresh) = false),
   proof: reflexivity{}
 }
 
 theorem{
+  name: usedOfferRefused,
+  parameters: [],
+  statement: (forall (userConfirmed : Bool), (forall (secretMatches : Bool), (forall (fresh : Bool), ((linkGate userConfirmed true secretMatches fresh) = false)))),
+  proof: decide{}
+}
+
+theorem{
+  name: wrongSecretRefused,
+  parameters: [],
+  statement: (forall (userConfirmed : Bool), (forall (alreadyUsed : Bool), (forall (fresh : Bool), ((linkGate userConfirmed alreadyUsed false fresh) = false)))),
+  proof: decide{}
+}
+
+theorem{
   name: expiredOfferRefused,
-  parameters: [secretMatches : Bool, alreadyUsed : Bool, expires : Nat, now : Nat],
-  statement: ((expires <= now) -> ((linkOfferAccepted secretMatches alreadyUsed expires now) = false)),
-  proof: linear_arithmetic{definitions: [linkOfferAccepted]},
+  parameters: [
+    userConfirmed : Bool,
+    alreadyUsed : Bool,
+    secretMatches : Bool,
+    expires : Nat,
+    now : Nat
+  ],
+  statement: ((expires <= now) -> ((linkOfferAccepted userConfirmed alreadyUsed secretMatches expires now) = false)),
+  proof: linear_arithmetic{definitions: [linkGate, linkOfferAccepted]},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: delegateNeverReceivesPrivateBoundary,
+  parameters: [],
+  statement: ((receivesPrivateBoundary true) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: delegateOutsideScopeRefused,
+  parameters: [],
+  statement: (forall (linked : Bool), (forall (revoked : Bool), ((actionAllowed linked revoked true false) = false))),
+  proof: decide{}
+}
+
+theorem{
+  name: revokedDeviceActionRefused,
+  parameters: [],
+  statement: (forall (linked : Bool), (forall (delegate : Bool), (forall (inScope : Bool), ((actionAllowed linked true delegate inScope) = false)))),
+  proof: decide{}
+}
+
+theorem{
+  name: replayedActionRefused,
+  parameters: [],
+  statement: (forall (audienceMatches : Bool), (forall (inWindow : Bool), ((actionGate audienceMatches false inWindow) = false))),
+  proof: decide{}
+}
+
+theorem{
+  name: wrongAudienceActionRefused,
+  parameters: [unseen : Bool, inWindow : Bool],
+  statement: ((actionGate false unseen inWindow) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: staleActionRefused,
+  parameters: [audienceMatches : Bool, unseen : Bool, issued : Nat, now : Nat, window : Nat],
+  statement: (((issued + window) < now) -> ((actionFresh audienceMatches unseen issued now window) = false)),
+  proof: linear_arithmetic{definitions: [actionFresh, actionGate]},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: unattestedDeviceRefusedWhenRequired,
+  parameters: [],
+  statement: ((hostAdmitsDevice true false) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: staleBoundaryKeyRefused,
+  parameters: [keyEpoch : Nat, requiredEpoch : Nat],
+  statement: ((keyEpoch < requiredEpoch) -> ((boundaryKeyAdmitted keyEpoch requiredEpoch) = false)),
+  proof: linear_arithmetic{definitions: [boundaryKeyAdmitted]},
   axioms: [Quot.sound, propext]
 }
 

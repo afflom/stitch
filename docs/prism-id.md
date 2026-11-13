@@ -21,10 +21,11 @@ LexLean's `kappa` package and PrismPM ADR-017. It differs from the older
 
 | Kind | Signed by | Meaning |
 | --- | --- | --- |
-| `prism/device/1` | none (public record) | A device's P-256 signing and agreement public keys. Its kappa is the device id. Private keys are non-extractable. |
-| `prism/genesis/1` | the first device | Creates the prism. prism id = kappa of this body. |
-| `prism/bind/1` | an active device | Links another device to the prism. |
-| `prism/revoke/1` | a linked device | Removes a device. `keep` lists the binds the revoked device made that stay valid. |
+| `prism/device/1` | none (public record) | A device's class (`browser`, `native`, `mobile`, `embedded`, `recovery`), its claimed key protection (`software`, `platform`, `secure-element`), and its P-256 signing and agreement public keys. Its kappa is the device id. Private keys are non-extractable. |
+| `prism/genesis/1` | the first device | Creates the prism. prism id = kappa of this body. The first device is a member. |
+| `prism/bind/1` | an active member | Links a device as a `member` (no scope) or a `delegate` (a non-empty list of actions). |
+| `prism/revoke/1` | a linked member | Removes a device. `keep` lists the binds the revoked device made that stay valid. `epoch` and `wraps` carry a new private boundary key wrapped to each remaining member. |
+| `prism/action/1` | an active device | An action for a host: `action`, `audience`, `payload`, `at`, `nonce`. |
 
 The prism log is a set of signed records keyed by the kappa of each envelope, so
 merging two logs is set union: commutative, associative and idempotent.
@@ -34,7 +35,17 @@ merging two logs is set union: commutative, associative and idempotent.
 Revocation wins over a concurrent bind: a bind made by a revoked device counts
 only if the revocation lists it in `keep`. Rotating away from the genesis device
 keeps every device that was already linked. Two devices that revoke each other
-are both revoked; a recovery code (below) is the way out.
+are both revoked; recovery (a later milestone) is the way out.
+
+## Device classes and roles
+
+Every device, whether a browser tab, a native install, a mobile app or an embedded device, uses the same records and the same primitives: P-256 ECDSA and ECDH, HKDF-SHA-256, HMAC-SHA-256, AES-256-GCM and SHA-256. P-256 is the curve that WebCrypto, Apple Secure Enclave, Android Keystore, TPM 2.0 and common secure elements all support, so a native implementation can keep its keys in hardware.
+
+A **member** holds the private boundary and can link and revoke devices. A **delegate** is scoped: it may sign only the actions in its scope, never receives the private boundary, and cannot link or revoke (`Stitch.PrismId.mayAdminister`, `receivesPrivateBoundary`, `actionAllowed`). Embedded devices join as delegates.
+
+The `protection` field is the device's own claim. A host that requires hardware-held keys admits a device only with an attestation that the host verified itself (`Stitch.PrismId.hostAdmitsDevice`).
+
+A native implementation checks itself against `tests/fixtures/prism-id-vectors.json`. `scripts/verify-prism-id-vectors.py` is an independent implementation of the canonical form that does exactly that.
 
 ## Linking a device out of band
 
@@ -43,11 +54,37 @@ are both revoked; a recovery code (below) is the way out.
 2. The new device scans it, and posts a link request to the rendezvous topic
    derived from the secret. The request carries its device record and an HMAC
    under the secret.
-3. The offering device accepts only if `Stitch.PrismId.linkOfferAccepted`
-   holds (secret matches, not yet used, not expired). It signs a bind, and wraps
-   the private boundary key with ECDH + HKDF (salt = secret) + AES-GCM.
-4. The new device checks that the prism now lists it as active, unwraps the
-   boundary key, and holds the full log.
+3. Both devices show a six-digit code derived from the secret and the joining
+   device's kappa. The person confirms that the codes match. Someone who
+   photographed the QR code and answered first gets a different code.
+4. The offering device accepts only if `Stitch.PrismId.linkOfferAccepted`
+   holds (code confirmed, secret matches, not yet used, not expired). It signs
+   a bind. For a member, it wraps the boundary keyring with ECDH + HKDF
+   (salt = secret) + AES-GCM. A delegate gets no wrap.
+5. The new device checks that the prism lists it with the offered role,
+   unwraps the keyring if it is a member, and holds the full log.
+
+The offer URI is plain text, so any channel works: a QR code, NFC, a USB or
+serial provisioning line, or typed text.
+
+## Revocation rotates the private boundary
+
+Every revocation carries a new boundary key, wrapped to each remaining member
+with a fresh ephemeral ECDH key. The current key is the one with the highest
+epoch, and ties go to the smaller kappa. A device without the current key
+refuses to seal (`Stitch.PrismId.boundaryKeyAdmitted`). The sync topic is
+derived from the current key, so a revoked device loses the topic too. After a
+rotation, publish once under the previous key so that devices still listening
+there take up the new key. Content sealed under earlier keys stays readable to
+the devices that hold them.
+
+## Actions at a host
+
+A device signs an action for one `audience` (a host), with a nonce and a time.
+The host verifies it against the prism log: it must be fresh, unseen and for
+this audience (`Stitch.PrismId.actionFresh`), and it must come from an active
+device inside its scope (`Stitch.PrismId.actionAllowed`). This is how foundry
+grants a stakeholder the permissions of their prism context.
 
 ## Boundaries
 
@@ -57,28 +94,34 @@ to its members (`Stitch.PrismId.boundaryShared`). A published boundary is public
 to all. `sealPrivate` and `openPrivate` keep content in the private boundary;
 the sealed object's kappa is its address.
 
-## Sync over the substrate
-
-Linked devices sync on a topic derived from the private boundary key, so only
-they can find it. Each message is the log sealed in the private boundary, bound
-to the prism id. The bus contract is `publish(topic, bytes)` and
-`subscribe(topic, fn)`. `createMemoryBus` implements it for tests; the stitch
-substrate implements it across peers and federation nodes.
-
 ## Recovery
 
-Recovery lives in `src/prism-id.js`. A recovery device is an ordinary `prism/device/1`,
+Recovery lives in `src/prism-id.js`. A recovery device is an ordinary `prism/device/1` of class `recovery`,
 linked by the ordinary link flow, whose private keys live outside every
 browser: sealed (AES-GCM) in a `prism/recovery-escrow/1` object under a key
 derived (HKDF) from a 32-byte seed. The owner keeps the seed as a recovery
 code: 56 Crockford base32 characters, the seed and three check bytes. The
-escrow carries the recovery device's keys, the private boundary key and the
-log as it stood, so it alone restores the prism. It is public-safe ciphertext,
+escrow carries the recovery device's keys, every private boundary key it holds
+and the log as it stood, so it alone restores the prism. It is public-safe ciphertext,
 kept in any content-addressed store and found by its locator, the kappa of a
 value derived from the seed.
 
 With the code, `recoverOnto` opens the escrow and links the new browser's own
 non-extractable device to the prism, again through `createLinkOffer`,
 `acceptLinkRequest` and `completeLink`, so `Stitch.PrismId` decides it like any
-link. A recovery device revoked in a newer log links nothing. The new device
+link (the page itself supplies the six-digit confirmation, since both ends are
+its own). As a member, the recovery device receives the wrap of every later
+rotation, so a code made before a revocation still opens what is sealed
+after it. A recovery device revoked in a newer log links nothing. The new device
 can then revoke the lost one. No rule is added to the model.
+
+## Sync over the substrate
+
+Linked devices sync on a topic derived from the private boundary key, so only
+they can find it. Each message is the log sealed in the private boundary, bound
+to the prism id. Messages over 4 MiB and logs over 4096 records are refused
+before any parsing or signature work. The bus contract is `publish(topic, bytes)` and
+`subscribe(topic, fn)`. `createMemoryBus` implements it for tests; the stitch
+substrate implements it across peers and federation nodes.
+
+The threat and security model is in `docs/prism-id-threat-model.md`.

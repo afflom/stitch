@@ -28533,6 +28533,58 @@ const definitions = {
       }
     }
   },
+  "Stitch.PrismId.mayAdminister": {
+    "module": "Stitch.PrismId",
+    "name": "mayAdminister",
+    "params": [
+      {
+        "name": "linked",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "revoked",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "delegate",
+        "type": {
+          "kind": "Bool"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "binary",
+      "op": "&&",
+      "left": {
+        "k": "call",
+        "name": "deviceMaySign",
+        "args": [
+          {
+            "k": "var",
+            "name": "linked"
+          },
+          {
+            "k": "var",
+            "name": "revoked"
+          }
+        ]
+      },
+      "right": {
+        "k": "not",
+        "value": {
+          "k": "var",
+          "name": "delegate"
+        }
+      }
+    }
+  },
   "Stitch.PrismId.bindAllowed": {
     "module": "Stitch.PrismId",
     "name": "bindAllowed",
@@ -28545,6 +28597,12 @@ const definitions = {
       },
       {
         "name": "signerRevoked",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "signerDelegate",
         "type": {
           "kind": "Bool"
         }
@@ -28570,7 +28628,7 @@ const definitions = {
       "op": "&&",
       "left": {
         "k": "call",
-        "name": "deviceMaySign",
+        "name": "mayAdminister",
         "args": [
           {
             "k": "var",
@@ -28579,6 +28637,10 @@ const definitions = {
           {
             "k": "var",
             "name": "signerRevoked"
+          },
+          {
+            "k": "var",
+            "name": "signerDelegate"
           }
         ]
       },
@@ -28596,10 +28658,22 @@ const definitions = {
       }
     }
   },
-  "Stitch.PrismId.linkOfferAccepted": {
+  "Stitch.PrismId.linkGate": {
     "module": "Stitch.PrismId",
-    "name": "linkOfferAccepted",
+    "name": "linkGate",
     "params": [
+      {
+        "name": "userConfirmed",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "alreadyUsed",
+        "type": {
+          "kind": "Bool"
+        }
+      },
       {
         "name": "secretMatches",
         "type": {
@@ -28607,7 +28681,65 @@ const definitions = {
         }
       },
       {
+        "name": "fresh",
+        "type": {
+          "kind": "Bool"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "binary",
+      "op": "&&",
+      "left": {
+        "k": "var",
+        "name": "userConfirmed"
+      },
+      "right": {
+        "k": "binary",
+        "op": "&&",
+        "left": {
+          "k": "not",
+          "value": {
+            "k": "var",
+            "name": "alreadyUsed"
+          }
+        },
+        "right": {
+          "k": "binary",
+          "op": "&&",
+          "left": {
+            "k": "var",
+            "name": "secretMatches"
+          },
+          "right": {
+            "k": "var",
+            "name": "fresh"
+          }
+        }
+      }
+    }
+  },
+  "Stitch.PrismId.linkOfferAccepted": {
+    "module": "Stitch.PrismId",
+    "name": "linkOfferAccepted",
+    "params": [
+      {
+        "name": "userConfirmed",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
         "name": "alreadyUsed",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "secretMatches",
         "type": {
           "kind": "Bool"
         }
@@ -28629,23 +28761,22 @@ const definitions = {
       "kind": "Bool"
     },
     "body": {
-      "k": "binary",
-      "op": "&&",
-      "left": {
-        "k": "not",
-        "value": {
+      "k": "call",
+      "name": "linkGate",
+      "args": [
+        {
+          "k": "var",
+          "name": "userConfirmed"
+        },
+        {
           "k": "var",
           "name": "alreadyUsed"
-        }
-      },
-      "right": {
-        "k": "binary",
-        "op": "&&",
-        "left": {
+        },
+        {
           "k": "var",
           "name": "secretMatches"
         },
-        "right": {
+        {
           "k": "binary",
           "op": "<?",
           "left": {
@@ -28657,6 +28788,342 @@ const definitions = {
             "name": "expires"
           }
         }
+      ]
+    }
+  },
+  "Stitch.PrismId.receivesPrivateBoundary": {
+    "module": "Stitch.PrismId",
+    "name": "receivesPrivateBoundary",
+    "params": [
+      {
+        "name": "delegate",
+        "type": {
+          "kind": "Bool"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "not",
+      "value": {
+        "k": "var",
+        "name": "delegate"
+      }
+    }
+  },
+  "Stitch.PrismId.scopeAdmits": {
+    "module": "Stitch.PrismId",
+    "name": "scopeAdmits",
+    "params": [
+      {
+        "name": "delegate",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "inScope",
+        "type": {
+          "kind": "Bool"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "binary",
+      "op": "||",
+      "left": {
+        "k": "not",
+        "value": {
+          "k": "var",
+          "name": "delegate"
+        }
+      },
+      "right": {
+        "k": "var",
+        "name": "inScope"
+      }
+    }
+  },
+  "Stitch.PrismId.actionAllowed": {
+    "module": "Stitch.PrismId",
+    "name": "actionAllowed",
+    "params": [
+      {
+        "name": "linked",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "revoked",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "delegate",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "inScope",
+        "type": {
+          "kind": "Bool"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "binary",
+      "op": "&&",
+      "left": {
+        "k": "call",
+        "name": "deviceMaySign",
+        "args": [
+          {
+            "k": "var",
+            "name": "linked"
+          },
+          {
+            "k": "var",
+            "name": "revoked"
+          }
+        ]
+      },
+      "right": {
+        "k": "call",
+        "name": "scopeAdmits",
+        "args": [
+          {
+            "k": "var",
+            "name": "delegate"
+          },
+          {
+            "k": "var",
+            "name": "inScope"
+          }
+        ]
+      }
+    }
+  },
+  "Stitch.PrismId.actionGate": {
+    "module": "Stitch.PrismId",
+    "name": "actionGate",
+    "params": [
+      {
+        "name": "audienceMatches",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "unseen",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "inWindow",
+        "type": {
+          "kind": "Bool"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "binary",
+      "op": "&&",
+      "left": {
+        "k": "var",
+        "name": "audienceMatches"
+      },
+      "right": {
+        "k": "binary",
+        "op": "&&",
+        "left": {
+          "k": "var",
+          "name": "unseen"
+        },
+        "right": {
+          "k": "var",
+          "name": "inWindow"
+        }
+      }
+    }
+  },
+  "Stitch.PrismId.actionFresh": {
+    "module": "Stitch.PrismId",
+    "name": "actionFresh",
+    "params": [
+      {
+        "name": "audienceMatches",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "unseen",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "issued",
+        "type": {
+          "kind": "Nat"
+        }
+      },
+      {
+        "name": "now",
+        "type": {
+          "kind": "Nat"
+        }
+      },
+      {
+        "name": "window",
+        "type": {
+          "kind": "Nat"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "call",
+      "name": "actionGate",
+      "args": [
+        {
+          "k": "var",
+          "name": "audienceMatches"
+        },
+        {
+          "k": "var",
+          "name": "unseen"
+        },
+        {
+          "k": "binary",
+          "op": "&&",
+          "left": {
+            "k": "binary",
+            "op": "<=?",
+            "left": {
+              "k": "var",
+              "name": "now"
+            },
+            "right": {
+              "k": "binary",
+              "op": "+",
+              "left": {
+                "k": "var",
+                "name": "issued"
+              },
+              "right": {
+                "k": "var",
+                "name": "window"
+              }
+            }
+          },
+          "right": {
+            "k": "binary",
+            "op": "<=?",
+            "left": {
+              "k": "var",
+              "name": "issued"
+            },
+            "right": {
+              "k": "binary",
+              "op": "+",
+              "left": {
+                "k": "var",
+                "name": "now"
+              },
+              "right": {
+                "k": "var",
+                "name": "window"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  "Stitch.PrismId.hostAdmitsDevice": {
+    "module": "Stitch.PrismId",
+    "name": "hostAdmitsDevice",
+    "params": [
+      {
+        "name": "requiresHardwareKey",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "attestedHardwareKey",
+        "type": {
+          "kind": "Bool"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "binary",
+      "op": "||",
+      "left": {
+        "k": "not",
+        "value": {
+          "k": "var",
+          "name": "requiresHardwareKey"
+        }
+      },
+      "right": {
+        "k": "var",
+        "name": "attestedHardwareKey"
+      }
+    }
+  },
+  "Stitch.PrismId.boundaryKeyAdmitted": {
+    "module": "Stitch.PrismId",
+    "name": "boundaryKeyAdmitted",
+    "params": [
+      {
+        "name": "keyEpoch",
+        "type": {
+          "kind": "Nat"
+        }
+      },
+      {
+        "name": "requiredEpoch",
+        "type": {
+          "kind": "Nat"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "binary",
+      "op": "<=?",
+      "left": {
+        "k": "var",
+        "name": "requiredEpoch"
+      },
+      "right": {
+        "k": "var",
+        "name": "keyEpoch"
       }
     }
   },
@@ -43382,12 +43849,12 @@ const types = {
     ]
   }
 };
-export const modelSourceDigest = "sha256:85bd71f59d5b658aa19f7989990aaf6453555d2158cefe7e34517c05365ad4a7";
+export const modelSourceDigest = "sha256:c829b8bda7b99710db72f55fa9a2cb1bd82afc53214c8bd3a5993746f3b44154";
 export const modelExecutionDigest = "sha256:d79f1371e5ea16d16d5b9f56fbcce57cb8044df145dae91a63b9a4cbcb5c50de";
 export const MODEL_SOURCE = Object.freeze({
   "schema": "stitch/source-bindings/1",
   "verification": "source-derived, not kernel-checked",
-  "sourceDigest": "sha256:85bd71f59d5b658aa19f7989990aaf6453555d2158cefe7e34517c05365ad4a7",
+  "sourceDigest": "sha256:c829b8bda7b99710db72f55fa9a2cb1bd82afc53214c8bd3a5993746f3b44154",
   "executionDigest": "sha256:d79f1371e5ea16d16d5b9f56fbcce57cb8044df145dae91a63b9a4cbcb5c50de",
   "executionIdentity": {
     "adapterSources": [
@@ -47017,7 +47484,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Compliance.lex.tex",
-      "sha256": "0bf3f5c6ac0151ac5a9ea3a651e47446acb7a0a7e50f1ad473ac07fdd3c4ecd2"
+      "sha256": "ee7c61fa879b551694a16964981d165c20a1a8e5527f38d3cfeeed07579f65c3"
     },
     {
       "path": "app/src/Product/Design.lex.tex",
@@ -47045,7 +47512,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Quality.lex.tex",
-      "sha256": "3405bd15f2919fed6f3ca3a434e675301a5f54492f53eded8246ca2256caa734"
+      "sha256": "e14c0f7c1d0dd08c7e00ab03cdfe1cb8a57f71e5b12789d023c8ebffe9951824"
     },
     {
       "path": "app/src/Product/Release.lex.tex",
@@ -47053,7 +47520,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Security.lex.tex",
-      "sha256": "1568b71e364d640f3d731d8626a3c76e3f0143d5a93bf8341f04e6f0e1b8bf41"
+      "sha256": "0c966ac65159a71607e3b874bb7da47a583096d325c4049b2c946286f69047da"
     },
     {
       "path": "app/src/Product/Users.lex.tex",
@@ -47113,7 +47580,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Stitch/PrismId.lex.tex",
-      "sha256": "00eb8d69662c54e0ef82133b485208fdda3c904aaf845e3732260775a331bc55"
+      "sha256": "93e1982170071c1b7fba2fdf789e3ad57edb0240cdd5a34c0b716be4e448e429"
     },
     {
       "path": "app/src/Stitch/Recovery.lex.tex",
@@ -47411,7 +47878,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Stitch/PrismId.lex.tex",
-      "sha256": "00eb8d69662c54e0ef82133b485208fdda3c904aaf845e3732260775a331bc55"
+      "sha256": "93e1982170071c1b7fba2fdf789e3ad57edb0240cdd5a34c0b716be4e448e429"
     },
     {
       "path": "app/src/Stitch/Recovery.lex.tex",
@@ -48712,19 +49179,91 @@ export const MODEL_SOURCE = Object.freeze({
       "status": "source-obligation-not-kernel-checked"
     },
     {
+      "id": "Stitch.PrismId.delegateCannotBind",
+      "proof": "decide",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
       "id": "Stitch.PrismId.invalidBindSignatureRefused",
       "proof": "decide",
       "source": "app/src/Stitch/PrismId.lex.tex",
       "status": "source-obligation-not-kernel-checked"
     },
     {
-      "id": "Stitch.PrismId.usedOfferRefused",
+      "id": "Stitch.PrismId.foreignPrismBindRefused",
+      "proof": "decide",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.unconfirmedLinkRefused",
       "proof": "reflexivity",
       "source": "app/src/Stitch/PrismId.lex.tex",
       "status": "source-obligation-not-kernel-checked"
     },
     {
+      "id": "Stitch.PrismId.usedOfferRefused",
+      "proof": "decide",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.wrongSecretRefused",
+      "proof": "decide",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
       "id": "Stitch.PrismId.expiredOfferRefused",
+      "proof": "linear_arithmetic",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.delegateNeverReceivesPrivateBoundary",
+      "proof": "reflexivity",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.delegateOutsideScopeRefused",
+      "proof": "decide",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.revokedDeviceActionRefused",
+      "proof": "decide",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.replayedActionRefused",
+      "proof": "decide",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.wrongAudienceActionRefused",
+      "proof": "reflexivity",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.staleActionRefused",
+      "proof": "linear_arithmetic",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.unattestedDeviceRefusedWhenRequired",
+      "proof": "reflexivity",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.staleBoundaryKeyRefused",
       "proof": "linear_arithmetic",
       "source": "app/src/Stitch/PrismId.lex.tex",
       "status": "source-obligation-not-kernel-checked"
@@ -49405,11 +49944,20 @@ export const MODEL_SOURCE = Object.freeze({
     "Stitch.Pointer.acceptPointer",
     "Stitch.Pointer.restoreAllowed",
     "Stitch.Pointer.successorAllowed",
+    "Stitch.PrismId.actionAllowed",
+    "Stitch.PrismId.actionFresh",
+    "Stitch.PrismId.actionGate",
     "Stitch.PrismId.bindAllowed",
+    "Stitch.PrismId.boundaryKeyAdmitted",
     "Stitch.PrismId.boundaryShared",
     "Stitch.PrismId.boundaryVisibleTo",
     "Stitch.PrismId.deviceMaySign",
+    "Stitch.PrismId.hostAdmitsDevice",
+    "Stitch.PrismId.linkGate",
     "Stitch.PrismId.linkOfferAccepted",
+    "Stitch.PrismId.mayAdminister",
+    "Stitch.PrismId.receivesPrivateBoundary",
+    "Stitch.PrismId.scopeAdmits",
     "Stitch.Recovery.admitted",
     "Stitch.Recovery.anchorAllowed",
     "Stitch.Recovery.commit",
