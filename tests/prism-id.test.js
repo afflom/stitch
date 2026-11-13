@@ -7,7 +7,8 @@ import {
   createLinkOffer, parseLinkUri, requestLink, acceptLinkRequest, completeLink, rendezvousTopic, linkCode,
   mergeLogs, logRoot, addRecord, logFromRecords, describeBoundary, boundaryVisibleTo, sealPrivate, openPrivate,
   currentBoundary, syncTopic, publishSync, receiveSync, createMemoryBus, signAction, verifyAction, hostAdmitsDevice,
-  PrismIdError, KIND, MAX_LOG_RECORDS, MAX_SYNC_BYTES
+  PrismIdError, KIND, MAX_LOG_RECORDS, MAX_SYNC_BYTES, postQuantumAvailable, hardenSession, createRecovery, releaseShare,
+  recoveryCode, recoverPrism, splitSecret, combineShares, ensurePersona, personaFor, signPersonaAction, admitDevice, padToBucket, unpad
 } from '../src/prism-id.js';
 
 const NOW = 1_800_000_000_000;
@@ -86,7 +87,8 @@ test('every device class uses the same record; keys are non-extractable and clai
     assert.equal(device.signingKey.extractable, false);
     assert.equal(device.agreementKey.extractable, false);
     assert.equal(device.id, await kappa(device.record));
-    assert.deepEqual(Object.keys(device.record).sort(), ['agree', 'class', 'kind', 'protection', 'sign']);
+    const fields = ['agree', 'class', 'kind', 'protection', 'sign', ...(await postQuantumAvailable() ? ['kem'] : [])].sort();
+    assert.deepEqual(Object.keys(device.record).sort(), fields);
     assert.equal(checkDeviceRecord(device.record), device.record);
   }
   await assert.rejects(createDevice({ deviceClass: 'toaster' }), PrismIdError);
@@ -328,4 +330,203 @@ test('the rendezvous topic depends only on the out-of-band secret', async () => 
   const two = await createLinkOffer(session, { now: NOW });
   assert.equal(await rendezvousTopic(one.offer.secret), await rendezvousTopic(one.offer.secret));
   assert.notEqual(await rendezvousTopic(one.offer.secret), await rendezvousTopic(two.offer.secret));
+});
+
+// ---------------------------------------------------------------- closing the residual gaps
+
+async function syncAll(bus, from, ...to) {
+  const bytes = await capture(bus, from);
+  return Promise.all(to.map(s => receiveSync(s, bytes)));
+}
+
+test('R6: wraps to a device that advertises ML-KEM are hybrid, and a classical wrap to it is refused', async () => {
+  const session = await createPrism();
+  const { uri, pending } = await createLinkOffer(session, { now: NOW });
+  const offer = parseLinkUri(uri);
+  const device = await createDevice();
+  const accepted = await acceptLinkRequest(session, pending, await requestLink(device, offer), { now: NOW, confirmCode: await linkCode(offer.secret, device.record) });
+  if (await postQuantumAvailable()) {
+    assert.equal(typeof device.record.kem, 'string');
+    assert.equal(typeof accepted.response.wrap.kem, 'string');
+    const downgraded = { ...accepted.response, wrap: { ...accepted.response.wrap, kem: undefined } };
+    delete downgraded.wrap.kem;
+    await assert.rejects(completeLink(device, offer, downgraded), /must be hybrid/);
+  } else {
+    assert.equal(device.record.kem, undefined);
+    assert.equal(accepted.response.wrap.kem, undefined);
+  }
+  assert.ok((await completeLink(device, offer, accepted.response)).keyring.size > 0);
+});
+
+test('R5: sealed content is padded to power-of-two buckets', async () => {
+  for (const [n, bucket] of [[0, 1024], [1023, 1024], [1024, 2048], [5000, 8192]]) {
+    const padded = padToBucket(new Uint8Array(n).fill(7));
+    assert.equal(padded.length, bucket);
+    assert.equal(unpad(padded).length, n);
+  }
+  assert.throws(() => unpad(new Uint8Array(16)), /malformed padding/);
+  const session = await createPrism();
+  const small = await sealPrivate(session, { a: 1 });
+  const larger = await sealPrivate(session, { a: 'x'.repeat(900) });
+  assert.equal(small.sealed.ciphertext.length, larger.sealed.ciphertext.length);
+});
+
+test('R1: a hardened device holds only non-extractable boundary keys and cannot hand them on', async () => {
+  const session = await createPrism();
+  const { origin, joined } = await link(session);
+  const before = await sealPrivate(origin, { kept: true });
+  const hard = await hardenSession(joined);
+  for (const entry of hard.keyring.values()) {
+    assert.equal(entry.raw, null);
+    assert.equal(entry.seal.extractable, false);
+    assert.equal(entry.topic.extractable, false);
+  }
+  assert.deepEqual(await openPrivate(hard, before.sealed), { kept: true });
+  assert.equal(await syncTopic(hard), await syncTopic(origin));
+  await assert.rejects(createLinkOffer(hard, { now: NOW }), /hardened device cannot link a member/);
+  await assert.rejects(createRecovery(hard, { threshold: 1, guardians: [{ paper: true }] }), /hardened device cannot set up recovery/);
+  // It can still link delegates and revoke, which rotates the key without keeping the new key's bytes.
+  await link(hard, { role: 'delegate', scope: ['telemetry/write'] });
+  const rotated = await revokeDevice(hard, origin.device.id);
+  const { keyId, entry } = await currentBoundary(rotated);
+  assert.notEqual(keyId, session.prism);
+  assert.equal(entry.raw, null);
+});
+
+test('R4: Shamir shares recombine only at the threshold', () => {
+  const secret = new TextEncoder().encode('prism recovery secret');
+  const shares = splitSecret(secret, 3, 5);
+  assert.deepEqual(combineShares([shares[4], shares[0], shares[2]]), secret);
+  assert.notDeepEqual(combineShares([shares[0], shares[1]]), secret);
+  assert.throws(() => splitSecret(secret, 0, 3), /threshold/);
+  assert.throws(() => splitSecret(secret, 4, 3), /threshold/);
+});
+
+async function withRecovery(guardianCount = 3, threshold = 2) {
+  const session = await createPrism();
+  const guardians = [];
+  for (let i = 0; i < guardianCount - 1; i++) guardians.push((await createPrism()).device);
+  const setup = await createRecovery(session, { threshold, guardians: [...guardians.map(g => g.record), { paper: true }] });
+  return { session: setup.session, guardians, shares: setup.shares, recovery: setup.recovery };
+}
+
+test('R4: after losing every device, guardians release shares and the prism is recovered on a new device', async () => {
+  const { session, guardians, shares, recovery } = await withRecovery();
+  const before = await sealPrivate(session, { diary: 'kept' });
+  const phone = await link(session);
+  const state = await resolvePrism(session.prism, phone.origin.log);
+  assert.equal(state.recovery, recovery);
+  assert.equal(state.roles[recovery], 'recovery');
+  // Everything is lost. A new device asks two guardians; each compares the code shown on it, then releases.
+  const fresh = await createDevice({ deviceClass: 'mobile', protection: 'platform' });
+  const code = await recoveryCode(session.prism, fresh.record);
+  assert.match(code, /^\d{6}$/);
+  const released = [await releaseShare(guardians[0], shares[0], fresh.record)];
+  await assert.rejects(recoverPrism({ prism: session.prism, records: [...phone.origin.log.values()], shares: released, device: fresh }), /not enough shares/);
+  released.push(shares[2]);
+  const { session: recovered } = await recoverPrism({ prism: session.prism, records: [...phone.origin.log.values()], shares: released, device: fresh });
+  const after = await resolvePrism(session.prism, recovered.log);
+  assert.deepEqual(after.active, [fresh.id, recovery].sort());
+  assert.ok(after.revoked.includes(session.device.id) && after.revoked.includes(phone.joined.device.id));
+  assert.deepEqual(await openPrivate(recovered, before.sealed), { diary: 'kept' });
+  assert.deepEqual(await openPrivate(recovered, (await sealPrivate(recovered, { x: 1 })).sealed), { x: 1 });
+  await assert.rejects(releaseShare(guardians[1], shares[0], fresh.record), /not held by this guardian/);
+});
+
+test('R4: a thief holding a member device cannot lock the person out', async () => {
+  const { session, guardians, shares, recovery } = await withRecovery();
+  const stolen = (await link(session)).joined;
+  let thief = await link(stolen, {}).then(x => x.origin);
+  thief = await revokeDevice(thief, session.device.id);
+  // A member cannot revoke or replace the recovery device.
+  const triedRevoke = await revokeDevice(thief, recovery);
+  assert.ok((await resolvePrism(session.prism, triedRevoke.log)).active.includes(recovery));
+  await assert.rejects(createRecovery(thief, { threshold: 1, guardians: [{ paper: true }] }), /only the recovery device may replace it/);
+  const fresh = await createDevice();
+  const records = [...mergeLogs(session.log, triedRevoke.log).values()];
+  const { session: recovered } = await recoverPrism({ prism: session.prism, records, shares: [await releaseShare(guardians[1], shares[1], fresh.record), shares[2]], device: fresh });
+  const after = await resolvePrism(session.prism, recovered.log);
+  assert.deepEqual(after.active, [fresh.id, recovery].sort());
+  assert.ok(after.revoked.includes(stolen.device.id));
+  // Later revocations the thief makes do not count, because recovery revoked the thief.
+  const late = await revokeDevice({ ...thief, log: mergeLogs(thief.log, recovered.log) }, fresh.id).catch(e => e);
+  assert.ok(late instanceof PrismIdError);
+});
+
+test('R4: recovery rotates itself so the recovered secret is retired', async () => {
+  const { session, shares } = await withRecovery(2, 1);
+  const fresh = await createDevice();
+  const newGuardian = (await createPrism()).device;
+  const { session: recovered, shares: newShares } = await recoverPrism({ prism: session.prism, records: [...session.log.values()], shares: [shares[1]], device: fresh,
+    rotateRecovery: { threshold: 1, guardians: [newGuardian.record] } });
+  const state = await resolvePrism(session.prism, recovered.log);
+  assert.equal(newShares.length, 1);
+  assert.equal(state.recovery, newShares[0].recovery);
+  assert.notEqual(state.recovery, shares[1].recovery);
+  assert.ok(state.revoked.includes(shares[1].recovery));
+  assert.ok(state.active.includes(fresh.id));
+});
+
+test('R3: each host sees its own persona, unlinkable to the prism and to other hosts', async () => {
+  const bus = createMemoryBus();
+  const { session } = await withRecovery();
+  let { origin, joined } = await link(session);
+  origin = await ensurePersona(origin, HOST);
+  origin = await ensurePersona(origin, 'https://other.example');
+  const a = await personaFor(origin, HOST), b = await personaFor(origin, 'https://other.example');
+  assert.notEqual(a.persona, b.persona);
+  for (const view of [a, b]) {
+    const text = JSON.stringify(view.records);
+    assert.equal(text.includes(session.prism), false);
+    assert.equal(text.includes(origin.device.id), false);
+    assert.equal(text.includes(origin.device.record.sign.x), false);
+  }
+  const keysAt = async v => Object.values((await resolvePrism(v.persona, await logFromRecords(v.records))).devices).map(d => d.sign.x);
+  const keysB = await keysAt(b);
+  assert.equal((await keysAt(a)).some(x => keysB.includes(x)), false);
+  // The host verifies a persona action with only the persona log.
+  const action = await signPersonaAction(origin, HOST, 'profile/update', { name: 'x' }, { now: NOW });
+  assert.equal((await verifyAction(a.persona, await logFromRecords(a.records), action, AT)).allowed, true);
+  assert.equal((await verifyAction(b.persona, await logFromRecords(b.records), action, AT)).allowed, false);
+  // The second device asks to join the persona; the first binds it on the next sync.
+  [joined] = await syncAll(bus, origin, joined);
+  joined = await ensurePersona(joined, HOST);
+  [origin] = await syncAll(bus, joined, origin);
+  [joined] = await syncAll(bus, origin, joined);
+  const fromPhone = await signPersonaAction(joined, HOST, 'profile/update', { name: 'y' }, { now: NOW });
+  const view = await personaFor(origin, HOST);
+  assert.equal((await verifyAction(view.persona, await logFromRecords(view.records), fromPhone, AT)).allowed, true);
+  // Revoking the phone in the prism revokes its persona key at the host too.
+  origin = await revokeDevice(origin, joined.device.id);
+  const afterRevoke = await personaFor(origin, HOST);
+  assert.equal((await verifyAction(afterRevoke.persona, await logFromRecords(afterRevoke.records), fromPhone, AT)).allowed, false);
+});
+
+test('R3 + R4: a recovered prism keeps its persona at each host', async () => {
+  const { session, guardians, shares } = await withRecovery();
+  const withPersona = await ensurePersona(session, HOST);
+  const atHost = await personaFor(withPersona, HOST);
+  const fresh = await createDevice();
+  const { session: recovered } = await recoverPrism({ prism: session.prism, records: [...withPersona.log.values()], device: fresh,
+    shares: [await releaseShare(guardians[0], shares[0], fresh.record), shares[2]], personas: { [atHost.persona]: atHost.records } });
+  const again = await personaFor(recovered, HOST);
+  assert.equal(again.persona, atHost.persona);
+  const action = await signPersonaAction(recovered, HOST, 'profile/update', {}, { now: NOW });
+  const log = await logFromRecords(again.records);
+  assert.equal((await verifyAction(again.persona, log, action, AT)).allowed, true);
+  const old = await signPersonaAction(withPersona, HOST, 'profile/update', {}, { now: NOW });
+  assert.equal((await verifyAction(again.persona, log, old, AT)).allowed, false);
+});
+
+test('R7: a host admits a hardware-requiring device only on an attestation bound to its own key', async () => {
+  const device = await createDevice({ deviceClass: 'mobile', protection: 'platform' });
+  const other = await createDevice();
+  const verifiers = { test: async (evidence) => ({ hardware: evidence.hardware, key: evidence.key }) };
+  const policy = { requiresHardwareKey: true };
+  assert.equal(await admitDevice({}, device.record), true);
+  assert.equal(await admitDevice(policy, device.record), false);
+  assert.equal(await admitDevice(policy, device.record, { format: 'unknown' }, verifiers), false);
+  assert.equal(await admitDevice(policy, device.record, { format: 'test', hardware: true, key: other.record.sign }, verifiers), false);
+  assert.equal(await admitDevice(policy, device.record, { format: 'test', hardware: false, key: device.record.sign }, verifiers), false);
+  assert.equal(await admitDevice(policy, device.record, { format: 'test', hardware: true, key: device.record.sign }, verifiers), true);
 });

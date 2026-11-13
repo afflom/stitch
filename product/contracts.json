@@ -1109,7 +1109,7 @@
       "licenseStatus": "Project declares MIT; audit applies",
       "redistributionCleared": true,
       "bytes": 3227,
-      "sha256": "2de74355adcc1ee1607d4a311b4f06acca83f4178c749bbd75eb0bd87f281054"
+      "sha256": "163a195af45e791ffcb880eabd331f625275a6c0de2fb1cca3821fc256dff205"
     },
     {
       "declaration": "assetSiteStyle",
@@ -1196,8 +1196,8 @@
       "origin": "Project-owned source checkout",
       "licenseStatus": "Project declares MIT; audit applies",
       "redistributionCleared": true,
-      "bytes": 1252562,
-      "sha256": "78f124de8b28b8bf51734e6655325333bf872b7c4ac38148a9956af2a33ef452"
+      "bytes": 1258527,
+      "sha256": "5e6f9974741e6079400d75bd1632ccd2334ad640fd1735554e0a6cf88fb805b7"
     },
     {
       "declaration": "assetFile4",
@@ -1372,8 +1372,8 @@
       "origin": "Project-owned source checkout",
       "licenseStatus": "Project declares MIT; audit applies",
       "redistributionCleared": true,
-      "bytes": 33707,
-      "sha256": "687a564565004eb22b5b7792f5a8ebc031a00ebbf43cbde0cab774b87ebd8da9"
+      "bytes": 62758,
+      "sha256": "7a581a7ae1828cace37a16376691370cfafff06ebbec1a59bb16844eac5d219a"
     },
     {
       "declaration": "assetProductExperience",
@@ -2438,7 +2438,7 @@
     },
     {
       "path": "app/src/Product/Compliance.lex.tex",
-      "sha256": "ee7c61fa879b551694a16964981d165c20a1a8e5527f38d3cfeeed07579f65c3"
+      "sha256": "2c7f6fffde822ce16d591f67d80f5c4bc032e3c3cd04592b448e13a0c63522a9"
     },
     {
       "path": "app/src/Product/Design.lex.tex",
@@ -2466,7 +2466,7 @@
     },
     {
       "path": "app/src/Product/Quality.lex.tex",
-      "sha256": "e14c0f7c1d0dd08c7e00ab03cdfe1cb8a57f71e5b12789d023c8ebffe9951824"
+      "sha256": "25aa9f459fbf2640161d506b72e1b35dc54c7e949a3fd954e59bcf5adc3149c9"
     },
     {
       "path": "app/src/Product/Release.lex.tex",
@@ -2474,7 +2474,7 @@
     },
     {
       "path": "app/src/Product/Security.lex.tex",
-      "sha256": "0c966ac65159a71607e3b874bb7da47a583096d325c4049b2c946286f69047da"
+      "sha256": "7723ba9b8e98ad3610eb2138a541a0a7bde6263de726ae111177de39b3407da8"
     },
     {
       "path": "app/src/Product/Users.lex.tex",
@@ -2534,7 +2534,7 @@
     },
     {
       "path": "app/src/Stitch/PrismId.lex.tex",
-      "sha256": "93e1982170071c1b7fba2fdf789e3ad57edb0240cdd5a34c0b716be4e448e429"
+      "sha256": "22749c7ee5a6c0ff130ba9ac8325cabce5000a8114d272d5eef0658d5c4a752f"
     },
     {
       "path": "app/src/Stitch/Recovery.lex.tex",
@@ -2838,11 +2838,11 @@
     },
     {
       "path": "docs/prism-id-threat-model.md",
-      "sha256": "b58906df6a35678baad3e3e8a10fec32826efacaecdb659888b8526510545626"
+      "sha256": "8524ef6260cd8708c0dacb6fdfdb9133dedee143216ec57decc6ecb1bccc9a0e"
     },
     {
       "path": "docs/prism-id.md",
-      "sha256": "eed334c69d3d7d4030bdf6947cd0664bfb35b7370a9d97c8594dbfd2db531127"
+      "sha256": "7c5c769aa1193e7adf04a5feefa39cefcae99c6a4fb63eed5bcf95d123289009"
     },
     {
       "path": "docs/prism-model.md",
@@ -2914,19 +2914,19 @@
     },
     {
       "path": "product/facets.json",
-      "sha256": "1466f8d778c0af721b0ed72abac25142ff03b9eaa663bf2c9ea676f09dfaaf8f"
+      "sha256": "763b4a9cde5f6ace454814d806565c0a19a2bf41ae01f40062d3512c20cf6ce6"
     },
     {
       "path": "product/source-attestation.json",
-      "sha256": "238c8fd40cac1c6d432ed4b6b5224d03a4078fed46df97102a98c15459955b66"
+      "sha256": "300b968f1e66e932770c5ed49aa7faefb7c88569b5d905a623d208b18ca0dfa3"
     },
     {
       "path": "product/source-build-manifest.json",
-      "sha256": "e8d8bf0cbf891ad52dd2e1006a4572b23d924264d87d36fdfa62b28cb56e0574"
+      "sha256": "c5eacd5504c4e31fe0b56a2f99bbe8fec656336f1887f64f3f8984473833acee"
     },
     {
       "path": "product/source-verification.json",
-      "sha256": "a80d358412b71ddc940b6efc21f6882d63fcfacdfb27978cf73773a59ca27762"
+      "sha256": "9be90ca06f567fa9a4976239a5cda4cc2d516a2010a982a5f50c8a864368e004"
     },
     {
       "path": "scripts/author-source.sh",
@@ -2934,7 +2934,7 @@
     },
     {
       "path": "scripts/check-facets.mjs",
-      "sha256": "2ff9538e0f52ebbf3c78afd1c096b5b7d1a29acd852d76b434170a24d74b34a8"
+      "sha256": "bac6b8d94e4f926236752d9a54f2c9b7bd99063e35646aa21bbb61954ef8fa8a"
     },
     {
       "path": "scripts/check-model-sdk.sh",
@@ -2982,7 +2982,7 @@
     },
     {
       "path": "site/facets.json",
-      "sha256": "2de74355adcc1ee1607d4a311b4f06acca83f4178c749bbd75eb0bd87f281054"
+      "sha256": "163a195af45e791ffcb880eabd331f625275a6c0de2fb1cca3821fc256dff205"
     },
     {
       "path": "standards.lock",
@@ -3126,7 +3126,7 @@
     },
     {
       "path": "tests/prism-id.test.js",
-      "sha256": "f6d4a5a8f6c3e049acbdc6fdf42504bc065d8e3b520bca8d4f6dd08269a6c85b"
+      "sha256": "1536964878588a95439d68c747318a7939302c973f8401db8aed8eb83dd375ad"
     },
     {
       "path": "tests/product-experience.test.js",
@@ -3197,5 +3197,5 @@
       "sha256": "02263c2d4bf1a1913a673466554c19593b5a6c39b22a2da32ce4375675868347"
     }
   ],
-  "sourceDigest": "sha256:55e5fa9d5d39f0c2a75065eeff34190009f8e708dff569e1c1857f9e3b429635"
+  "sourceDigest": "sha256:b0b3527236eee1ff0f3b3bfac474da968b2a44a316c7d7d26621f819c4f18921"
 }
