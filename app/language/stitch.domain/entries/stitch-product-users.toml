@@ -1,0 +1,17 @@
+spec = "lexlean/entry/1"
+id = "stitch-product-users"
+category = "label-word"
+surface_arity = 0
+frame = "atom"
+
+[denotation]
+kind = "document"
+module = "Product.Users"
+component = "sources"
+
+[[form]]
+id = "stitch-product-users"
+channel = "text"
+surface = "Stitch context of use and usability"
+canonical_source = true
+features = ["sentence-case", "singular"]

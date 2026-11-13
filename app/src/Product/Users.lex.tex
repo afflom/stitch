@@ -1,0 +1,131 @@
+\begin{lexlean}{Product.Users}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{stitch.domain@1.0.0}
+\importmodule{Foundation.Experience.V1.Model}
+\importmodule{Product.Architecture}
+\importmodule{Product.Features}
+\title{Stitch context of use and usability}
+\begin{semanticmodule}
+structure{
+  name: Source,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: record, type: String},
+    {name: path, type: String},
+    {name: firstLine, type: Nat},
+    {name: lastLine, type: Nat},
+    {name: sha256, type: String}
+  ]
+}
+
+definition{
+  name: sources,
+  parameters: [],
+  result: (List Source),
+  body: (cons (record Source {record := "Product.Users", path := "app/src/Product/Architecture.lex.tex", firstLine := 0, lastLine := 0, sha256 := "fe5aac05827654477ad09282f0ef977890e00d5db753718c0e6e35139ff15958"}) (cons (record Source {record := "Product.Users", path := "app/src/Product/Experience.lex.tex", firstLine := 0, lastLine := 0, sha256 := "6f2625fdce3d3d51899cabc17ce3d57ec0a9381dd3bf3e6477da6ae3ccfb84bd"}) (cons (record Source {record := "Product.Users", path := "docs/operator-experience.md", firstLine := 0, lastLine := 0, sha256 := "6385da9f6040a7103cf14d57bf5b109890ca6df0f31e621f57faf0ff8b35ac3f"}) (nil Source))))
+}
+
+definition{
+  name: authority,
+  parameters: [],
+  result: Foundation.Experience.V1.Model::Authority,
+  body: (record Foundation.Experience.V1.Model::Authority {framework := "ISO 9241-11 context of use and ISO 9241-210 human-centred design", repository := "https://github.com/Syntra-Labs/stitch", commit := "the exact revision of the cited sources"})
+}
+
+definition{
+  name: groups,
+  parameters: [],
+  result: (List Foundation.Experience.V1.Model::UserGroup),
+  body: (cons (record Foundation.Experience.V1.Model::UserGroup {stakeholder := (Product.Architecture::operator), characteristics := "Chooses mesh participation, public disclosure, trusted pointer authority, DNS writes and VM actions."}) (cons (record Foundation.Experience.V1.Model::UserGroup {stakeholder := (Product.Architecture::reader), characteristics := "Learns the object, fragment, custody, replay and authority protocol before taking part."}) (cons (record Foundation.Experience.V1.Model::UserGroup {stakeholder := (Product.Architecture::reviewer), characteristics := "Reviews exact-source evidence, host assumptions, vendor provenance and qualification gaps."}) (cons (record Foundation.Experience.V1.Model::UserGroup {stakeholder := (Product.Architecture::systemIntegrator), characteristics := "Embeds or extends the protocol without bypassing resource, trust or effect admission."}) (nil Foundation.Experience.V1.Model::UserGroup)))))
+}
+
+definition{
+  name: goals,
+  parameters: [],
+  result: (List Foundation.Experience.V1.Model::Goal),
+  body: (cons (record Foundation.Experience.V1.Model::Goal {user := 0, journey := (Product.Features::journeyMesh), outcome := "Review public signaling disclosure, join explicitly, then inspect reachable peers."}) (cons (record Foundation.Experience.V1.Model::Goal {user := 0, journey := (Product.Features::journeyObjects), outcome := "Separate local integrity from conditional peer custody and actual recovery."}) (cons (record Foundation.Experience.V1.Model::Goal {user := 0, journey := (Product.Features::journeyCompute), outcome := "Replay deterministic checkpoints before continuation; VM effects have a separate contract."}) (cons (record Foundation.Experience.V1.Model::Goal {user := 0, journey := (Product.Features::journeyVm), outcome := "Boot and execute only through the observed VM lifecycle. Output integrity does not certify execution."}) (cons (record Foundation.Experience.V1.Model::Goal {user := 0, journey := (Product.Features::journeyPointers), outcome := "Pin authority independently, retain the local head, and reconcile uncertain provider writes."}) (cons (record Foundation.Experience.V1.Model::Goal {user := 0, journey := (Product.Features::journeyResources), outcome := "Inspect bounded application charges, export them, and explicitly grant a new epoch."}) (cons (record Foundation.Experience.V1.Model::Goal {user := 1, journey := (Product.Features::journeyReader), outcome := "Understand the Stitch protocol. Each operation retains its source-owned consent and evidence boundary."}) (cons (record Foundation.Experience.V1.Model::Goal {user := 2, journey := (Product.Features::journeyReviewer), outcome := "Audit evidence and assumptions. Each operation retains its source-owned consent and evidence boundary."}) (cons (record Foundation.Experience.V1.Model::Goal {user := 3, journey := (Product.Features::journeyIntegrator), outcome := "Extend the protocol safely. Each operation retains its source-owned consent and evidence boundary."}) (cons (record Foundation.Experience.V1.Model::Goal {user := 0, journey := (Product.Features::journeyAuthority), outcome := "Care for saved identity and trust. Each operation retains its source-owned consent and evidence boundary."}) (nil Foundation.Experience.V1.Model::Goal)))))))))))
+}
+
+definition{
+  name: tasks,
+  parameters: [],
+  result: (List Foundation.Experience.V1.Model::Task),
+  body: (cons (record Foundation.Experience.V1.Model::Task {goal := 0, order := 0, feature := (Product.Features::featureJoin)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 1, order := 0, feature := (Product.Features::featureStore)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 1, order := 1, feature := (Product.Features::featurePlacementRepair)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 1, order := 2, feature := (Product.Features::featureRecoveryExport)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 1, order := 3, feature := (Product.Features::featureRecoveryImport)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 1, order := 4, feature := (Product.Features::featureRecoveryDownload)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 2, order := 0, feature := (Product.Features::featureStart)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 2, order := 1, feature := (Product.Features::featureResume)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 3, order := 0, feature := (Product.Features::featureBoot)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 3, order := 1, feature := (Product.Features::featureExecute)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 3, order := 2, feature := (Product.Features::featureVmReconcile)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 3, order := 3, feature := (Product.Features::featureVmStop)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 3, order := 4, feature := (Product.Features::featureVmDestroy)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 4, order := 0, feature := (Product.Features::featureSaveAuthority)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 4, order := 1, feature := (Product.Features::featurePin)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 4, order := 2, feature := (Product.Features::featureTxt)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 4, order := 3, feature := (Product.Features::featureAdmit)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 4, order := 4, feature := (Product.Features::featurePublish)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 4, order := 5, feature := (Product.Features::featureLoadPublication)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 4, order := 6, feature := (Product.Features::featureReconcile)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 5, order := 0, feature := (Product.Features::featureExport)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 5, order := 1, feature := (Product.Features::featureRenew)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 6, order := 0, feature := (Product.Features::featureLearnProtocol)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 6, order := 1, feature := (Product.Features::featureInspectFacetSources)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 7, order := 0, feature := (Product.Features::featureInspectFacetSources)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 7, order := 1, feature := (Product.Features::featureReviewHostBoundaries)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 8, order := 0, feature := (Product.Features::featureLearnProtocol)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 8, order := 1, feature := (Product.Features::featureReviewHostBoundaries)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 8, order := 2, feature := (Product.Features::featureExtendProtocol)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 9, order := 0, feature := (Product.Features::featureInspectAuthorityStorage)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 9, order := 1, feature := (Product.Features::featureSaveTrustedAnchor)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 9, order := 2, feature := (Product.Features::featureRestoreTrustedAnchor)}) (cons (record Foundation.Experience.V1.Model::Task {goal := 9, order := 3, feature := (Product.Features::featureExportAuthorityJournal)}) (nil Foundation.Experience.V1.Model::Task))))))))))))))))))))))))))))))))))
+}
+
+definition{
+  name: environments,
+  parameters: [],
+  result: (List Foundation.Experience.V1.Model::Environment),
+  body: (cons (record Foundation.Experience.V1.Model::Environment {kind := (ctor Foundation.Experience.V1.Model::EnvironmentKind.technical), component := (Product.Architecture::browser)}) (cons (record Foundation.Experience.V1.Model::Environment {kind := (ctor Foundation.Experience.V1.Model::EnvironmentKind.technical), component := (Product.Architecture::runtimeHost)}) (cons (record Foundation.Experience.V1.Model::Environment {kind := (ctor Foundation.Experience.V1.Model::EnvironmentKind.technical), component := (Product.Architecture::peers)}) (cons (record Foundation.Experience.V1.Model::Environment {kind := (ctor Foundation.Experience.V1.Model::EnvironmentKind.technical), component := (Product.Architecture::staticHost)}) (nil Foundation.Experience.V1.Model::Environment)))))
+}
+
+definition{
+  name: measures,
+  parameters: [],
+  result: (List Foundation.Experience.V1.Model::UsabilityMeasure),
+  body: (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 0, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.effectiveness), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 0, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.efficiency), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 0, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.satisfaction), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 1, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.effectiveness), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 1, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.efficiency), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 1, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.satisfaction), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 2, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.effectiveness), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 2, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.efficiency), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 2, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.satisfaction), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 3, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.effectiveness), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 3, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.efficiency), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 3, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.satisfaction), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 4, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.effectiveness), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 4, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.efficiency), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 4, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.satisfaction), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 5, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.effectiveness), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 5, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.efficiency), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 5, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.satisfaction), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 6, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.effectiveness), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 6, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.efficiency), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 6, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.satisfaction), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 7, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.effectiveness), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 7, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.efficiency), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 7, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.satisfaction), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 8, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.effectiveness), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 8, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.efficiency), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 8, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.satisfaction), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 9, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.effectiveness), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 9, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.efficiency), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (cons (record Foundation.Experience.V1.Model::UsabilityMeasure {goal := 9, outcome := (ctor Foundation.Experience.V1.Model::UsabilityOutcome.satisfaction), observed := (ctor Option.none [Nat]), method := "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"}) (nil Foundation.Experience.V1.Model::UsabilityMeasure)))))))))))))))))))))))))))))))
+}
+
+definition{
+  name: contextNotes,
+  parameters: [],
+  result: (List String),
+  body: (cons "Reader: explain object identity, fragment reconstruction, custody conditions and pure replay before mesh participation; no user comprehension result is asserted." (cons "Reviewer: inspect source-bound facet catalog, exact verification artifacts and residual assumptions; a source inventory is not a proof result." (cons "System integrator: locate five-layer contracts, action guards, host effects and extension boundaries without inferring durable storage or consensus." (nil String))))
+}
+
+definition{
+  name: goalsHaveUsers,
+  parameters: [items : (List Foundation.Experience.V1.Model::Goal), users : Nat],
+  result: Bool,
+  body: (match items | List.nil => true | List.cons head rest => (((project head user) <? users) && (goalsHaveUsers rest users))),
+  recursive_argument: items
+}
+
+definition{
+  name: tasksHaveGoals,
+  parameters: [items : (List Foundation.Experience.V1.Model::Task), count : Nat],
+  result: Bool,
+  body: (match items | List.nil => true | List.cons head rest => (((project head goal) <? count) && (tasksHaveGoals rest count))),
+  recursive_argument: items
+}
+
+definition{
+  name: nonemptyAcceptance,
+  parameters: [items : (List String)],
+  result: Bool,
+  body: (match items | List.nil => false | List.cons head rest => true)
+}
+
+definition{
+  name: tasksHaveAcceptance,
+  parameters: [items : (List Foundation.Experience.V1.Model::Task)],
+  result: Bool,
+  body: (match items | List.nil => true | List.cons head rest => ((nonemptyAcceptance (project (project head feature) acceptance)) && (tasksHaveAcceptance rest))),
+  recursive_argument: items
+}
+
+theorem{
+  name: everyGoalNamesAUser,
+  parameters: [],
+  statement: ((goalsHaveUsers (goals) 4) = true),
+  proof: decide{}
+}
+
+theorem{
+  name: everyTaskNamesAGoal,
+  parameters: [],
+  statement: ((tasksHaveGoals (tasks) 10) = true),
+  proof: decide{}
+}
+
+theorem{
+  name: everyTaskNamesAcceptanceEvidence,
+  parameters: [],
+  statement: ((tasksHaveAcceptance (tasks)) = true),
+  proof: decide{}
+}
+\end{semanticmodule}
+\end{lexlean}

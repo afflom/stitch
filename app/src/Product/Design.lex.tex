@@ -1,0 +1,764 @@
+\begin{lexlean}{Product.Design}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{stitch.domain@1.0.0}
+\importmodule{Foundation.Arch}
+\importmodule{Product.Architecture}
+\title{Stitch protocol design views}
+\begin{semanticmodule}
+structure{
+  name: Source,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: record, type: String},
+    {name: path, type: String},
+    {name: firstLine, type: Nat},
+    {name: lastLine, type: Nat},
+    {name: sha256, type: String}
+  ]
+}
+
+definition{
+  name: sources,
+  parameters: [],
+  result: (List Source),
+  body: (cons (record Source {record := "Product.Design", path := "app/src/Product/Architecture.lex.tex", firstLine := 0, lastLine := 0, sha256 := "fe5aac05827654477ad09282f0ef977890e00d5db753718c0e6e35139ff15958"}) (cons (record Source {record := "Product.Design", path := "app/src/Product/Model.lex.tex", firstLine := 0, lastLine := 0, sha256 := "6081a53375794cab60ddad0199956db978be3d4b91e102f1890dd0e3bc2697c8"}) (cons (record Source {record := "Product.Design", path := "app/src/Stitch/Effects.lex.tex", firstLine := 0, lastLine := 0, sha256 := "7ccc2c30cca7df663541ceece0c85226f921160f56f4ec681703a8d5b589263b"}) (cons (record Source {record := "Product.Design", path := "docs/lifecycle-effects.md", firstLine := 0, lastLine := 0, sha256 := "7205e561aaf22ce66cb06af54a8d82a11c85c0ad6b55bc0821a91004d0750a80"}) (cons (record Source {record := "Product.Design", path := "docs/prism-model.md", firstLine := 0, lastLine := 0, sha256 := "ece338421a27de9e0f588e66badf477eebe3012d194103f14a722db02cec24c7"}) (nil Source))))))
+}
+
+definition{
+  name: viewComponents,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "Five-layer browser component relationships", viewpoint := "Product.Architecture::productViewpoint", diagram := (ctor Foundation.Arch::DesignDiagram.umlComponent)})
+}
+
+definition{
+  name: viewObjectProcess,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "Recoverable object process", viewpoint := "Product.Architecture::productViewpoint", diagram := (ctor Foundation.Arch::DesignDiagram.opmObjectProcess)})
+}
+
+definition{
+  name: viewPublicationSequence,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "Scoped publication and read-only reconciliation", viewpoint := "Product.Architecture::productViewpoint", diagram := (ctor Foundation.Arch::DesignDiagram.umlSequence)})
+}
+
+definition{
+  name: viewPublicationState,
+  parameters: [],
+  result: Foundation.Arch::DesignView,
+  body: (record Foundation.Arch::DesignView {title := "Unknown writes are never repeated", viewpoint := "Product.Architecture::productViewpoint", diagram := (ctor Foundation.Arch::DesignDiagram.umlStateMachine)})
+}
+
+definition{
+  name: componentAdmission,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::admission"})
+}
+
+definition{
+  name: componentBrowser,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::browser"})
+}
+
+definition{
+  name: componentCompute,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::compute"})
+}
+
+definition{
+  name: componentCryptography,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::cryptography"})
+}
+
+definition{
+  name: componentDiscovery,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::discovery"})
+}
+
+definition{
+  name: componentIdentity,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::identity"})
+}
+
+definition{
+  name: componentLegacy,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::legacy"})
+}
+
+definition{
+  name: componentNativeRouting,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::nativeRouting"})
+}
+
+definition{
+  name: componentPeers,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::peers"})
+}
+
+definition{
+  name: componentPointerAuthority,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::pointerAuthority"})
+}
+
+definition{
+  name: componentPublicRelay,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::publicRelay"})
+}
+
+definition{
+  name: componentRuntimeHost,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::runtimeHost"})
+}
+
+definition{
+  name: componentScheduler,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::scheduler"})
+}
+
+definition{
+  name: componentSignaling,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::signaling"})
+}
+
+definition{
+  name: componentStaticHost,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::staticHost"})
+}
+
+definition{
+  name: componentStorage,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::storage"})
+}
+
+definition{
+  name: componentTransport,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::transport"})
+}
+
+definition{
+  name: componentVm,
+  parameters: [],
+  result: Foundation.Arch::UmlComponent,
+  body: (record Foundation.Arch::UmlComponent {view := "Product.Design::viewComponents", component := "Product.Architecture::vm"})
+}
+
+definition{
+  name: connectorBrowserAdmission,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::browserAdmission"})
+}
+
+definition{
+  name: connectorBrowserCompute,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::browserCompute"})
+}
+
+definition{
+  name: connectorBrowserDiscovery,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::browserDiscovery"})
+}
+
+definition{
+  name: connectorBrowserScheduler,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::browserScheduler"})
+}
+
+definition{
+  name: connectorBrowserStorage,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::browserStorage"})
+}
+
+definition{
+  name: connectorBrowserTransport,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::browserTransport"})
+}
+
+definition{
+  name: connectorBrowserVm,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::browserVm"})
+}
+
+definition{
+  name: connectorComputeAdmission,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::computeAdmission"})
+}
+
+definition{
+  name: connectorComputeIdentity,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::computeIdentity"})
+}
+
+definition{
+  name: connectorComputeStorage,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::computeStorage"})
+}
+
+definition{
+  name: connectorComputeTransport,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::computeTransport"})
+}
+
+definition{
+  name: connectorDiscoveryAdmission,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::discoveryAdmission"})
+}
+
+definition{
+  name: connectorDiscoveryAuthority,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::discoveryAuthority"})
+}
+
+definition{
+  name: connectorDiscoveryHost,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::discoveryHost"})
+}
+
+definition{
+  name: connectorIdentityCryptography,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::identityCryptography"})
+}
+
+definition{
+  name: connectorRelayTransport,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::relayTransport"})
+}
+
+definition{
+  name: connectorSchedulerAdmission,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::schedulerAdmission"})
+}
+
+definition{
+  name: connectorSchedulerTransport,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::schedulerTransport"})
+}
+
+definition{
+  name: connectorSignalingTransport,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::signalingTransport"})
+}
+
+definition{
+  name: connectorStaticBrowser,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::staticBrowser"})
+}
+
+definition{
+  name: connectorStaticVm,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::staticVm"})
+}
+
+definition{
+  name: connectorStorageAdmission,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::storageAdmission"})
+}
+
+definition{
+  name: connectorStorageIdentity,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::storageIdentity"})
+}
+
+definition{
+  name: connectorStoragePeers,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::storagePeers"})
+}
+
+definition{
+  name: connectorStorageTransport,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::storageTransport"})
+}
+
+definition{
+  name: connectorTransportAdmission,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::transportAdmission"})
+}
+
+definition{
+  name: connectorTransportPeers,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::transportPeers"})
+}
+
+definition{
+  name: connectorTransportSignaling,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::transportSignaling"})
+}
+
+definition{
+  name: connectorTransportVm,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::transportVm"})
+}
+
+definition{
+  name: connectorVmStorage,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::vmStorage"})
+}
+
+definition{
+  name: connectorVmTransport,
+  parameters: [],
+  result: Foundation.Arch::UmlConnector,
+  body: (record Foundation.Arch::UmlConnector {view := "Product.Design::viewComponents", edge := "Product.Architecture::vmTransport"})
+}
+
+definition{
+  name: processAdmit,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::admission"})
+}
+
+definition{
+  name: processCommitLocal,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::storage"})
+}
+
+definition{
+  name: processRequestPlacement,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::transport"})
+}
+
+definition{
+  name: processCheckReceipt,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::storage"})
+}
+
+definition{
+  name: processRecover,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::storage"})
+}
+
+definition{
+  name: processBeginWrite,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::discovery"})
+}
+
+definition{
+  name: processReconcile,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::discovery"})
+}
+
+definition{
+  name: processConfirm,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::discovery"})
+}
+
+definition{
+  name: processRefuse,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::discovery"})
+}
+
+definition{
+  name: processRetainUnknown,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::discovery"})
+}
+
+definition{
+  name: objectIdentity,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmThingKind.object), subject := "Product.Architecture::identity"})
+}
+
+definition{
+  name: objectStorage,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmThingKind.object), subject := "Product.Architecture::storage"})
+}
+
+definition{
+  name: objectPeers,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmThingKind.object), subject := "Product.Architecture::peers"})
+}
+
+definition{
+  name: opmAdmit,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Product.Design::processAdmit"})
+}
+
+definition{
+  name: opmCommitLocal,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Product.Design::processCommitLocal"})
+}
+
+definition{
+  name: opmRequestPlacement,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Product.Design::processRequestPlacement"})
+}
+
+definition{
+  name: opmCheckReceipt,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Product.Design::processCheckReceipt"})
+}
+
+definition{
+  name: opmRecover,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Product.Design::processRecover"})
+}
+
+definition{
+  name: opmLink0,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Product.Architecture::identity", target := "Product.Design::processAdmit"})
+}
+
+definition{
+  name: opmLink1,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Product.Design::processAdmit", target := "Product.Design::processCommitLocal"})
+}
+
+definition{
+  name: opmLink2,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.effect), source := "Product.Architecture::storage", target := "Product.Design::processCommitLocal"})
+}
+
+definition{
+  name: opmLink3,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Product.Design::processCommitLocal", target := "Product.Design::processRequestPlacement"})
+}
+
+definition{
+  name: opmLink4,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Product.Architecture::peers", target := "Product.Design::processCheckReceipt"})
+}
+
+definition{
+  name: opmLink5,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Product.Design::processCheckReceipt", target := "Product.Design::processRecover"})
+}
+
+definition{
+  name: opmLink6,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.effect), source := "Product.Architecture::storage", target := "Product.Design::processRecover"})
+}
+
+definition{
+  name: lifelineBrowser,
+  parameters: [],
+  result: Foundation.Arch::UmlLifeline,
+  body: (record Foundation.Arch::UmlLifeline {view := "Product.Design::viewPublicationSequence", component := "Product.Architecture::browser", order := 0})
+}
+
+definition{
+  name: lifelineDiscovery,
+  parameters: [],
+  result: Foundation.Arch::UmlLifeline,
+  body: (record Foundation.Arch::UmlLifeline {view := "Product.Design::viewPublicationSequence", component := "Product.Architecture::discovery", order := 1})
+}
+
+definition{
+  name: lifelinePointerAuthority,
+  parameters: [],
+  result: Foundation.Arch::UmlLifeline,
+  body: (record Foundation.Arch::UmlLifeline {view := "Product.Design::viewPublicationSequence", component := "Product.Architecture::pointerAuthority", order := 2})
+}
+
+definition{
+  name: lifelineRuntimeHost,
+  parameters: [],
+  result: Foundation.Arch::UmlLifeline,
+  body: (record Foundation.Arch::UmlLifeline {view := "Product.Design::viewPublicationSequence", component := "Product.Architecture::runtimeHost", order := 3})
+}
+
+definition{
+  name: message0,
+  parameters: [],
+  result: Foundation.Arch::UmlMessage,
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.synchronous), order := 0, source := "Product.Architecture::browser", target := "Product.Architecture::discovery", process := "Product.Design::processBeginWrite"})
+}
+
+definition{
+  name: message1,
+  parameters: [],
+  result: Foundation.Arch::UmlMessage,
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.synchronous), order := 1, source := "Product.Architecture::discovery", target := "Product.Architecture::pointerAuthority", process := "Product.Design::processAdmit"})
+}
+
+definition{
+  name: message2,
+  parameters: [],
+  result: Foundation.Arch::UmlMessage,
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.asynchronous), order := 2, source := "Product.Architecture::discovery", target := "Product.Architecture::runtimeHost", process := "Product.Design::processBeginWrite"})
+}
+
+definition{
+  name: message3,
+  parameters: [],
+  result: Foundation.Arch::UmlMessage,
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.reply), order := 3, source := "Product.Architecture::runtimeHost", target := "Product.Architecture::discovery", process := "Product.Design::processRetainUnknown"})
+}
+
+definition{
+  name: message4,
+  parameters: [],
+  result: Foundation.Arch::UmlMessage,
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.synchronous), order := 4, source := "Product.Architecture::browser", target := "Product.Architecture::discovery", process := "Product.Design::processReconcile"})
+}
+
+definition{
+  name: message5,
+  parameters: [],
+  result: Foundation.Arch::UmlMessage,
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.asynchronous), order := 5, source := "Product.Architecture::discovery", target := "Product.Architecture::runtimeHost", process := "Product.Design::processReconcile"})
+}
+
+definition{
+  name: message6,
+  parameters: [],
+  result: Foundation.Arch::UmlMessage,
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.reply), order := 6, source := "Product.Architecture::runtimeHost", target := "Product.Architecture::discovery", process := "Product.Design::processConfirm"})
+}
+
+definition{
+  name: stateIdle,
+  parameters: [],
+  result: Foundation.Arch::SystemState,
+  body: (record Foundation.Arch::SystemState {owner := "Product.Architecture::discovery"})
+}
+
+definition{
+  name: umlIdle,
+  parameters: [],
+  result: Foundation.Arch::UmlState,
+  body: (record Foundation.Arch::UmlState {view := "Product.Design::viewPublicationState", state := "Product.Design::stateIdle", initial := true})
+}
+
+definition{
+  name: statePublished,
+  parameters: [],
+  result: Foundation.Arch::SystemState,
+  body: (record Foundation.Arch::SystemState {owner := "Product.Architecture::discovery"})
+}
+
+definition{
+  name: umlPublished,
+  parameters: [],
+  result: Foundation.Arch::UmlState,
+  body: (record Foundation.Arch::UmlState {view := "Product.Design::viewPublicationState", state := "Product.Design::statePublished", initial := false})
+}
+
+definition{
+  name: stateRefused,
+  parameters: [],
+  result: Foundation.Arch::SystemState,
+  body: (record Foundation.Arch::SystemState {owner := "Product.Architecture::discovery"})
+}
+
+definition{
+  name: umlRefused,
+  parameters: [],
+  result: Foundation.Arch::UmlState,
+  body: (record Foundation.Arch::UmlState {view := "Product.Design::viewPublicationState", state := "Product.Design::stateRefused", initial := false})
+}
+
+definition{
+  name: stateUnknown,
+  parameters: [],
+  result: Foundation.Arch::SystemState,
+  body: (record Foundation.Arch::SystemState {owner := "Product.Architecture::discovery"})
+}
+
+definition{
+  name: umlUnknown,
+  parameters: [],
+  result: Foundation.Arch::UmlState,
+  body: (record Foundation.Arch::UmlState {view := "Product.Design::viewPublicationState", state := "Product.Design::stateUnknown", initial := false})
+}
+
+definition{
+  name: transition0,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Product.Design::viewPublicationState", order := 0, source := "Product.Design::stateIdle", target := "Product.Design::stateUnknown", trigger := "Product.Design::processBeginWrite"})
+}
+
+definition{
+  name: transition1,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Product.Design::viewPublicationState", order := 1, source := "Product.Design::statePublished", target := "Product.Design::stateUnknown", trigger := "Product.Design::processBeginWrite"})
+}
+
+definition{
+  name: transition2,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Product.Design::viewPublicationState", order := 2, source := "Product.Design::stateRefused", target := "Product.Design::stateUnknown", trigger := "Product.Design::processBeginWrite"})
+}
+
+definition{
+  name: transition3,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Product.Design::viewPublicationState", order := 3, source := "Product.Design::stateUnknown", target := "Product.Design::statePublished", trigger := "Product.Design::processConfirm"})
+}
+
+definition{
+  name: transition4,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Product.Design::viewPublicationState", order := 4, source := "Product.Design::stateUnknown", target := "Product.Design::statePublished", trigger := "Product.Design::processReconcile"})
+}
+
+definition{
+  name: transition5,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Product.Design::viewPublicationState", order := 5, source := "Product.Design::stateUnknown", target := "Product.Design::stateRefused", trigger := "Product.Design::processRefuse"})
+}
+
+definition{
+  name: transition6,
+  parameters: [],
+  result: Foundation.Arch::UmlTransition,
+  body: (record Foundation.Arch::UmlTransition {view := "Product.Design::viewPublicationState", order := 6, source := "Product.Design::stateUnknown", target := "Product.Design::stateUnknown", trigger := "Product.Design::processRetainUnknown"})
+}
+
+definition{
+  name: boundary,
+  parameters: [],
+  result: String,
+  body: "Design relationships are views of existing contracts. Transition edges remain conditional on Stitch.Effects predicates and exact host observations. They neither execute effects nor prove the host implements every transition."
+}
+\end{semanticmodule}
+\end{lexlean}

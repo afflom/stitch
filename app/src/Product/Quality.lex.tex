@@ -1,0 +1,358 @@
+\begin{lexlean}{Product.Quality}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{stitch.domain@1.0.0}
+\importmodule{Foundation.Qual}
+\title{Stitch quality requirements and open measurements}
+\begin{semanticmodule}
+structure{
+  name: Source,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: record, type: String},
+    {name: path, type: String},
+    {name: firstLine, type: Nat},
+    {name: lastLine, type: Nat},
+    {name: sha256, type: String}
+  ]
+}
+
+definition{
+  name: sources,
+  parameters: [],
+  result: (List Source),
+  body: (cons (record Source {record := "Product.Quality", path := "app/src/Product/Architecture.lex.tex", firstLine := 0, lastLine := 0, sha256 := "fe5aac05827654477ad09282f0ef977890e00d5db753718c0e6e35139ff15958"}) (cons (record Source {record := "Product.Quality", path := "app/src/Product/Experience.lex.tex", firstLine := 0, lastLine := 0, sha256 := "6f2625fdce3d3d51899cabc17ce3d57ec0a9381dd3bf3e6477da6ae3ccfb84bd"}) (cons (record Source {record := "Product.Quality", path := "docs/browser-authority.md", firstLine := 0, lastLine := 0, sha256 := "642c15248bd22ef2de107c9ca1e1b9dcecc24bb5ac8b59b78b14b98c6995a3c9"}) (cons (record Source {record := "Product.Quality", path := "docs/prism-model.md", firstLine := 0, lastLine := 0, sha256 := "ece338421a27de9e0f588e66badf477eebe3012d194103f14a722db02cec24c7"}) (cons (record Source {record := "Product.Quality", path := "scripts/check-facets.mjs", firstLine := 0, lastLine := 0, sha256 := "676e6d4022fca1766b76385beba79da518b8d8350273ac864aaf06194ed0623f"}) (cons (record Source {record := "Product.Quality", path := "src/layer4-compute/replay.js", firstLine := 0, lastLine := 0, sha256 := "112653100e2ea57c6b732e64dbc2086fd5237eb2129fe255cb5627498494f1d3"}) (cons (record Source {record := "Product.Quality", path := "tests/browser-authority-lifecycle.test.js", firstLine := 0, lastLine := 0, sha256 := "6d8f3f41ddf18e5c42615e39e72f2965a39dddc5136f8d6388af5fe396d785b9"}) (cons (record Source {record := "Product.Quality", path := "tests/dns-publication.test.js", firstLine := 0, lastLine := 0, sha256 := "02fe2e5e85a715481cd11b55534dffe42b7f27305f63f1fb3bdb03815225d98c"}) (cons (record Source {record := "Product.Quality", path := "tests/execution-identity.test.js", firstLine := 0, lastLine := 0, sha256 := "cd680245065fa6be6ed51fc77324022c29938298f3f53c76b67fc36415e55a56"}) (cons (record Source {record := "Product.Quality", path := "tests/primitive-operations.test.js", firstLine := 0, lastLine := 0, sha256 := "e3c00e18d47db0de4dd19bffeba1edcb58f82b106f8f66d429a725248ec14a98"}) (cons (record Source {record := "Product.Quality", path := "tests/product-experience.test.js", firstLine := 0, lastLine := 0, sha256 := "a519f9b5c014eada46bd6c016be966c7fbe6f84971ac9408185c89422f68439b"}) (cons (record Source {record := "Product.Quality", path := "tests/product-facets.test.js", firstLine := 0, lastLine := 0, sha256 := "7d04460c3ba5b10caf9479bc58a6793a876d4eac33b6d64e862d2fe009b179bd"}) (cons (record Source {record := "Product.Quality", path := "tests/runtime-admission.test.js", firstLine := 0, lastLine := 0, sha256 := "684901ac8a287078f86958f414d3d514e910cd44fa6f6be1b80cd6435c4c3404"}) (nil Source))))))))))))))
+}
+
+definition{
+  name: characteristicFunctionalSuitability,
+  parameters: [],
+  result: Foundation.Qual::ProductQualityCharacteristic,
+  body: (record Foundation.Qual::ProductQualityCharacteristic {index := 0})
+}
+
+definition{
+  name: characteristicInteractionCapability,
+  parameters: [],
+  result: Foundation.Qual::ProductQualityCharacteristic,
+  body: (record Foundation.Qual::ProductQualityCharacteristic {index := 1})
+}
+
+definition{
+  name: characteristicMaintainability,
+  parameters: [],
+  result: Foundation.Qual::ProductQualityCharacteristic,
+  body: (record Foundation.Qual::ProductQualityCharacteristic {index := 2})
+}
+
+definition{
+  name: characteristicPerformanceEfficiency,
+  parameters: [],
+  result: Foundation.Qual::ProductQualityCharacteristic,
+  body: (record Foundation.Qual::ProductQualityCharacteristic {index := 3})
+}
+
+definition{
+  name: characteristicReliability,
+  parameters: [],
+  result: Foundation.Qual::ProductQualityCharacteristic,
+  body: (record Foundation.Qual::ProductQualityCharacteristic {index := 4})
+}
+
+definition{
+  name: characteristicSecurity,
+  parameters: [],
+  result: Foundation.Qual::ProductQualityCharacteristic,
+  body: (record Foundation.Qual::ProductQualityCharacteristic {index := 5})
+}
+
+definition{
+  name: subcharacteristicAuthenticity,
+  parameters: [],
+  result: Foundation.Qual::QualitySubcharacteristic,
+  body: (record Foundation.Qual::QualitySubcharacteristic {index := 0, characteristicIndex := 5})
+}
+
+definition{
+  name: subcharacteristicCapacity,
+  parameters: [],
+  result: Foundation.Qual::QualitySubcharacteristic,
+  body: (record Foundation.Qual::QualitySubcharacteristic {index := 1, characteristicIndex := 3})
+}
+
+definition{
+  name: subcharacteristicFunctionalCompleteness,
+  parameters: [],
+  result: Foundation.Qual::QualitySubcharacteristic,
+  body: (record Foundation.Qual::QualitySubcharacteristic {index := 2, characteristicIndex := 0})
+}
+
+definition{
+  name: subcharacteristicIntegrity,
+  parameters: [],
+  result: Foundation.Qual::QualitySubcharacteristic,
+  body: (record Foundation.Qual::QualitySubcharacteristic {index := 3, characteristicIndex := 5})
+}
+
+definition{
+  name: subcharacteristicModularity,
+  parameters: [],
+  result: Foundation.Qual::QualitySubcharacteristic,
+  body: (record Foundation.Qual::QualitySubcharacteristic {index := 4, characteristicIndex := 2})
+}
+
+definition{
+  name: subcharacteristicRecoverability,
+  parameters: [],
+  result: Foundation.Qual::QualitySubcharacteristic,
+  body: (record Foundation.Qual::QualitySubcharacteristic {index := 5, characteristicIndex := 4})
+}
+
+definition{
+  name: subcharacteristicSelfDescriptiveness,
+  parameters: [],
+  result: Foundation.Qual::QualitySubcharacteristic,
+  body: (record Foundation.Qual::QualitySubcharacteristic {index := 6, characteristicIndex := 1})
+}
+
+definition{
+  name: subcharacteristicTestability,
+  parameters: [],
+  result: Foundation.Qual::QualitySubcharacteristic,
+  body: (record Foundation.Qual::QualitySubcharacteristic {index := 7, characteristicIndex := 2})
+}
+
+structure{
+  name: MeasureContract,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: requirement, type: String},
+    {name: unit, type: String},
+    {name: method, type: String},
+    {name: source, type: String},
+    {name: evidence, type: String},
+    {name: kind, type: String},
+    {name: observed, type: Bool}
+  ]
+}
+
+definition{
+  name: requirementActionCoverage,
+  parameters: [],
+  result: Foundation.Qual::QualityRequirement,
+  body: (record Foundation.Qual::QualityRequirement {index := 0, subcharacteristicIndex := 2})
+}
+
+definition{
+  name: measureActionCoverage,
+  parameters: [],
+  result: Foundation.Qual::QualityMeasure,
+  body: (record Foundation.Qual::QualityMeasure {index := 0, requirementIndex := 0, threshold := 31})
+}
+
+definition{
+  name: contractActionCoverage,
+  parameters: [],
+  result: MeasureContract,
+  body: (record MeasureContract {requirement := "Product.Quality::requirementActionCoverage", unit := "modeled actions", method := "Count Product.Experience Action definitions, require one official Feature per action.", source := "app/src/Product/Experience.lex.tex", evidence := "tests/product-facets.test.js", kind := "derived", observed := false})
+}
+
+definition{
+  name: requirementAuthorityRollback,
+  parameters: [],
+  result: Foundation.Qual::QualityRequirement,
+  body: (record Foundation.Qual::QualityRequirement {index := 1, subcharacteristicIndex := 0})
+}
+
+definition{
+  name: measureAuthorityRollback,
+  parameters: [],
+  result: Foundation.Qual::QualityMeasure,
+  body: (record Foundation.Qual::QualityMeasure {index := 1, requirementIndex := 1, threshold := 0})
+}
+
+definition{
+  name: contractAuthorityRollback,
+  parameters: [],
+  result: MeasureContract,
+  body: (record MeasureContract {requirement := "Product.Quality::requirementAuthorityRollback", unit := "accepted stale or foreign trust transitions", method := "Exact saved head comparison and independent writer/digest acceptance.", source := "docs/browser-authority.md", evidence := "tests/browser-authority-lifecycle.test.js", kind := "requirement", observed := false})
+}
+
+definition{
+  name: requirementComponentCoverage,
+  parameters: [],
+  result: Foundation.Qual::QualityRequirement,
+  body: (record Foundation.Qual::QualityRequirement {index := 2, subcharacteristicIndex := 4})
+}
+
+definition{
+  name: measureComponentCoverage,
+  parameters: [],
+  result: Foundation.Qual::QualityMeasure,
+  body: (record Foundation.Qual::QualityMeasure {index := 2, requirementIndex := 2, threshold := 18})
+}
+
+definition{
+  name: contractComponentCoverage,
+  parameters: [],
+  result: MeasureContract,
+  body: (record MeasureContract {requirement := "Product.Quality::requirementComponentCoverage", unit := "components", method := "Every actual architecture component is represented in the design view.", source := "app/src/Product/Architecture.lex.tex", evidence := "tests/product-facets.test.js", kind := "derived", observed := false})
+}
+
+definition{
+  name: requirementForgedCheckpoints,
+  parameters: [],
+  result: Foundation.Qual::QualityRequirement,
+  body: (record Foundation.Qual::QualityRequirement {index := 3, subcharacteristicIndex := 3})
+}
+
+definition{
+  name: measureForgedCheckpoints,
+  parameters: [],
+  result: Foundation.Qual::QualityMeasure,
+  body: (record Foundation.Qual::QualityMeasure {index := 3, requirementIndex := 3, threshold := 0})
+}
+
+definition{
+  name: contractForgedCheckpoints,
+  parameters: [],
+  result: MeasureContract,
+  body: (record MeasureContract {requirement := "Product.Quality::requirementForgedCheckpoints", unit := "accepted impossible checkpoints", method := "Zero-defect requirement exercised by adversarial replay tests.", source := "docs/prism-model.md", evidence := "tests/execution-identity.test.js", kind := "requirement", observed := false})
+}
+
+definition{
+  name: requirementProgramInstructions,
+  parameters: [],
+  result: Foundation.Qual::QualityRequirement,
+  body: (record Foundation.Qual::QualityRequirement {index := 4, subcharacteristicIndex := 1})
+}
+
+definition{
+  name: measureProgramInstructions,
+  parameters: [],
+  result: Foundation.Qual::QualityMeasure,
+  body: (record Foundation.Qual::QualityMeasure {index := 4, requirementIndex := 4, threshold := 1024})
+}
+
+definition{
+  name: contractProgramInstructions,
+  parameters: [],
+  result: MeasureContract,
+  body: (record MeasureContract {requirement := "Product.Quality::requirementProgramInstructions", unit := "instructions", method := "Configured acceptance ceiling, not observed capacity or performance.", source := "src/layer4-compute/replay.js", evidence := "tests/primitive-operations.test.js", kind := "configured", observed := false})
+}
+
+definition{
+  name: requirementProgramWork,
+  parameters: [],
+  result: Foundation.Qual::QualityRequirement,
+  body: (record Foundation.Qual::QualityRequirement {index := 5, subcharacteristicIndex := 1})
+}
+
+definition{
+  name: measureProgramWork,
+  parameters: [],
+  result: Foundation.Qual::QualityMeasure,
+  body: (record Foundation.Qual::QualityMeasure {index := 5, requirementIndex := 5, threshold := 1000000})
+}
+
+definition{
+  name: contractProgramWork,
+  parameters: [],
+  result: MeasureContract,
+  body: (record MeasureContract {requirement := "Product.Quality::requirementProgramWork", unit := "abstract work units", method := "Model-derived work charged before replay; does not meter VM/browser/TLS overhead.", source := "src/layer4-compute/replay.js", evidence := "tests/runtime-admission.test.js", kind := "configured", observed := false})
+}
+
+definition{
+  name: requirementSilentEvidencePromotion,
+  parameters: [],
+  result: Foundation.Qual::QualityRequirement,
+  body: (record Foundation.Qual::QualityRequirement {index := 6, subcharacteristicIndex := 6})
+}
+
+definition{
+  name: measureSilentEvidencePromotion,
+  parameters: [],
+  result: Foundation.Qual::QualityMeasure,
+  body: (record Foundation.Qual::QualityMeasure {index := 6, requirementIndex := 6, threshold := 0})
+}
+
+definition{
+  name: contractSilentEvidencePromotion,
+  parameters: [],
+  result: MeasureContract,
+  body: (record MeasureContract {requirement := "Product.Quality::requirementSilentEvidencePromotion", unit := "unknown host outcomes displayed as verified", method := "Persistent evidence labels distinguish digest, replay, unknown effects and unqualified hosts.", source := "app/src/Product/Experience.lex.tex", evidence := "tests/product-experience.test.js", kind := "requirement", observed := false})
+}
+
+definition{
+  name: requirementSourceDrift,
+  parameters: [],
+  result: Foundation.Qual::QualityRequirement,
+  body: (record Foundation.Qual::QualityRequirement {index := 7, subcharacteristicIndex := 7})
+}
+
+definition{
+  name: measureSourceDrift,
+  parameters: [],
+  result: Foundation.Qual::QualityMeasure,
+  body: (record Foundation.Qual::QualityMeasure {index := 7, requirementIndex := 7, threshold := 0})
+}
+
+definition{
+  name: contractSourceDrift,
+  parameters: [],
+  result: MeasureContract,
+  body: (record MeasureContract {requirement := "Product.Quality::requirementSourceDrift", unit := "unregenerated model or facet outputs", method := "Regeneration must reproduce committed output bytes.", source := "scripts/check-facets.mjs", evidence := "tests/product-facets.test.js", kind := "requirement", observed := false})
+}
+
+definition{
+  name: requirementTermWidth,
+  parameters: [],
+  result: Foundation.Qual::QualityRequirement,
+  body: (record Foundation.Qual::QualityRequirement {index := 8, subcharacteristicIndex := 1})
+}
+
+definition{
+  name: measureTermWidth,
+  parameters: [],
+  result: Foundation.Qual::QualityMeasure,
+  body: (record Foundation.Qual::QualityMeasure {index := 8, requirementIndex := 8, threshold := 32768})
+}
+
+definition{
+  name: contractTermWidth,
+  parameters: [],
+  result: MeasureContract,
+  body: (record MeasureContract {requirement := "Product.Quality::requirementTermWidth", unit := "bits", method := "Explicit parsing/memory envelope, not an upstream ring semantic limit.", source := "src/layer4-compute/replay.js", evidence := "tests/primitive-operations.test.js", kind := "configured", observed := false})
+}
+
+definition{
+  name: requirementUnknownWriteReplay,
+  parameters: [],
+  result: Foundation.Qual::QualityRequirement,
+  body: (record Foundation.Qual::QualityRequirement {index := 9, subcharacteristicIndex := 5})
+}
+
+definition{
+  name: measureUnknownWriteReplay,
+  parameters: [],
+  result: Foundation.Qual::QualityMeasure,
+  body: (record Foundation.Qual::QualityMeasure {index := 9, requirementIndex := 9, threshold := 0})
+}
+
+definition{
+  name: contractUnknownWriteReplay,
+  parameters: [],
+  result: MeasureContract,
+  body: (record MeasureContract {requirement := "Product.Quality::requirementUnknownWriteReplay", unit := "blind retries of unknown DNS writes", method := "Unknown publication permits read-only reconciliation, never another mutation.", source := "docs/browser-authority.md", evidence := "tests/dns-publication.test.js", kind := "requirement", observed := false})
+}
+
+definition{
+  name: openQualities,
+  parameters: [],
+  result: (List String),
+  body: (cons "Physical NAT topology coverage and independent failure domains" (cons "Eviction/device-loss durability" (cons "Accessibility across supported assistive technologies" (cons "User comprehension, task completion time and satisfaction" (cons "Whole-host refinement and native artifact acceptance on the exact release revision" (nil String))))))
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,326 @@
+\begin{lexlean}{Product.Release}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{stitch.domain@1.0.0}
+\title{Stitch release and deployment contract}
+\begin{semanticmodule}
+structure{
+  name: Source,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: record, type: String},
+    {name: path, type: String},
+    {name: firstLine, type: Nat},
+    {name: lastLine, type: Nat},
+    {name: sha256, type: String}
+  ]
+}
+
+definition{
+  name: sources,
+  parameters: [],
+  result: (List Source),
+  body: (cons (record Source {record := "Product.Release", path := ".github/workflows/prism.yml", firstLine := 0, lastLine := 0, sha256 := "4fe595efda75eabd6d81db25b87a44d0d3fa186deb37b1c50b040095f488d093"}) (cons (record Source {record := "Product.Release", path := "app/src/Product/Model.lex.tex", firstLine := 0, lastLine := 0, sha256 := "6081a53375794cab60ddad0199956db978be3d4b91e102f1890dd0e3bc2697c8"}) (cons (record Source {record := "Product.Release", path := "docs/product-projection.md", firstLine := 0, lastLine := 0, sha256 := "446c2fcefd1519aa8a60f78115fb3f594ac3329018da3ef432381ea428c2faa1"}) (cons (record Source {record := "Product.Release", path := "docs/vendor-provenance.md", firstLine := 0, lastLine := 0, sha256 := "fe73438c181889157487931d6d2501175bf9becdbad5f6977b2edc6751fb986b"}) (cons (record Source {record := "Product.Release", path := "package.json", firstLine := 0, lastLine := 0, sha256 := "4cca578575a541919497c9ed1c517e970b7d820d464c7d594b8f0cb7bd23a3f4"}) (cons (record Source {record := "Product.Release", path := "vendor/distribution.json", firstLine := 0, lastLine := 0, sha256 := "02263c2d4bf1a1913a673466554c19593b5a6c39b22a2da32ce4375675868347"}) (nil Source)))))))
+}
+
+structure{
+  name: Artifact,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: path, type: String},
+    {name: licenseStatus, type: String},
+    {name: materialsRecorded, type: Bool}
+  ]
+}
+
+structure{
+  name: Deployment,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: String},
+    {name: entry, type: String},
+    {name: capabilities, type: (List String)}
+  ]
+}
+
+definition{name: version, parameters: [], result: String, body: "0.2.0"}
+
+definition{
+  name: artifact000,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer1-uor/effects.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact001,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/product-experience.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact002,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "index.html", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact003,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer1-uor/contracts.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact004,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer1-uor/custody.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact005,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer1-uor/generated-model.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact006,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer1-uor/index.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact007,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer1-uor/pointer.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact008,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer2-schedulers/index.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact009,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer2-schedulers/policy.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact010,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer3-storage/custody.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact011,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer3-storage/index.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact012,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer4-compute/index.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact013,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer4-compute/replay.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact014,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer5-transport/index.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact015,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "v86/libv86.js", licenseStatus := "BSD/MIT incorporated notices and source supplied in vendor/v86; include accompanying materials in distribution", materialsRecorded := true})
+}
+
+definition{
+  name: artifact016,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "v86/v86.wasm", licenseStatus := "BSD/MIT incorporated notices and source supplied in vendor/v86; include accompanying materials in distribution", materialsRecorded := true})
+}
+
+definition{
+  name: artifact017,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "v86/seabios.bin", licenseStatus := "LGPLv3 source, config, build instructions and licenses supplied in vendor/seabios; include accompanying materials in distribution", materialsRecorded := true})
+}
+
+definition{
+  name: artifact018,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "v86/vgabios.bin", licenseStatus := "LGPLv3 source, config, build instructions and licenses supplied in vendor/seabios; include accompanying materials in distribution", materialsRecorded := true})
+}
+
+definition{
+  name: artifact019,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "images/buildroot-bzimage.bin", licenseStatus := "Corresponding source, configs, patches and licenses published at immutable commit fd59fae669e9a40271fb584ca071270d8ed0b8f8; preserve vendor/guest/SOURCE-NOTICE.md and equivalent source access with image", materialsRecorded := true})
+}
+
+definition{
+  name: artifact020,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/lib.rs", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact021,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer1-uor/browser-authority.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact022,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/authority-ui.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact023,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer5-transport/dns-wire.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact024,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer5-transport/relay-framing.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact025,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/recovery.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact026,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/recovery-ui.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact027,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer5-transport/signaling.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact028,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer5-transport/channel-flow.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact029,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "src/layer4-compute/vm-administration.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact030,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "site/site.css", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact031,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "site/explorer.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact032,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "site/stitch-fabric.svg", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact033,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "site/facets.json", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact034,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "site/catalog.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: deploymentBrowserSession,
+  parameters: [],
+  result: Deployment,
+  body: (record Deployment {id := "browserSession", entry := "index.html", capabilities := (cons "dom" (cons "crypto" (cons "monotonicClock" (cons "wallClock" (cons "sessionStorage" (cons "artifactFetch" (nil String)))))))})
+}
+
+definition{
+  name: deploymentPureProbe,
+  parameters: [],
+  result: Deployment,
+  body: (record Deployment {id := "pureProbe", entry := "app/src/StitchApp.lex.tex", capabilities := (nil String)})
+}
+
+definition{name: gate, parameters: [], result: String, body: ".github/workflows/prism.yml"}
+
+definition{
+  name: releaseBoundary,
+  parameters: [],
+  result: String,
+  body: "Static publication, source verification, native artifact acceptance and browser qualification are distinct. This inventory reports no current pass result."
+}
+
+definition{
+  name: releaseRequirements,
+  parameters: [],
+  result: (List String),
+  body: (cons "Regenerate source bindings, every product facet and the exact product artifact inventory before qualification." (cons "Run exact pinned LexLean source/lock checks, Lean and leanchecker with observed axiom policy; retain original verifier records." (cons "Run full pinned PrismPM native artifact and acceptance-vector gates; source-only acceptance does not replace them." (cons "Run runtime, independent custody vectors, Rust conformance and actual Chromium workflows on the submitted revision." (cons "Publish the complete same-origin UI and dependency set with source/license materials; do not replace the product with its pure probe." (cons "Rollback uses a complete prior asset set and retains unknown-effect journals. Browser/provider/NAT assumptions and unsupported platforms remain explicit." (nil String)))))))
+}
+\end{semanticmodule}
+\end{lexlean}

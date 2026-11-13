@@ -59,9 +59,21 @@ export function literalRows(source, types=rowTypes) {
   }
   return rows;
 }
-function walk(directory){return readdirSync(directory,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(resolve(directory,e.name)):[resolve(directory,e.name)]);}
+function walk(directory){
+  if(!lstatSync(directory).isDirectory())fail(`not a nonsymlink resource directory ${directory}`);
+  return readdirSync(directory).sort().flatMap(name=>{
+    const path=resolve(directory,name),stat=lstatSync(path);
+    if(stat.isSymbolicLink())fail(`resource symlink ${path}`);
+    if(stat.isDirectory())return walk(path);
+    if(!stat.isFile())fail(`not a regular resource ${path}`);
+    return [path];
+  });
+}
 function bytes(path,base=root){
   if(!/^[A-Za-z0-9_.-]+(?:\/[A-Za-z0-9_.-]+)*$/.test(path)||path.split('/').some(x=>x==='.'||x==='..'))fail(`unsafe path ${path}`);
+  if(!lstatSync(base).isDirectory())fail('base is not a nonsymlink directory');
+  const parts=path.split('/');
+  for(let i=1;i<parts.length;i++)if(!lstatSync(resolve(base,...parts.slice(0,i))).isDirectory())fail(`artifact parent is not a nonsymlink directory ${path}`);
   const full=resolve(base,path),stat=lstatSync(full);if(!stat.isFile()||stat.isSymbolicLink())fail(`not a regular artifact ${path}`);return readFileSync(full);
 }
 const unique=(rows,key,label)=>{const ids=rows.map(x=>x[key]);if(ids.some(x=>typeof x!=='string'||!x)||new Set(ids).size!==ids.length)fail(`duplicate or empty ${label}`);return new Set(ids);};
@@ -93,7 +105,7 @@ export function validateProduct(p,base=root){
   for(const d of p.dependencies)if(!components.has(d.consumer))fail(`unknown dependency consumer ${d.consumer}`);
   for(const d of p.deployments){bytes(d.entry,base);for(const cap of d.requiredCapabilities)if(!caps.has(cap))fail(`unknown deployment capability ${cap}`);}
   for(const asset of p.assets)bytes(asset.path,base);
-  const runtime=['index.html',...walk(resolve(base,'src')).filter(x=>x.endsWith('.js')).map(x=>relative(base,x)),...walk(resolve(base,'v86')).map(x=>relative(base,x)),...walk(resolve(base,'images')).map(x=>relative(base,x))];
+  const runtime=['index.html',...walk(resolve(base,'src')).filter(x=>x.endsWith('.js')).map(x=>relative(base,x)),...walk(resolve(base,'v86')).map(x=>relative(base,x)),...walk(resolve(base,'images')).map(x=>relative(base,x)),...walk(resolve(base,'site')).map(x=>relative(base,x))];
   for(const path of runtime)if(!assets.has(path))fail(`unmodeled browser artifact ${path}`);
   const arch=p.architecture.filter(x=>x.type==='Foundation.Arch::Component');
   if(arch.length!==components.size||new Set(arch.map(x=>x.name)).size!==components.size||arch.some(x=>!components.has(x.name)))fail('architecture component coverage');
@@ -113,13 +125,38 @@ export function validateProduct(p,base=root){
   }
   return true;
 }
+/** Project resources are byte inventory, never fabricated proof evidence. */
+export function resourceInventory(base=root){
+  const directories=['product','docs','scripts','tests','.github/workflows'];
+  const required=['product/facets.json','product/facet-type-provenance.json','site/facets.json'];
+  const discovered=[...walk(resolve(base,'app/src')).filter(x=>x.endsWith('.lex.tex')),
+    ...walk(resolve(base,'app/language')),
+    ...directories.flatMap(path=>walk(resolve(base,path)))].map(path=>relative(base,path));
+  const sourcePaths=[...new Set([...required,...discovered,
+    'app/lexlean.lock','app/lexlean.toml','app/prismpm.toml','app/prism.toml',
+    'app/lakefile.toml','app/lake-manifest.json','app/lean-toolchain',
+    'README.md','.gitignore','CONTRACT.json','Cargo.toml','Cargo.lock',
+    'package.json','package-lock.json','prismpm.lock','standards.lock','vendor/distribution.json'
+  ])].filter(path=>path!=='product/contracts.json').sort();
+  return sourcePaths.map(path=>({path,sha256:hash(bytes(path,base))}));
+}
+export function validateFacetBindings(base=root){
+  const catalog=JSON.parse(bytes('product/facets.json',base));
+  if(catalog.format!=='stitch/product-facets/1'||!Array.isArray(catalog.sources)||!catalog.sources.length||!Array.isArray(catalog.modules)||!catalog.modules.length)fail('missing complete facet catalog');
+  unique(catalog.sources,'path','facet source');unique(catalog.modules,'module','facet module');
+  for(const source of catalog.sources)if(hash(bytes(source.path,base))!==source.sha256)fail(`stale facet source ${source.path}`);
+  for(const entry of catalog.modules){
+    if(!/^Product\.[A-Za-z0-9_.]+$/.test(entry.module)||entry.path!==`app/src/${entry.module.replaceAll('.','/')}.lex.tex`)fail('facet module path differs');
+    if(hash(bytes(entry.path,base))!==entry.sha256)fail(`stale facet module ${entry.path}`);
+    if(!bytes(entry.path,base).toString('utf8').startsWith(`\\begin{lexlean}{${entry.module}}`))fail(`facet module identity differs ${entry.path}`);
+  }
+  return catalog;
+}
 export function productRegister(base=root){
-  const p=readProduct(base);validateProduct(p,base);
-  const formal=walk(resolve(base,'app/src')).filter(x=>x.endsWith('.lex.tex')).map(x=>relative(base,x));
-  const sourcePaths=[...new Set([...formal,...walk(resolve(base,'app/language')).filter(x=>x.endsWith('.toml')).map(x=>relative(base,x)),'app/lexlean.toml','app/prismpm.toml','app/prism.toml','package.json','package-lock.json','prismpm.lock','standards.lock','vendor/distribution.json'])].sort();
-  const sources=sourcePaths.map(path=>({path,sha256:hash(bytes(path,base))}));
+  const p=readProduct(base);validateProduct(p,base);validateFacetBindings(base);
+  const sources=resourceInventory(base);
   const artifacts=p.assets.map(a=>{const data=bytes(a.path,base);return {...a,bytes:data.length,sha256:hash(data)};}).sort((a,b)=>a.path.localeCompare(b.path,'en'));
-  return {format:'Stitch project-owned product contract register',version:1,assurance:'Source contracts and local byte inventory, not a Prism receipt or whole-browser proof',reference:{repository:'https://github.com/UOR-Foundation/PrismPM',revision:'fe5b8b73a94134c316329a8d1b09ebc97b555c5f',specSections:['2','11'],foundationArchUpstreamBytes:8959,foundationArchUpstreamSha256:'9a79e4912d33b1736d7451ab726ed0a83d958b8d9c70091a749fbc70acd48cdc',foundationArch:'Type-only subset; source types preserved, title localized to available glossary, examples omitted',sdk:'Existing prismpm.lock; no dependency or profile upgrade'},releaseBlockers:artifacts.filter(a=>!a.redistributionCleared).map(a=>({path:a.path,reason:a.licenseStatus})),...p,assets:artifacts,sources,sourceDigest:'sha256:'+hash(JSON.stringify(sources))};
+  return {format:'Stitch project-owned product contract register',version:1,assurance:'Source contracts and local byte inventory, not a Prism receipt or whole-browser proof',reference:{repository:'https://github.com/UOR-Foundation/PrismPM',revision:'fe5b8b73a94134c316329a8d1b09ebc97b555c5f',specSections:['2','11'],scope:'Product-contract convention reference; expanded types have separate exact provenance',facetTypeProvenance:'product/facet-type-provenance.json',foundationArch:'Type-only declarations and pinned UORust design-view extensions; source identities and derivation scope are recorded in facet-type-provenance.json; no proof admission implied',sdk:'Existing prismpm.lock; no dependency or profile upgrade'},releaseBlockers:artifacts.filter(a=>!a.redistributionCleared).map(a=>({path:a.path,reason:a.licenseStatus})),...p,assets:artifacts,sources,sourceDigest:'sha256:'+hash(JSON.stringify(sources))};
 }
 export function run(args=process.argv.slice(2)){
   if(args.length>1||args.length===1&&!['--write','--check'].includes(args[0]))fail('usage: node scripts/check-product.mjs [--write|--check]');

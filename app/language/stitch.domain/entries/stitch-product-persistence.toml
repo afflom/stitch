@@ -1,0 +1,17 @@
+spec = "lexlean/entry/1"
+id = "stitch-product-persistence"
+category = "label-word"
+surface_arity = 0
+frame = "atom"
+
+[denotation]
+kind = "document"
+module = "Product.Persistence"
+component = "sources"
+
+[[form]]
+id = "stitch-product-persistence"
+channel = "text"
+surface = "Stitch identity persistence and safe automation"
+canonical_source = true
+features = ["sentence-case", "singular"]

@@ -1,8 +1,7 @@
 \begin{lexlean}{Foundation.Arch}
 \useglossary{lexlean.std.bool@1.2.0}
 \useglossary{lexlean.std.nat@1.2.0}
-\useglossary{prism.arch@1.0.0}
-\title{architectural component}
+\title{Boolean}
 \begin{semanticmodule}
 structure{
   name: StandardReference,
@@ -107,6 +106,194 @@ structure{
     {name: viewpointIndex, type: Nat},
     {name: modelKindIndex, type: Nat}
   ]
+}
+
+inductive{
+  name: DesignDiagram,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: opmObjectProcess, fields: []},
+    {name: umlComponent, fields: []},
+    {name: umlSequence, fields: []},
+    {name: umlStateMachine, fields: []}
+  ]
+}
+
+inductive{
+  name: OpmThingKind,
+  type_parameters: [],
+  parameters: [],
+  constructors: [{name: object, fields: []}, {name: process, fields: []}]
+}
+
+inductive{
+  name: OpmLinkKind,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: agent, fields: []},
+    {name: instrument, fields: []},
+    {name: consumption, fields: []},
+    {name: result, fields: []},
+    {name: effect, fields: []},
+    {name: invocation, fields: []},
+    {name: aggregation, fields: []},
+    {name: exhibition, fields: []},
+    {name: generalization, fields: []},
+    {name: classification, fields: []}
+  ]
+}
+
+inductive{
+  name: UmlMessageKind,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: synchronous, fields: []},
+    {name: asynchronous, fields: []},
+    {name: reply, fields: []}
+  ]
+}
+
+structure{
+  name: SystemProcess,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: owner, type: String}]
+}
+
+structure{
+  name: SystemState,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: owner, type: String}]
+}
+
+structure{
+  name: DesignView,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: title, type: String},
+    {name: viewpoint, type: String},
+    {name: diagram, type: DesignDiagram}
+  ]
+}
+
+structure{
+  name: OpmThing,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: view, type: String},
+    {name: kind, type: OpmThingKind},
+    {name: subject, type: String}
+  ]
+}
+
+structure{
+  name: OpmState,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: view, type: String}, {name: thing, type: String}, {name: state, type: String}]
+}
+
+structure{
+  name: OpmLink,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: view, type: String},
+    {name: kind, type: OpmLinkKind},
+    {name: source, type: String},
+    {name: target, type: String}
+  ]
+}
+
+structure{
+  name: OpmZoom,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: view, type: String},
+    {name: process, type: String},
+    {name: subprocess, type: String},
+    {name: order, type: Nat}
+  ]
+}
+
+structure{
+  name: UmlComponent,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: view, type: String}, {name: component, type: String}]
+}
+
+structure{
+  name: UmlConnector,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: view, type: String}, {name: edge, type: String}]
+}
+
+structure{
+  name: UmlLifeline,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: view, type: String}, {name: component, type: String}, {name: order, type: Nat}]
+}
+
+structure{
+  name: UmlMessage,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: view, type: String},
+    {name: kind, type: UmlMessageKind},
+    {name: order, type: Nat},
+    {name: source, type: String},
+    {name: target, type: String},
+    {name: process, type: String}
+  ]
+}
+
+structure{
+  name: UmlState,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: view, type: String}, {name: state, type: String}, {name: initial, type: Bool}]
+}
+
+structure{
+  name: UmlTransition,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: view, type: String},
+    {name: order, type: Nat},
+    {name: source, type: String},
+    {name: target, type: String},
+    {name: trigger, type: String}
+  ]
+}
+
+structure{
+  name: Feature,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: statement, type: String},
+    {name: calls, type: (List String)},
+    {name: acceptance, type: (List String)}
+  ]
+}
+
+structure{
+  name: Journey,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: actor, type: String}, {name: steps, type: (List String)}]
 }
 \end{semanticmodule}
 \end{lexlean}

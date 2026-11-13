@@ -1,0 +1,105 @@
+\begin{lexlean}{Production.ThreatModel}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Foundation.Sec}
+\title{Boolean}
+\begin{semanticmodule}
+inductive{
+  name: Stride,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: spoofing, fields: []},
+    {name: tampering, fields: []},
+    {name: repudiation, fields: []},
+    {name: informationDisclosure, fields: []},
+    {name: denialOfService, fields: []},
+    {name: elevationOfPrivilege, fields: []}
+  ]
+}
+
+inductive{
+  name: EvidenceKind,
+  type_parameters: [],
+  parameters: [],
+  constructors: [{name: gate, fields: []}, {name: proof, fields: []}, {name: review, fields: []}]
+}
+
+structure{
+  name: Evidence,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: kind, type: EvidenceKind}, {name: reference, type: String}]
+}
+
+structure{
+  name: ControlSet,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: title, type: String},
+    {name: text, type: String},
+    {name: version, type: String},
+    {name: lastModified, type: String}
+  ]
+}
+
+structure{
+  name: ModeledAsset,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: asset, type: String}, {name: name, type: String}, {name: text, type: String}]
+}
+
+structure{
+  name: ModeledThreat,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: threat, type: String},
+    {name: name, type: String},
+    {name: text, type: String},
+    {name: category, type: Stride}
+  ]
+}
+
+structure{
+  name: ModeledControl,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: control, type: String},
+    {name: name, type: String},
+    {name: text, type: String},
+    {name: evidence, type: (List Evidence)}
+  ]
+}
+
+structure{
+  name: ThreatMapping,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: threat, type: String}, {name: controls, type: (List String)}]
+}
+
+structure{
+  name: AcceptedRisk,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: threat, type: String}, {name: rationale, type: String}]
+}
+
+structure{
+  name: NormalizedThreatModel,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: threatCount, type: Nat},
+    {name: categoryCounts, type: (List Nat)},
+    {name: mitigationCounts, type: (List Nat)},
+    {name: acceptanceCounts, type: (List Nat)},
+    {name: evidenceCounts, type: (List Nat)}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

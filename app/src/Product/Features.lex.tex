@@ -1,0 +1,1046 @@
+\begin{lexlean}{Product.Features}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{stitch.domain@1.0.0}
+\importmodule{Foundation.Arch}
+\importmodule{Product.Architecture}
+\title{Stitch features and journeys}
+\begin{semanticmodule}
+structure{
+  name: Source,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: record, type: String},
+    {name: path, type: String},
+    {name: firstLine, type: Nat},
+    {name: lastLine, type: Nat},
+    {name: sha256, type: String}
+  ]
+}
+
+definition{
+  name: sources,
+  parameters: [],
+  result: (List Source),
+  body: (cons (record Source {record := "Product.Features", path := "app/src/Product/Experience.lex.tex", firstLine := 0, lastLine := 0, sha256 := "6f2625fdce3d3d51899cabc17ce3d57ec0a9381dd3bf3e6477da6ae3ccfb84bd"}) (cons (record Source {record := "Product.Features", path := "docs/prism-model.md", firstLine := 0, lastLine := 0, sha256 := "ece338421a27de9e0f588e66badf477eebe3012d194103f14a722db02cec24c7"}) (cons (record Source {record := "Product.Features", path := "docs/product-projection.md", firstLine := 0, lastLine := 0, sha256 := "446c2fcefd1519aa8a60f78115fb3f594ac3329018da3ef432381ea428c2faa1"}) (cons (record Source {record := "Product.Features", path := "index.html", firstLine := 0, lastLine := 0, sha256 := "b8e573b5b50c533114532ef4a6f851efc1508082c3a42d2d1002e20f22400801"}) (cons (record Source {record := "Product.Features", path := "site/catalog.js", firstLine := 0, lastLine := 0, sha256 := "b72eea8eafcd5a8a9d996c1b78619ca9d113fd530e82c39baade83fee0b28f36"}) (cons (record Source {record := "Product.Features", path := "site/explorer.js", firstLine := 0, lastLine := 0, sha256 := "72b1e0d06485e235429601ff640772aff4565002a37290454fd08fd40c0a1b79"}) (cons (record Source {record := "Product.Features", path := "src/authority-ui.js", firstLine := 0, lastLine := 0, sha256 := "96e76a92918a52dff05780b76f59158916540fd38d1ced986fd6001d3ee1482b"}) (cons (record Source {record := "Product.Features", path := "tests/authenticated-signaling.test.js", firstLine := 0, lastLine := 0, sha256 := "58263f698373030cd4c20007b1c0b0e9dc8b781558a7366f1acd32decdfe6d5f"}) (cons (record Source {record := "Product.Features", path := "tests/authority-ui.test.js", firstLine := 0, lastLine := 0, sha256 := "d0f986cc126047f3b269dc47509c5ade56a5bfa2e6cf30ee62906a527326cc7d"}) (cons (record Source {record := "Product.Features", path := "tests/browser-authority-lifecycle.test.js", firstLine := 0, lastLine := 0, sha256 := "6d8f3f41ddf18e5c42615e39e72f2965a39dddc5136f8d6388af5fe396d785b9"}) (cons (record Source {record := "Product.Features", path := "tests/browser/authority.spec.mjs", firstLine := 0, lastLine := 0, sha256 := "6e6bd7264dc80bea62459381d27998dc399655f874a36a481daf0bd94af88be2"}) (cons (record Source {record := "Product.Features", path := "tests/browser/mesh.spec.mjs", firstLine := 0, lastLine := 0, sha256 := "5c77135433b1a26adc59e12a4aefeb9258e2622fcc533a4fccd558a5bada62f1"}) (cons (record Source {record := "Product.Features", path := "tests/browser/site.spec.mjs", firstLine := 0, lastLine := 0, sha256 := "973145fcf6ad6d5e645a9492f811e28cb3297a1c50d2f4629e15e1da7844cc71"}) (cons (record Source {record := "Product.Features", path := "tests/browser/vm.spec.mjs", firstLine := 0, lastLine := 0, sha256 := "198cf744f3651923a35f6f9c9a0eccf5e710bf7907b06a46b41d294ef936278c"}) (cons (record Source {record := "Product.Features", path := "tests/contracts.test.js", firstLine := 0, lastLine := 0, sha256 := "f1ac995b74ceabd230e670476016796ca18c31ad43c0639ddfb700aba52dde60"}) (cons (record Source {record := "Product.Features", path := "tests/custody.test.js", firstLine := 0, lastLine := 0, sha256 := "7d688bec8a34729197bae605daacd4b3efeedb0e901b8af31322925bd0717329"}) (cons (record Source {record := "Product.Features", path := "tests/dns-publication.test.js", firstLine := 0, lastLine := 0, sha256 := "02fe2e5e85a715481cd11b55534dffe42b7f27305f63f1fb3bdb03815225d98c"}) (cons (record Source {record := "Product.Features", path := "tests/execution-identity.test.js", firstLine := 0, lastLine := 0, sha256 := "cd680245065fa6be6ed51fc77324022c29938298f3f53c76b67fc36415e55a56"}) (cons (record Source {record := "Product.Features", path := "tests/operator-ui.test.js", firstLine := 0, lastLine := 0, sha256 := "06ffd0c89d0ba6345b7da56284d3a3cec813d4cfd6fea231140ca9bb910e516f"}) (cons (record Source {record := "Product.Features", path := "tests/placement-repair.test.js", firstLine := 0, lastLine := 0, sha256 := "295ba55268bbcb3be7bd3c9b77a11b4938167ef0bebf83b85facedd536e1ad85"}) (cons (record Source {record := "Product.Features", path := "tests/pointer-recovery.test.js", firstLine := 0, lastLine := 0, sha256 := "57eb8bab548b1e0f5cd4ee66a3a71dda8057859f18ecf4c751fbd930b4ac0fc4"}) (cons (record Source {record := "Product.Features", path := "tests/primitive-operations.test.js", firstLine := 0, lastLine := 0, sha256 := "e3c00e18d47db0de4dd19bffeba1edcb58f82b106f8f66d429a725248ec14a98"}) (cons (record Source {record := "Product.Features", path := "tests/product-facets.test.js", firstLine := 0, lastLine := 0, sha256 := "7d04460c3ba5b10caf9479bc58a6793a876d4eac33b6d64e862d2fe009b179bd"}) (cons (record Source {record := "Product.Features", path := "tests/product-model.test.js", firstLine := 0, lastLine := 0, sha256 := "458dbbb991cd042087c778c9a0e76312583da43004235bc2153892db22e46715"}) (cons (record Source {record := "Product.Features", path := "tests/recovery.test.js", firstLine := 0, lastLine := 0, sha256 := "da7f23c8411b4adc63fffa602351ad3ecd0999909717c48bf91aeb21bc5f9d11"}) (cons (record Source {record := "Product.Features", path := "tests/runtime-admission.test.js", firstLine := 0, lastLine := 0, sha256 := "684901ac8a287078f86958f414d3d514e910cd44fa6f6be1b80cd6435c4c3404"}) (cons (record Source {record := "Product.Features", path := "tests/site-explorer.test.js", firstLine := 0, lastLine := 0, sha256 := "83cbd8bdf511a211a3e4c83ee2e41f34f16f1c021019cecbf0d4bf35622eec45"}) (cons (record Source {record := "Product.Features", path := "tests/source-evidence.test.js", firstLine := 0, lastLine := 0, sha256 := "5e6f783768f076e1fc037803d87595eb78c34a358fc5d6119a48c5f5e6107a49"}) (cons (record Source {record := "Product.Features", path := "tests/transport-generation.test.js", firstLine := 0, lastLine := 0, sha256 := "4787ce02dd406ff86055e4aa18c77a760045456772e2b9f78a8f34fc11cb9eec"}) (cons (record Source {record := "Product.Features", path := "tests/vm-administration.test.js", firstLine := 0, lastLine := 0, sha256 := "db3a943b140e27bf10d8da74140b6359e6570f490eaafe2ddb9d4f492aa566b4"}) (cons (record Source {record := "Product.Features", path := "tests/vm-lifecycle.test.js", firstLine := 0, lastLine := 0, sha256 := "3864bbceb02efb69ac55ef37c4944c02677b12aabfce57ee50f3914fd0df20af"}) (nil Source))))))))))))))))))))))))))))))))
+}
+
+definition{
+  name: callJoin,
+  parameters: [],
+  result: String,
+  body: "Browser control #reconnectBtn: Join Mesh and Sync"
+}
+
+definition{
+  name: acceptJoin,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/authenticated-signaling.test.js; tests/transport-generation.test.js; tests/browser/mesh.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 0."
+}
+
+definition{
+  name: featureJoin,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Join Mesh and Sync. Requires explicit signaling disclosure and an available application allowance.", calls := (cons "Product.Features::callJoin" (nil String)), acceptance := (cons "Product.Features::acceptJoin" (nil String))})
+}
+
+definition{
+  name: callStore,
+  parameters: [],
+  result: String,
+  body: "Browser control #dbPutBtn: Store and Request Placement"
+}
+
+definition{
+  name: acceptStore,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/custody.test.js; tests/placement-repair.test.js; tests/recovery.test.js; tests/pointer-recovery.test.js. Exact action guard: Product.Experience::actionAllowed code 1."
+}
+
+definition{
+  name: featureStore,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Store and Request Placement. Commit local bytes; request conditional placement with reachable peers.", calls := (cons "Product.Features::callStore" (nil String)), acceptance := (cons "Product.Features::acceptStore" (nil String))})
+}
+
+definition{
+  name: callClear,
+  parameters: [],
+  result: String,
+  body: "Browser control #dbWipeLocalBtn: Clear Local Object Bytes"
+}
+
+definition{
+  name: acceptClear,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/custody.test.js; tests/placement-repair.test.js; tests/recovery.test.js; tests/pointer-recovery.test.js. Exact action guard: Product.Experience::actionAllowed code 2."
+}
+
+definition{
+  name: featureClear,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Clear Local Object Bytes. Only local bytes are cleared. Recovery may fail if no other fragments remain.", calls := (cons "Product.Features::callClear" (nil String)), acceptance := (cons "Product.Features::acceptClear" (nil String))})
+}
+
+definition{
+  name: callRecover,
+  parameters: [],
+  result: String,
+  body: "Browser control #dbSyncBtn: Fetch Reachable Fragments"
+}
+
+definition{
+  name: acceptRecover,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/custody.test.js; tests/placement-repair.test.js; tests/recovery.test.js; tests/pointer-recovery.test.js. Exact action guard: Product.Experience::actionAllowed code 3."
+}
+
+definition{
+  name: featureRecover,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Fetch Reachable Fragments. Checks fragments and complete object commitment before recovery.", calls := (cons "Product.Features::callRecover" (nil String)), acceptance := (cons "Product.Features::acceptRecover" (nil String))})
+}
+
+definition{
+  name: callStart,
+  parameters: [],
+  result: String,
+  body: "Browser control #startJobBtn: Start Pure Replayable Job"
+}
+
+definition{
+  name: acceptStart,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/execution-identity.test.js; tests/primitive-operations.test.js; tests/runtime-admission.test.js. Exact action guard: Product.Experience::actionAllowed code 4."
+}
+
+definition{
+  name: featureStart,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Start Pure Replayable Job. Deterministic ring work; not guest execution.", calls := (cons "Product.Features::callStart" (nil String)), acceptance := (cons "Product.Features::acceptStart" (nil String))})
+}
+
+definition{
+  name: callResume,
+  parameters: [],
+  result: String,
+  body: "Browser control #takeoverJobsBtn: Scan and Resume Pure Jobs"
+}
+
+definition{
+  name: acceptResume,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/execution-identity.test.js; tests/primitive-operations.test.js; tests/runtime-admission.test.js. Exact action guard: Product.Experience::actionAllowed code 5."
+}
+
+definition{
+  name: featureResume,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Scan and Resume Pure Jobs. Replay accepted checkpoints before continuation.", calls := (cons "Product.Features::callResume" (nil String)), acceptance := (cons "Product.Features::acceptResume" (nil String))})
+}
+
+definition{
+  name: callBoot,
+  parameters: [],
+  result: String,
+  body: "Browser control #bootVmBtn: Boot Linux VM"
+}
+
+definition{
+  name: acceptBoot,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/vm-lifecycle.test.js; tests/vm-administration.test.js; tests/browser/vm.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 6."
+}
+
+definition{
+  name: featureBoot,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Boot Linux VM. Offline boot needs no IP address. Ethernet sharing requires an explicit static IPv4 host address and compatible subnet prefix before boot. Destroy retained instances before reconfiguration; operators must ensure address uniqueness.", calls := (cons "Product.Features::callBoot" (nil String)), acceptance := (cons "Product.Features::acceptBoot" (nil String))})
+}
+
+definition{
+  name: callExecute,
+  parameters: [],
+  result: String,
+  body: "Browser control #runVmCmdBtn: Run Guest Command and Store Stdout"
+}
+
+definition{
+  name: acceptExecute,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/vm-lifecycle.test.js; tests/vm-administration.test.js; tests/browser/vm.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 7."
+}
+
+definition{
+  name: featureExecute,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Run Guest Command and Store Stdout. Host effect; a stored output digest does not certify execution.", calls := (cons "Product.Features::callExecute" (nil String)), acceptance := (cons "Product.Features::acceptExecute" (nil String))})
+}
+
+definition{
+  name: callSrv,
+  parameters: [],
+  result: String,
+  body: "Browser control #resolveSrvBtn: Discover SRV Records"
+}
+
+definition{
+  name: acceptSrv,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/dns-publication.test.js; tests/browser-authority-lifecycle.test.js; tests/browser/authority.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 8."
+}
+
+definition{
+  name: featureSrv,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Discover SRV Records. DNS is discovery evidence only.", calls := (cons "Product.Features::callSrv" (nil String)), acceptance := (cons "Product.Features::acceptSrv" (nil String))})
+}
+
+definition{
+  name: callTxt,
+  parameters: [],
+  result: String,
+  body: "Browser control #resolveTxtBtn: Discover and Check TXT Pointers"
+}
+
+definition{
+  name: acceptTxt,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/dns-publication.test.js; tests/browser-authority-lifecycle.test.js; tests/browser/authority.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 9."
+}
+
+definition{
+  name: featureTxt,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Discover and Check TXT Pointers. Only independently pinned keys can authorize admitted pointer heads.", calls := (cons "Product.Features::callTxt" (nil String)), acceptance := (cons "Product.Features::acceptTxt" (nil String))})
+}
+
+definition{
+  name: callPin,
+  parameters: [],
+  result: String,
+  body: "Browser control #pinSessionAuthorityBtn: Trust Saved Key or Create Session Key"
+}
+
+definition{
+  name: acceptPin,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/dns-publication.test.js; tests/browser-authority-lifecycle.test.js; tests/browser/authority.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 10."
+}
+
+definition{
+  name: featurePin,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Trust Saved Key or Create Session Key. Explicitly pin the restored saved key, or create a session-only key if none is loaded. A different key does not inherit earlier trust.", calls := (cons "Product.Features::callPin" (nil String)), acceptance := (cons "Product.Features::acceptPin" (nil String))})
+}
+
+definition{
+  name: callAdmit,
+  parameters: [],
+  result: String,
+  body: "Browser control #admitPointerBtn: Admit Pasted Pointer"
+}
+
+definition{
+  name: acceptAdmit,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/dns-publication.test.js; tests/browser-authority-lifecycle.test.js; tests/browser/authority.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 11."
+}
+
+definition{
+  name: featureAdmit,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Admit Pasted Pointer. Requires a pinned authority and available application allowance.", calls := (cons "Product.Features::callAdmit" (nil String)), acceptance := (cons "Product.Features::acceptAdmit" (nil String))})
+}
+
+definition{
+  name: callPublish,
+  parameters: [],
+  result: String,
+  body: "Browser control #writeSignedDnsBtn: Admit Next Pointer and Publish TXT"
+}
+
+definition{
+  name: acceptPublish,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/dns-publication.test.js; tests/browser-authority-lifecycle.test.js; tests/browser/authority.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 12."
+}
+
+definition{
+  name: featurePublish,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Admit Next Pointer and Publish TXT. Without provider credentials, only the local head is admitted. Unresolved writes cannot advance candidates.", calls := (cons "Product.Features::callPublish" (nil String)), acceptance := (cons "Product.Features::acceptPublish" (nil String))})
+}
+
+definition{
+  name: callReconcile,
+  parameters: [],
+  result: String,
+  body: "Browser control #reconcilePointerBtn: Reconcile Unknown Publication"
+}
+
+definition{
+  name: acceptReconcile,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/dns-publication.test.js; tests/browser-authority-lifecycle.test.js; tests/browser/authority.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 13."
+}
+
+definition{
+  name: featureReconcile,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Reconcile Unknown Publication. Read the exact scoped provider candidate; do not repeat the uncertain write.", calls := (cons "Product.Features::callReconcile" (nil String)), acceptance := (cons "Product.Features::acceptReconcile" (nil String))})
+}
+
+definition{
+  name: callRenew,
+  parameters: [],
+  result: String,
+  body: "Browser control #renewBudgetBtn: Start New Epoch with These Limits"
+}
+
+definition{
+  name: acceptRenew,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/runtime-admission.test.js; tests/operator-ui.test.js. Exact action guard: Product.Experience::actionAllowed code 14."
+}
+
+definition{
+  name: featureRenew,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Start New Epoch with These Limits. Grants a fresh bounded allowance; retains prior epochs and does not retry effects.", calls := (cons "Product.Features::callRenew" (nil String)), acceptance := (cons "Product.Features::acceptRenew" (nil String))})
+}
+
+definition{
+  name: callExport,
+  parameters: [],
+  result: String,
+  body: "Browser control #exportBudgetHistoryBtn: Export Policy History"
+}
+
+definition{
+  name: acceptExport,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/runtime-admission.test.js; tests/operator-ui.test.js. Exact action guard: Product.Experience::actionAllowed code 15."
+}
+
+definition{
+  name: featureExport,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Export Policy History. Export existing accounting without changing or refunding charges.", calls := (cons "Product.Features::callExport" (nil String)), acceptance := (cons "Product.Features::acceptExport" (nil String))})
+}
+
+definition{
+  name: callRecoveryExport,
+  parameters: [],
+  result: String,
+  body: "Browser control #exportRecoveryBtn: Export Live Evidence"
+}
+
+definition{
+  name: acceptRecoveryExport,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/custody.test.js; tests/placement-repair.test.js; tests/recovery.test.js; tests/pointer-recovery.test.js. Exact action guard: Product.Experience::actionAllowed code 16."
+}
+
+definition{
+  name: featureRecoveryExport,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Export Live Evidence. Export complete local objects, pure checkpoints and supplied pointer evidence; no keys.", calls := (cons "Product.Features::callRecoveryExport" (nil String)), acceptance := (cons "Product.Features::acceptRecoveryExport" (nil String))})
+}
+
+definition{
+  name: callRecoveryImport,
+  parameters: [],
+  result: String,
+  body: "Browser control #importRecoveryBtn: Verify and Import Locally"
+}
+
+definition{
+  name: acceptRecoveryImport,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/custody.test.js; tests/placement-repair.test.js; tests/recovery.test.js; tests/pointer-recovery.test.js. Exact action guard: Product.Experience::actionAllowed code 17."
+}
+
+definition{
+  name: featureRecoveryImport,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Verify and Import Locally. Validate the complete bounded file before committing session-only evidence; no host effects.", calls := (cons "Product.Features::callRecoveryImport" (nil String)), acceptance := (cons "Product.Features::acceptRecoveryImport" (nil String))})
+}
+
+definition{
+  name: callRecoverySave,
+  parameters: [],
+  result: String,
+  body: "Browser control #exportRecoveredBtn: Export Recovery Vault"
+}
+
+definition{
+  name: acceptRecoverySave,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/custody.test.js; tests/placement-repair.test.js; tests/recovery.test.js; tests/pointer-recovery.test.js. Exact action guard: Product.Experience::actionAllowed code 18."
+}
+
+definition{
+  name: featureRecoverySave,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Export Recovery Vault. Save verified evidence externally; accepted trust is never transferred by a file.", calls := (cons "Product.Features::callRecoverySave" (nil String)), acceptance := (cons "Product.Features::acceptRecoverySave" (nil String))})
+}
+
+definition{
+  name: callRecoveryDownload,
+  parameters: [],
+  result: String,
+  body: "Browser control #downloadRecoveredObjectBtn: Download Verified Object"
+}
+
+definition{
+  name: acceptRecoveryDownload,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/custody.test.js; tests/placement-repair.test.js; tests/recovery.test.js; tests/pointer-recovery.test.js. Exact action guard: Product.Experience::actionAllowed code 19."
+}
+
+definition{
+  name: featureRecoveryDownload,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Download Verified Object. Download checked local bytes without mounting or publishing them.", calls := (cons "Product.Features::callRecoveryDownload" (nil String)), acceptance := (cons "Product.Features::acceptRecoveryDownload" (nil String))})
+}
+
+definition{
+  name: callRecoveryFinish,
+  parameters: [],
+  result: String,
+  body: "Browser control #resumeRecoveredJobBtn: Finish Pure Job Locally"
+}
+
+definition{
+  name: acceptRecoveryFinish,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/custody.test.js; tests/placement-repair.test.js; tests/recovery.test.js; tests/pointer-recovery.test.js. Exact action guard: Product.Experience::actionAllowed code 20."
+}
+
+definition{
+  name: featureRecoveryFinish,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Finish Pure Job Locally. Explicitly finish deterministic ring work only; no VM or external effects.", calls := (cons "Product.Features::callRecoveryFinish" (nil String)), acceptance := (cons "Product.Features::acceptRecoveryFinish" (nil String))})
+}
+
+definition{
+  name: callRecoveryTrust,
+  parameters: [],
+  result: String,
+  body: "Browser control #acceptRecoveryAnchorBtn: Accept Exact Recent Anchor"
+}
+
+definition{
+  name: acceptRecoveryTrust,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/custody.test.js; tests/placement-repair.test.js; tests/recovery.test.js; tests/pointer-recovery.test.js. Exact action guard: Product.Experience::actionAllowed code 21."
+}
+
+definition{
+  name: featureRecoveryTrust,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Accept Exact Recent Anchor. Requires independently obtained exact recent digest and writer key, current validity and explicit consent.", calls := (cons "Product.Features::callRecoveryTrust" (nil String)), acceptance := (cons "Product.Features::acceptRecoveryTrust" (nil String))})
+}
+
+definition{
+  name: callVmStop,
+  parameters: [],
+  result: String,
+  body: "Browser control #stopVmBtn: Stop VM"
+}
+
+definition{
+  name: acceptVmStop,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/vm-lifecycle.test.js; tests/vm-administration.test.js; tests/browser/vm.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 22."
+}
+
+definition{
+  name: featureVmStop,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Stop VM. Stop the current guest; an unconfirmed stop remains quarantined.", calls := (cons "Product.Features::callVmStop" (nil String)), acceptance := (cons "Product.Features::acceptVmStop" (nil String))})
+}
+
+definition{
+  name: callVmDestroy,
+  parameters: [],
+  result: String,
+  body: "Browser control #destroyVmBtn: Destroy VM"
+}
+
+definition{
+  name: acceptVmDestroy,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/vm-lifecycle.test.js; tests/vm-administration.test.js; tests/browser/vm.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 23."
+}
+
+definition{
+  name: featureVmDestroy,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Destroy VM. Destroy the guest instance, revoke its grants and refuse stale callbacks.", calls := (cons "Product.Features::callVmDestroy" (nil String)), acceptance := (cons "Product.Features::acceptVmDestroy" (nil String))})
+}
+
+definition{
+  name: callVmCancel,
+  parameters: [],
+  result: String,
+  body: "Browser control #cancelVmObservationBtn: Cancel and Stop VM"
+}
+
+definition{
+  name: acceptVmCancel,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/vm-lifecycle.test.js; tests/vm-administration.test.js; tests/browser/vm.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 24."
+}
+
+definition{
+  name: featureVmCancel,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Cancel and Stop VM. Before dispatch, prevent the command. After dispatch, stop the whole VM, including other guest work; prior effects remain unknown.", calls := (cons "Product.Features::callVmCancel" (nil String)), acceptance := (cons "Product.Features::acceptVmCancel" (nil String))})
+}
+
+definition{
+  name: callVmReconcile,
+  parameters: [],
+  result: String,
+  body: "Browser control #reconcileVmCommandBtn: Observe Selected Command Result"
+}
+
+definition{
+  name: acceptVmReconcile,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/vm-lifecycle.test.js; tests/vm-administration.test.js; tests/browser/vm.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 25."
+}
+
+definition{
+  name: featureVmReconcile,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Observe Selected Command Result. Observe the same command result without executing the command again.", calls := (cons "Product.Features::callVmReconcile" (nil String)), acceptance := (cons "Product.Features::acceptVmReconcile" (nil String))})
+}
+
+definition{
+  name: callVmForget,
+  parameters: [],
+  result: String,
+  body: "Browser control #forgetVmCommandBtn: Forget Resolved Command Evidence"
+}
+
+definition{
+  name: acceptVmForget,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/vm-lifecycle.test.js; tests/vm-administration.test.js; tests/browser/vm.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 26."
+}
+
+definition{
+  name: featureVmForget,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Forget Resolved Command Evidence. Free retained host command output only when resolved. Unknown effects stay retained; guest files are unchanged.", calls := (cons "Product.Features::callVmForget" (nil String)), acceptance := (cons "Product.Features::acceptVmForget" (nil String))})
+}
+
+definition{
+  name: callSaveAuthority,
+  parameters: [],
+  result: String,
+  body: "Browser control #saveAuthorityBtn: Set Up or Restore Saved Authority"
+}
+
+definition{
+  name: acceptSaveAuthority,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/dns-publication.test.js; tests/browser-authority-lifecycle.test.js; tests/browser/authority.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 27."
+}
+
+definition{
+  name: featureSaveAuthority,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Set Up or Restore Saved Authority. Save a nonextractable origin-local signing key and explicitly pin it. Browser storage can be lost; there is no key backup or automatic replacement.", calls := (cons "Product.Features::callSaveAuthority" (nil String)), acceptance := (cons "Product.Features::acceptSaveAuthority" (nil String))})
+}
+
+definition{
+  name: callLoadPublication,
+  parameters: [],
+  result: String,
+  body: "Browser control #loadPublicationBtn: Load Saved Publication"
+}
+
+definition{
+  name: acceptLoadPublication,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/dns-publication.test.js; tests/browser-authority-lifecycle.test.js; tests/browser/authority.spec.mjs. Exact action guard: Product.Experience::actionAllowed code 28."
+}
+
+definition{
+  name: featureLoadPublication,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Load Saved Publication. Load the exact zone, name and authority journal before reconciliation. Never repeat an unknown write merely because its owner tab closed.", calls := (cons "Product.Features::callLoadPublication" (nil String)), acceptance := (cons "Product.Features::acceptLoadPublication" (nil String))})
+}
+
+definition{
+  name: callRecoveryRestore,
+  parameters: [],
+  result: String,
+  body: "Browser control #restoreRecoveryAnchorBtn: Restore Accepted Live Head"
+}
+
+definition{
+  name: acceptRecoveryRestore,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/custody.test.js; tests/placement-repair.test.js; tests/recovery.test.js; tests/pointer-recovery.test.js. Exact action guard: Product.Experience::actionAllowed code 29."
+}
+
+definition{
+  name: featureRecoveryRestore,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Restore Accepted Live Head. Explicitly restore only the separately accepted exact anchor into the same pinned live name and key, with no different retained head. No DNS, mesh or VM effect.", calls := (cons "Product.Features::callRecoveryRestore" (nil String)), acceptance := (cons "Product.Features::acceptRecoveryRestore" (nil String))})
+}
+
+definition{
+  name: callPlacementRepair,
+  parameters: [],
+  result: String,
+  body: "Browser control #repairPlacementBtn: Repair Selected Placement"
+}
+
+definition{
+  name: acceptPlacementRepair,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/custody.test.js; tests/placement-repair.test.js; tests/recovery.test.js; tests/pointer-recovery.test.js. Exact action guard: Product.Experience::actionAllowed code 30."
+}
+
+definition{
+  name: featurePlacementRepair,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Repair Selected Placement. Use the exact retained verified object to fill missing fragments, refresh expired custody or replace a selected live holder. Uncertain requests and old copies stay accounted; only fresh checked receipts establish custody.", calls := (cons "Product.Features::callPlacementRepair" (nil String)), acceptance := (cons "Product.Features::acceptPlacementRepair" (nil String))})
+}
+
+definition{
+  name: callLearnProtocol,
+  parameters: [],
+  result: String,
+  body: "Browser surface #encodeExample: Explore exact fragment recovery locally"
+}
+
+definition{
+  name: acceptLearnProtocol,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/site-explorer.test.js; tests/browser/site.spec.mjs"
+}
+
+definition{
+  name: featureLearnProtocol,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Explore exact fragment recovery locally. Change the input, withhold a fragment or alter a byte using the real custody verifier; no mesh or persistence effects.", calls := (cons "Product.Features::callLearnProtocol" (nil String)), acceptance := (cons "Product.Features::acceptLearnProtocol" (nil String))})
+}
+
+definition{
+  name: callInspectFacetSources,
+  parameters: [],
+  result: String,
+  body: "Browser surface #facetCatalogContent: Inspect source-derived product facets"
+}
+
+definition{
+  name: acceptInspectFacetSources,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/site-explorer.test.js; tests/product-facets.test.js"
+}
+
+definition{
+  name: featureInspectFacetSources,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Inspect source-derived product facets. Read declaration counts, source links and evidence boundaries without a verification badge.", calls := (cons "Product.Features::callInspectFacetSources" (nil String)), acceptance := (cons "Product.Features::acceptInspectFacetSources" (nil String))})
+}
+
+definition{
+  name: callReviewHostBoundaries,
+  parameters: [],
+  result: String,
+  body: "docs/product-projection.md"
+}
+
+definition{
+  name: acceptReviewHostBoundaries,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/source-evidence.test.js; tests/product-model.test.js"
+}
+
+definition{
+  name: featureReviewHostBoundaries,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Review whole-product host and release boundaries. Separate exact-source/native probe results from actual browser, network, VM and provider qualification.", calls := (cons "Product.Features::callReviewHostBoundaries" (nil String)), acceptance := (cons "Product.Features::acceptReviewHostBoundaries" (nil String))})
+}
+
+definition{name: callExtendProtocol, parameters: [], result: String, body: "docs/prism-model.md"}
+
+definition{
+  name: acceptExtendProtocol,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/contracts.test.js; tests/execution-identity.test.js; tests/product-model.test.js"
+}
+
+definition{
+  name: featureExtendProtocol,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Extend source-owned protocol contracts. Locate versioned encoding dependencies, reserve-before-effect limits, replay identity and positive/negative evidence before extending adapters.", calls := (cons "Product.Features::callExtendProtocol" (nil String)), acceptance := (cons "Product.Features::acceptExtendProtocol" (nil String))})
+}
+
+definition{
+  name: callInspectAuthorityStorage,
+  parameters: [],
+  result: String,
+  body: "Browser surface #inspectAuthorityStorageBtn: Inspect Origin Storage and Journal"
+}
+
+definition{
+  name: acceptInspectAuthorityStorage,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/authority-ui.test.js; tests/browser-authority-lifecycle.test.js"
+}
+
+definition{
+  name: featureInspectAuthorityStorage,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Inspect Origin Storage and Journal. Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 0; no new global identity, implicit trust or resolution of unknown effects.", calls := (cons "Product.Features::callInspectAuthorityStorage" (nil String)), acceptance := (cons "Product.Features::acceptInspectAuthorityStorage" (nil String))})
+}
+
+definition{
+  name: callRotateAuthority,
+  parameters: [],
+  result: String,
+  body: "Browser surface #rotateAuthorityBtn: Rotate Saved Signing Key"
+}
+
+definition{
+  name: acceptRotateAuthority,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/authority-ui.test.js; tests/browser-authority-lifecycle.test.js"
+}
+
+definition{
+  name: featureRotateAuthority,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Rotate Saved Signing Key. Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 1; no new global identity, implicit trust or resolution of unknown effects.", calls := (cons "Product.Features::callRotateAuthority" (nil String)), acceptance := (cons "Product.Features::acceptRotateAuthority" (nil String))})
+}
+
+definition{
+  name: callRevokeAuthority,
+  parameters: [],
+  result: String,
+  body: "Browser surface #revokeAuthorityBtn: Revoke Saved Signing Key Locally"
+}
+
+definition{
+  name: acceptRevokeAuthority,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/authority-ui.test.js; tests/browser-authority-lifecycle.test.js"
+}
+
+definition{
+  name: featureRevokeAuthority,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Revoke Saved Signing Key Locally. Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 2; no new global identity, implicit trust or resolution of unknown effects.", calls := (cons "Product.Features::callRevokeAuthority" (nil String)), acceptance := (cons "Product.Features::acceptRevokeAuthority" (nil String))})
+}
+
+definition{
+  name: callSaveTrustedAnchor,
+  parameters: [],
+  result: String,
+  body: "Browser surface #saveTrustedAnchorBtn: Save Current Exact Trust Anchor"
+}
+
+definition{
+  name: acceptSaveTrustedAnchor,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/authority-ui.test.js; tests/browser-authority-lifecycle.test.js"
+}
+
+definition{
+  name: featureSaveTrustedAnchor,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Save Current Exact Trust Anchor. Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 3; no new global identity, implicit trust or resolution of unknown effects.", calls := (cons "Product.Features::callSaveTrustedAnchor" (nil String)), acceptance := (cons "Product.Features::acceptSaveTrustedAnchor" (nil String))})
+}
+
+definition{
+  name: callRestoreTrustedAnchor,
+  parameters: [],
+  result: String,
+  body: "Browser surface #restoreTrustedAnchorBtn: Restore Saved Head to Current Pin"
+}
+
+definition{
+  name: acceptRestoreTrustedAnchor,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/authority-ui.test.js; tests/browser-authority-lifecycle.test.js"
+}
+
+definition{
+  name: featureRestoreTrustedAnchor,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Restore Saved Head to Current Pin. Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 4; no new global identity, implicit trust or resolution of unknown effects.", calls := (cons "Product.Features::callRestoreTrustedAnchor" (nil String)), acceptance := (cons "Product.Features::acceptRestoreTrustedAnchor" (nil String))})
+}
+
+definition{
+  name: callMigrateTrustedAnchor,
+  parameters: [],
+  result: String,
+  body: "Browser surface #migrateTrustedAnchorBtn: Migrate Saved Trust to Pasted Anchor"
+}
+
+definition{
+  name: acceptMigrateTrustedAnchor,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/authority-ui.test.js; tests/browser-authority-lifecycle.test.js"
+}
+
+definition{
+  name: featureMigrateTrustedAnchor,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Migrate Saved Trust to Pasted Anchor. Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 5; no new global identity, implicit trust or resolution of unknown effects.", calls := (cons "Product.Features::callMigrateTrustedAnchor" (nil String)), acceptance := (cons "Product.Features::acceptMigrateTrustedAnchor" (nil String))})
+}
+
+definition{
+  name: callRevokeTrustedAnchor,
+  parameters: [],
+  result: String,
+  body: "Browser surface #revokeTrustedAnchorBtn: Revoke Saved Trust Locally"
+}
+
+definition{
+  name: acceptRevokeTrustedAnchor,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/authority-ui.test.js; tests/browser-authority-lifecycle.test.js"
+}
+
+definition{
+  name: featureRevokeTrustedAnchor,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Revoke Saved Trust Locally. Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 6; no new global identity, implicit trust or resolution of unknown effects.", calls := (cons "Product.Features::callRevokeTrustedAnchor" (nil String)), acceptance := (cons "Product.Features::acceptRevokeTrustedAnchor" (nil String))})
+}
+
+definition{
+  name: callPersistAuthorityStorage,
+  parameters: [],
+  result: String,
+  body: "Browser surface #persistAuthorityStorageBtn: Request Browser Storage Persistence"
+}
+
+definition{
+  name: acceptPersistAuthorityStorage,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/authority-ui.test.js; tests/browser-authority-lifecycle.test.js"
+}
+
+definition{
+  name: featurePersistAuthorityStorage,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Request Browser Storage Persistence. Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 7; no new global identity, implicit trust or resolution of unknown effects.", calls := (cons "Product.Features::callPersistAuthorityStorage" (nil String)), acceptance := (cons "Product.Features::acceptPersistAuthorityStorage" (nil String))})
+}
+
+definition{
+  name: callExportAuthorityJournal,
+  parameters: [],
+  result: String,
+  body: "Browser surface #exportAuthorityJournalBtn: Export Public Authority Journal"
+}
+
+definition{
+  name: acceptExportAuthorityJournal,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/authority-ui.test.js; tests/browser-authority-lifecycle.test.js"
+}
+
+definition{
+  name: featureExportAuthorityJournal,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Export Public Authority Journal. Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 8; no new global identity, implicit trust or resolution of unknown effects.", calls := (cons "Product.Features::callExportAuthorityJournal" (nil String)), acceptance := (cons "Product.Features::acceptExportAuthorityJournal" (nil String))})
+}
+
+definition{
+  name: callCompactAuthorityJournal,
+  parameters: [],
+  result: String,
+  body: "Browser surface #compactAuthorityJournalBtn: Remove Definitely Refused Journal Entries"
+}
+
+definition{
+  name: acceptCompactAuthorityJournal,
+  parameters: [],
+  result: String,
+  body: "Evidence to run, not a pass claim: tests/authority-ui.test.js; tests/browser-authority-lifecycle.test.js"
+}
+
+definition{
+  name: featureCompactAuthorityJournal,
+  parameters: [],
+  result: Foundation.Arch::Feature,
+  body: (record Foundation.Arch::Feature {statement := "Remove Definitely Refused Journal Entries. Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 9; no new global identity, implicit trust or resolution of unknown effects.", calls := (cons "Product.Features::callCompactAuthorityJournal" (nil String)), acceptance := (cons "Product.Features::acceptCompactAuthorityJournal" (nil String))})
+}
+
+definition{
+  name: journeyMesh,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Product.Architecture::operator", steps := (cons "Product.Features::featureJoin" (nil String))})
+}
+
+definition{
+  name: journeyObjects,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Product.Architecture::operator", steps := (cons "Product.Features::featureStore" (cons "Product.Features::featurePlacementRepair" (cons "Product.Features::featureRecoveryExport" (cons "Product.Features::featureRecoveryImport" (cons "Product.Features::featureRecoveryDownload" (nil String))))))})
+}
+
+definition{
+  name: journeyCompute,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Product.Architecture::operator", steps := (cons "Product.Features::featureStart" (cons "Product.Features::featureResume" (nil String)))})
+}
+
+definition{
+  name: journeyVm,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Product.Architecture::operator", steps := (cons "Product.Features::featureBoot" (cons "Product.Features::featureExecute" (cons "Product.Features::featureVmReconcile" (cons "Product.Features::featureVmStop" (cons "Product.Features::featureVmDestroy" (nil String))))))})
+}
+
+definition{
+  name: journeyPointers,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Product.Architecture::operator", steps := (cons "Product.Features::featureSaveAuthority" (cons "Product.Features::featurePin" (cons "Product.Features::featureTxt" (cons "Product.Features::featureAdmit" (cons "Product.Features::featurePublish" (cons "Product.Features::featureLoadPublication" (cons "Product.Features::featureReconcile" (nil String))))))))})
+}
+
+definition{
+  name: journeyResources,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Product.Architecture::operator", steps := (cons "Product.Features::featureExport" (cons "Product.Features::featureRenew" (nil String)))})
+}
+
+definition{
+  name: journeyReader,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Product.Architecture::reader", steps := (cons "Product.Features::featureLearnProtocol" (cons "Product.Features::featureInspectFacetSources" (nil String)))})
+}
+
+definition{
+  name: journeyReviewer,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Product.Architecture::reviewer", steps := (cons "Product.Features::featureInspectFacetSources" (cons "Product.Features::featureReviewHostBoundaries" (nil String)))})
+}
+
+definition{
+  name: journeyIntegrator,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Product.Architecture::systemIntegrator", steps := (cons "Product.Features::featureLearnProtocol" (cons "Product.Features::featureReviewHostBoundaries" (cons "Product.Features::featureExtendProtocol" (nil String))))})
+}
+
+definition{
+  name: journeyAuthority,
+  parameters: [],
+  result: Foundation.Arch::Journey,
+  body: (record Foundation.Arch::Journey {actor := "Product.Architecture::operator", steps := (cons "Product.Features::featureInspectAuthorityStorage" (cons "Product.Features::featureSaveTrustedAnchor" (cons "Product.Features::featureRestoreTrustedAnchor" (cons "Product.Features::featureExportAuthorityJournal" (nil String)))))})
+}
+
+definition{
+  name: scope,
+  parameters: [],
+  result: String,
+  body: "Feature acceptance names executable evidence; only a successful exact-revision run establishes its result. Journeys describe ordered available tasks, not an instruction to repeat effects."
+}
+\end{semanticmodule}
+\end{lexlean}

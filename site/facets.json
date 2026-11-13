@@ -1,0 +1,69 @@
+{
+  "format": "stitch/site-facets/1",
+  "assurance": "Source-derived product inventory and obligations, not a verification receipt or whole-product certificate.",
+  "facets": [
+    {
+      "name": "Product.Features",
+      "source": "app/src/Product/Features.lex.tex",
+      "summary": "Every live operator action and its guarded journey, linked to executable evidence.",
+      "count": 148,
+      "evidenceStatus": "Source-derived inventory; exact-revision SDK and browser qualification required"
+    },
+    {
+      "name": "Product.Design",
+      "source": "app/src/Product/Design.lex.tex",
+      "summary": "The five-layer component graph, object process, publication sequence and unknown-write state machine.",
+      "count": 107,
+      "evidenceStatus": "Source-derived inventory; exact-revision SDK and browser qualification required"
+    },
+    {
+      "name": "Product.Security",
+      "source": "app/src/Product/Security.lex.tex",
+      "summary": "Assets, STRIDE threats, qualitative risk assessments and traceable controls without false pass claims.",
+      "count": 99,
+      "evidenceStatus": "Source-derived inventory; exact-revision SDK and browser qualification required"
+    },
+    {
+      "name": "Product.Quality",
+      "source": "app/src/Product/Quality.lex.tex",
+      "summary": "Source-derived coverage, configured resource limits, zero-defect requirements and open observations.",
+      "count": 48,
+      "evidenceStatus": "Source-derived inventory; exact-revision SDK and browser qualification required"
+    },
+    {
+      "name": "Product.Brand",
+      "source": "app/src/Product/Brand.lex.tex",
+      "summary": "Stitch own palette, typography and scoped text-contrast measurements.",
+      "count": 8,
+      "evidenceStatus": "Source-derived inventory; exact-revision SDK and browser qualification required"
+    },
+    {
+      "name": "Product.Users",
+      "source": "app/src/Product/Users.lex.tex",
+      "summary": "Real user groups, goals, tasks and environments; usability studies remain open.",
+      "count": 16,
+      "evidenceStatus": "Source-derived inventory; exact-revision SDK and browser qualification required"
+    },
+    {
+      "name": "Product.Persistence",
+      "source": "app/src/Product/Persistence.lex.tex",
+      "summary": "What restores automatically, what remains volatile, and which trust decisions and effect outcomes require explicit handling.",
+      "count": 18,
+      "evidenceStatus": "Source-derived inventory; exact-revision SDK and browser qualification required"
+    },
+    {
+      "name": "Product.Release",
+      "source": "app/src/Product/Release.lex.tex",
+      "summary": "Complete dependency/deployment inventory and separate source, native, runtime and browser qualification.",
+      "count": 45,
+      "evidenceStatus": "Source-derived inventory; exact-revision SDK and browser qualification required"
+    },
+    {
+      "name": "Product.Compliance",
+      "source": "app/src/Product/Compliance.lex.tex",
+      "summary": "Named standards obligations, evidence procedures and explicit certification boundaries.",
+      "count": 17,
+      "evidenceStatus": "Source-derived inventory; exact-revision SDK and browser qualification required"
+    }
+  ]
+}

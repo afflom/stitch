@@ -90,22 +90,29 @@ not claims about mechanisms absent from the runtime.
 
 The official `Foundation.Arch` facet represents the complete component and flow
 view through `app/src/Product/Architecture.lex.tex`: 18 components, 31 directed
-flows, an operator, a recoverability concern, a viewpoint and its view. All
+flows, four stakeholder groups (operator, reader, reviewer and system integrator),
+four concerns, and four corresponding viewpoints and views. All
 indexes are derived contiguous positions in sorted declaration-identifier order.
 There are no invented quality scores, thresholds or measured availability rows.
 
-The type-only `app/src/Foundation/Arch.lex.tex` subset comes from the official
+The original architecture-only type subset was derived from the official
 [PrismPM Foundation.Arch source](https://github.com/UOR-Foundation/PrismPM/blob/fe5b8b73a94134c316329a8d1b09ebc97b555c5f/stdlib/src/Foundation/Arch.lex.tex).
-The complete original source is 8,959 bytes with SHA-256
-`9a79e4912d33b1736d7451ab726ed0a83d958b8d9c70091a749fbc70acd48cdc`.
-Only the architecture record/enumeration types through `View` are retained;
-SDK demonstration values, classes, instances and later design-view types are
-omitted. The title uses the existing local glossary. This preserves the
-qualified type names the official projection registry recognizes and does not
-modify the SDK projection mapping. The upstream project offers MIT OR Apache-2.0. This subset is used under MIT;
-its original notice is retained in `product/PRISMPM-LICENSE-MIT.txt`.
-The application continues using its existing digest-pinned SDK; this reference
-inspection does not upgrade or replace `prismpm.lock`.
+The complete product facets extend those types with the pinned
+[UORust type source](https://github.com/afflom/UORust/tree/1d531dfe0120d1cbdac2dd599f6cde513118f0ce/app/src),
+including the design-view types and related security, quality, threat-model and
+experience records. Exact upstream source hashes, derived type-file hashes,
+retained declaration counts and derivation scope are recorded in
+[`product/facet-type-provenance.json`](../product/facet-type-provenance.json).
+The old architecture-source hash is historical provenance, not the identity of
+the expanded current type file.
+
+These are type-only declarations: examples, instances and upstream proof claims
+are not copied as acceptance evidence. Titles use available glossary terms.
+Qualified type names remain intact; the SDK projection mapping is unchanged.
+The original PrismPM MIT notice remains in `product/PRISMPM-LICENSE-MIT.txt` and
+UORust notices in `product/UORUST-LICENSE-MIT.txt`. The application still uses its
+existing digest-pinned SDK. Type-reference inspection neither upgrades that SDK
+nor claims the expanded source has passed its formal gate.
 
 The official
 [specification sections 2 and 11](https://github.com/UOR-Foundation/PrismPM/blob/fe5b8b73a94134c316329a8d1b09ebc97b555c5f/SPEC.md)
@@ -203,8 +210,8 @@ indexes, relay opt-in removal, unsupported browser routing claims, literal
 substitution and changed vendor bytes. Mutation tests do not establish network,
 VM, browser or cryptographic correctness.
 
-The sorted LexLean entrypoints `src/Product/Architecture.lex.tex` and
-`src/Product/Model.lex.tex` are included in the same source graph as the domain and probe.
+The sorted LexLean entrypoints include the original Product modules and all nine
+generated facets in the same source graph as the domain and probe.
 Run canonical formatting, source locking, LexLean check, Lean/leanchecker with
 actual exact observed axiom policies, and the pinned PrismPM gate. Report each
 stage separately. Neither the generated register nor `lexlean check` is a Lean

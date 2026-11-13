@@ -1,0 +1,17 @@
+spec = "lexlean/entry/1"
+id = "stitch-product-quality"
+category = "label-word"
+surface_arity = 0
+frame = "atom"
+
+[denotation]
+kind = "document"
+module = "Product.Quality"
+component = "sources"
+
+[[form]]
+id = "stitch-product-quality"
+channel = "text"
+surface = "Stitch quality requirements and open measurements"
+canonical_source = true
+features = ["sentence-case", "singular"]

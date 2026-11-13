@@ -375,5 +375,88 @@ definition{
   result: Foundation.Arch::View,
   body: (record Foundation.Arch::View {index := 0, viewpointIndex := 0, modelKindIndex := 0})
 }
+definition{
+  name: reader,
+  parameters: [],
+  result: Foundation.Arch::Stakeholder,
+  body: (record Foundation.Arch::Stakeholder {index := 1, name := "Stitch reader", text := "Learns the object, fragment, custody, replay and authority protocol before taking part."})
+}
+
+definition{
+  name: reviewer,
+  parameters: [],
+  result: Foundation.Arch::Stakeholder,
+  body: (record Foundation.Arch::Stakeholder {index := 2, name := "Stitch reviewer", text := "Reviews exact-source evidence, host assumptions, vendor provenance and qualification gaps."})
+}
+
+definition{
+  name: systemIntegrator,
+  parameters: [],
+  result: Foundation.Arch::Stakeholder,
+  body: (record Foundation.Arch::Stakeholder {index := 3, name := "Stitch systemIntegrator", text := "Embeds or extends the protocol without bypassing resource, trust or effect admission."})
+}
+
+definition{
+  name: security,
+  parameters: [],
+  result: Foundation.Arch::Concern,
+  body: (record Foundation.Arch::Concern {index := 1, name := "security", text := "Keep independently accepted authority, exact commitments, explicit disclosure and ambiguous effects distinct."})
+}
+
+definition{
+  name: transparency,
+  parameters: [],
+  result: Foundation.Arch::Concern,
+  body: (record Foundation.Arch::Concern {index := 2, name := "transparency", text := "Trace every product statement to its source and evidence scope; do not promote observations into certification."})
+}
+
+definition{
+  name: usability,
+  parameters: [],
+  result: Foundation.Arch::Concern,
+  body: (record Foundation.Arch::Concern {index := 3, name := "usability", text := "Present the concept and protocol with readable explanations, scalable visuals, keyboard-accessible interaction and explicit evidence states."})
+}
+
+definition{
+  name: readerViewpoint,
+  parameters: [],
+  result: Foundation.Arch::Viewpoint,
+  body: (record Foundation.Arch::Viewpoint {index := 1, stakeholderIndex := 1, concernIndex := 3, modelKindIndex := 0})
+}
+
+definition{
+  name: readerView,
+  parameters: [],
+  result: Foundation.Arch::View,
+  body: (record Foundation.Arch::View {index := 1, viewpointIndex := 1, modelKindIndex := 0})
+}
+
+definition{
+  name: reviewerViewpoint,
+  parameters: [],
+  result: Foundation.Arch::Viewpoint,
+  body: (record Foundation.Arch::Viewpoint {index := 2, stakeholderIndex := 2, concernIndex := 2, modelKindIndex := 0})
+}
+
+definition{
+  name: reviewerView,
+  parameters: [],
+  result: Foundation.Arch::View,
+  body: (record Foundation.Arch::View {index := 2, viewpointIndex := 2, modelKindIndex := 0})
+}
+
+definition{
+  name: systemIntegratorViewpoint,
+  parameters: [],
+  result: Foundation.Arch::Viewpoint,
+  body: (record Foundation.Arch::Viewpoint {index := 3, stakeholderIndex := 3, concernIndex := 1, modelKindIndex := 0})
+}
+
+definition{
+  name: systemIntegratorView,
+  parameters: [],
+  result: Foundation.Arch::View,
+  body: (record Foundation.Arch::View {index := 3, viewpointIndex := 3, modelKindIndex := 0})
+}
 \end{semanticmodule}
 \end{lexlean}

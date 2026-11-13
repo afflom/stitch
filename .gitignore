@@ -7,3 +7,6 @@ app/.lexlean/
 app/.prism/
 app/.lake/
 verification-output/
+
+# Official prism-code axiom-probe diagnostics, retained by the authoring workflow.
+/.lexlean/

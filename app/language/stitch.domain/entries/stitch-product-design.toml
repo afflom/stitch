@@ -1,0 +1,17 @@
+spec = "lexlean/entry/1"
+id = "stitch-product-design"
+category = "label-word"
+surface_arity = 0
+frame = "atom"
+
+[denotation]
+kind = "document"
+module = "Product.Design"
+component = "sources"
+
+[[form]]
+id = "stitch-product-design"
+channel = "text"
+surface = "Stitch protocol design views"
+canonical_source = true
+features = ["sentence-case", "singular"]

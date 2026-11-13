@@ -43159,12 +43159,12 @@ const types = {
     ]
   }
 };
-export const modelSourceDigest = "sha256:0ca6cc7b25876a3f2b1176c10225bb687ddd075c31ef199f0c7413cda32e4963";
+export const modelSourceDigest = "sha256:301bff719772f1292fc58a96f1b7134302ffe88c839199bbb7af5733f9256ed0";
 export const modelExecutionDigest = "sha256:d79f1371e5ea16d16d5b9f56fbcce57cb8044df145dae91a63b9a4cbcb5c50de";
 export const MODEL_SOURCE = Object.freeze({
   "schema": "stitch/source-bindings/1",
   "verification": "source-derived, not kernel-checked",
-  "sourceDigest": "sha256:0ca6cc7b25876a3f2b1176c10225bb687ddd075c31ef199f0c7413cda32e4963",
+  "sourceDigest": "sha256:301bff719772f1292fc58a96f1b7134302ffe88c839199bbb7af5733f9256ed0",
   "executionDigest": "sha256:d79f1371e5ea16d16d5b9f56fbcce57cb8044df145dae91a63b9a4cbcb5c50de",
   "executionIdentity": {
     "adapterSources": [
@@ -46762,11 +46762,23 @@ export const MODEL_SOURCE = Object.freeze({
   "bindingSources": [
     {
       "path": "app/src/Foundation/Arch.lex.tex",
-      "sha256": "54fdc8eb15c46707e445ff99814d6cbd1731967f801bf064a6c1f4cc01c45394"
+      "sha256": "efb3f79f7f956463305800e76b5bfa197d0dc885ae5aca7d40436223cff3eda9"
     },
     {
       "path": "app/src/Foundation/Bytes.lex.tex",
       "sha256": "ce16e5b439128db3231979381f4599d3ff0617f62c2bf00c348bba35393abcd6"
+    },
+    {
+      "path": "app/src/Foundation/Experience/V1/Model.lex.tex",
+      "sha256": "fc7d2edf2c123de2232ed8166db425721696219e7454a36113eb41867e99b813"
+    },
+    {
+      "path": "app/src/Foundation/Qual.lex.tex",
+      "sha256": "f1dbfafde6cb4d7262b12371699be38a9683fa7525a9519eb856d74f01b3ee81"
+    },
+    {
+      "path": "app/src/Foundation/Sec.lex.tex",
+      "sha256": "a58632af4038e6e046aae1848f4c64d89fc497cfbbdb53be2a576358a1f977aa"
     },
     {
       "path": "app/src/Foundation/View/Text/V1/Model.lex.tex",
@@ -46774,11 +46786,27 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Architecture.lex.tex",
-      "sha256": "d5cc5fd4e64070bddd5c0edc8cb3a318a0965b5e1574efe9a9dfa483b12e8d6d"
+      "sha256": "fe5aac05827654477ad09282f0ef977890e00d5db753718c0e6e35139ff15958"
+    },
+    {
+      "path": "app/src/Product/Brand.lex.tex",
+      "sha256": "a06984fa4753d236c8b874a70bf0aca1bc064ad8944a5ce27ac84f1135559578"
+    },
+    {
+      "path": "app/src/Product/Compliance.lex.tex",
+      "sha256": "1a03a88f5d5b860eb9eaff0aa15e3f14cce92ed70bdcf599bd42d66c5e597f1e"
+    },
+    {
+      "path": "app/src/Product/Design.lex.tex",
+      "sha256": "5dab0d1d4d449817f4001a024258e80a048876a30d8ca6edd497be48b3d5841b"
     },
     {
       "path": "app/src/Product/Experience.lex.tex",
       "sha256": "6f2625fdce3d3d51899cabc17ce3d57ec0a9381dd3bf3e6477da6ae3ccfb84bd"
+    },
+    {
+      "path": "app/src/Product/Features.lex.tex",
+      "sha256": "55ef7334d5f2a983f308efa0f854472e397e806ca8aed667231689926b100d84"
     },
     {
       "path": "app/src/Product/Host.lex.tex",
@@ -46786,7 +46814,31 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Model.lex.tex",
-      "sha256": "281fcf4954a28d3afa3fd86fda167541207ef572f16cb3a853aa1fb43216ebed"
+      "sha256": "6081a53375794cab60ddad0199956db978be3d4b91e102f1890dd0e3bc2697c8"
+    },
+    {
+      "path": "app/src/Product/Persistence.lex.tex",
+      "sha256": "0f651a6022c345e155563c42137dc0541b3cf9e8c7953caccaa73c9a0a3755cd"
+    },
+    {
+      "path": "app/src/Product/Quality.lex.tex",
+      "sha256": "f579f472f0cbe605f8b2a062ad94288449b0c6a7c7ef4699b633ac8c7d0d2353"
+    },
+    {
+      "path": "app/src/Product/Release.lex.tex",
+      "sha256": "3804712856cdb777195d7166a64fabece3bf682ed4dadf70842a01ba494cc67b"
+    },
+    {
+      "path": "app/src/Product/Security.lex.tex",
+      "sha256": "aac798355b882dd6ee8b35b54eac0afaca505948e1dd32087c0cfa09e97bf1fe"
+    },
+    {
+      "path": "app/src/Product/Users.lex.tex",
+      "sha256": "f83be58b12bcfbe7cb8453629b8c51dea23bc6e00e4cef24642c2e2d633ad3fa"
+    },
+    {
+      "path": "app/src/Production/ThreatModel.lex.tex",
+      "sha256": "649bd4a4531915fd1dc9449a37f4022380d79261907378e136257df50ac4c1bc"
     },
     {
       "path": "app/src/Stitch/Authority.lex.tex",
@@ -46979,6 +47031,42 @@ export const MODEL_SOURCE = Object.freeze({
     {
       "path": "app/language/stitch.domain/entries/stitch-pointer.toml",
       "sha256": "fbe10dae37ae4a6ef039a7ec38585da18a434b4f8266ab285a4c85b35d3df23b"
+    },
+    {
+      "path": "app/language/stitch.domain/entries/stitch-product-brand.toml",
+      "sha256": "83888689fe9709c366189c287993879f0c34d49c4b8edc8734979b2c3e91816e"
+    },
+    {
+      "path": "app/language/stitch.domain/entries/stitch-product-compliance.toml",
+      "sha256": "712a56eeb947698a0f8057aa3bf0ff0fb4d63920b0d4143a3ca3dccce40008e8"
+    },
+    {
+      "path": "app/language/stitch.domain/entries/stitch-product-design.toml",
+      "sha256": "316dbdd008caef03b6e7860aa90710f4d22f1e1029defb339c4b4d22b30f4359"
+    },
+    {
+      "path": "app/language/stitch.domain/entries/stitch-product-features.toml",
+      "sha256": "d01c970b414c3df9ed6fcbb6871b96c49ad776f8bb585286fc447e1e525b222b"
+    },
+    {
+      "path": "app/language/stitch.domain/entries/stitch-product-persistence.toml",
+      "sha256": "f463e88ba5449df1369ac0cd69019ef50d29dc7cc7a9e92bb628f8152ee68557"
+    },
+    {
+      "path": "app/language/stitch.domain/entries/stitch-product-quality.toml",
+      "sha256": "bd2bb2331371f49e6f96d20cfa81530de00be9cf753bcbf22c4a4cf0a561b405"
+    },
+    {
+      "path": "app/language/stitch.domain/entries/stitch-product-release.toml",
+      "sha256": "eba180091f257e55f12e8ead55585907f52074eecafb1637cf1bbba4e8bffced"
+    },
+    {
+      "path": "app/language/stitch.domain/entries/stitch-product-security.toml",
+      "sha256": "310a7feacb85a42087880a2b10cfd6e90cd061e363c630cf9f600b5cb0da9d7d"
+    },
+    {
+      "path": "app/language/stitch.domain/entries/stitch-product-users.toml",
+      "sha256": "7eba3db5f0690ff9c50cc72ef76581e72e23a695761d56040a53825411f89155"
     },
     {
       "path": "app/language/stitch.domain/entries/stitch-service-model.toml",

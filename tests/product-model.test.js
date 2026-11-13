@@ -38,7 +38,7 @@ test('literal register reader refuses duplicate fields and executable substituti
 test('asset substitution changes the exact artifact identity without inventing provenance',()=>{
   const dir=mkdtempSync(resolve(tmpdir(),'stitch-product-mutation-'));
   try{
-    for(const path of ['app','src','v86','images','vendor','index.html','package.json','package-lock.json','prismpm.lock','standards.lock','CONTRACT.json'])cpSync(resolve(root,path),resolve(dir,path),{recursive:true});
+    for(const path of ['app','src','v86','images','vendor','index.html','package.json','package-lock.json','prismpm.lock','standards.lock','CONTRACT.json','Cargo.toml','Cargo.lock','README.md','.gitignore','product','site','docs','scripts','tests','.github'])cpSync(resolve(root,path),resolve(dir,path),{recursive:true});
     const before=productRegister(dir);writeFileSync(resolve(dir,'v86/seabios.bin'),new Uint8Array([0,1,2,3]));
     assert.equal(before.releaseBlockers.some(x=>x.path==='v86/seabios.bin'),false);
     assert.throws(()=>productRegister(dir),/distribution identity mismatch/);

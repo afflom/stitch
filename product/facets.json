@@ -1,0 +1,2620 @@
+{
+  "format": "stitch/product-facets/1",
+  "assurance": "Source-derived product inventory and obligations, not a verification receipt or whole-product certificate.",
+  "sourceConvention": "Source firstLine=0,lastLine=0 means SHA-256 of the complete UTF-8 file bytes, not a precise source span.",
+  "references": [
+    "https://github.com/afflom/UORust/blob/1d531dfe0120d1cbdac2dd599f6cde513118f0ce/scripts/self-model/facets.py",
+    "https://github.com/afflom/prism-devrel/blob/7b6c54bb6e34f3b970f70d50127ab520367b84ac/scripts/experience/experience.py"
+  ],
+  "sources": [
+    {
+      "path": ".github/workflows/prism.yml",
+      "sha256": "4fe595efda75eabd6d81db25b87a44d0d3fa186deb37b1c50b040095f488d093"
+    },
+    {
+      "path": "app/src/Foundation/Arch.lex.tex",
+      "sha256": "efb3f79f7f956463305800e76b5bfa197d0dc885ae5aca7d40436223cff3eda9"
+    },
+    {
+      "path": "app/src/Foundation/Experience/V1/Model.lex.tex",
+      "sha256": "fc7d2edf2c123de2232ed8166db425721696219e7454a36113eb41867e99b813"
+    },
+    {
+      "path": "app/src/Foundation/Qual.lex.tex",
+      "sha256": "f1dbfafde6cb4d7262b12371699be38a9683fa7525a9519eb856d74f01b3ee81"
+    },
+    {
+      "path": "app/src/Foundation/Sec.lex.tex",
+      "sha256": "a58632af4038e6e046aae1848f4c64d89fc497cfbbdb53be2a576358a1f977aa"
+    },
+    {
+      "path": "app/src/Product/Architecture.lex.tex",
+      "sha256": "fe5aac05827654477ad09282f0ef977890e00d5db753718c0e6e35139ff15958"
+    },
+    {
+      "path": "app/src/Product/Experience.lex.tex",
+      "sha256": "6f2625fdce3d3d51899cabc17ce3d57ec0a9381dd3bf3e6477da6ae3ccfb84bd"
+    },
+    {
+      "path": "app/src/Product/Model.lex.tex",
+      "sha256": "6081a53375794cab60ddad0199956db978be3d4b91e102f1890dd0e3bc2697c8"
+    },
+    {
+      "path": "app/src/Production/ThreatModel.lex.tex",
+      "sha256": "649bd4a4531915fd1dc9449a37f4022380d79261907378e136257df50ac4c1bc"
+    },
+    {
+      "path": "app/src/Stitch/Effects.lex.tex",
+      "sha256": "7ccc2c30cca7df663541ceece0c85226f921160f56f4ec681703a8d5b589263b"
+    },
+    {
+      "path": "docs/authenticated-signaling.md",
+      "sha256": "fe052f6e80d800c60bedfce5ed7eecaa7cf8cf03feff4bdc995ccb26ec108e2c"
+    },
+    {
+      "path": "docs/browser-authority.md",
+      "sha256": "642c15248bd22ef2de107c9ca1e1b9dcecc24bb5ac8b59b78b14b98c6995a3c9"
+    },
+    {
+      "path": "docs/canonical-json.md",
+      "sha256": "d8f1bc75cd67bd6a3aa02f83b9cfd0aec767a9d17538f996062cc2428614061c"
+    },
+    {
+      "path": "docs/dns-client.md",
+      "sha256": "437c5ca3543e8c0f2ec5eec895b81e68960223372aa574674f429b254f0b39c1"
+    },
+    {
+      "path": "docs/lifecycle-effects.md",
+      "sha256": "7205e561aaf22ce66cb06af54a8d82a11c85c0ad6b55bc0821a91004d0750a80"
+    },
+    {
+      "path": "docs/operator-experience.md",
+      "sha256": "6385da9f6040a7103cf14d57bf5b109890ca6df0f31e621f57faf0ff8b35ac3f"
+    },
+    {
+      "path": "docs/prism-model.md",
+      "sha256": "ece338421a27de9e0f588e66badf477eebe3012d194103f14a722db02cec24c7"
+    },
+    {
+      "path": "docs/product-projection.md",
+      "sha256": "446c2fcefd1519aa8a60f78115fb3f594ac3329018da3ef432381ea428c2faa1"
+    },
+    {
+      "path": "docs/recovery.md",
+      "sha256": "32cb3e8e5579de6e05afd3a716bf97837032ae6efba6dd12748decf9b57cd4db"
+    },
+    {
+      "path": "docs/relay-framing.md",
+      "sha256": "eddf3c94dd9eb249aff1a6a5becdcb907ac8d3689a7eae5421f88c1a4f6111db"
+    },
+    {
+      "path": "docs/uor-primitives.md",
+      "sha256": "cd7a1b556424b4c5c8a555fcc741dea1ad859d2232fbf6f80308d9bbdb8d7544"
+    },
+    {
+      "path": "docs/vendor-provenance.md",
+      "sha256": "fe73438c181889157487931d6d2501175bf9becdbad5f6977b2edc6751fb986b"
+    },
+    {
+      "path": "docs/vm-administration.md",
+      "sha256": "8990baed1a08871cca032f6696646690831dd900abe506d19ad00327e4feb529"
+    },
+    {
+      "path": "index.html",
+      "sha256": "b8e573b5b50c533114532ef4a6f851efc1508082c3a42d2d1002e20f22400801"
+    },
+    {
+      "path": "package.json",
+      "sha256": "4cca578575a541919497c9ed1c517e970b7d820d464c7d594b8f0cb7bd23a3f4"
+    },
+    {
+      "path": "product/facet-type-provenance.json",
+      "sha256": "762d96e1eee560017b209db19e97bb9b858773713687a33d86213df93ccc075b"
+    },
+    {
+      "path": "product/UORUST-LICENSE-MIT.txt",
+      "sha256": "b65b82603a4875244eaecc241d1666217ae7d9f8bf4ad3e7b1ac88d8888126ee"
+    },
+    {
+      "path": "scripts/check-facets.mjs",
+      "sha256": "676e6d4022fca1766b76385beba79da518b8d8350273ac864aaf06194ed0623f"
+    },
+    {
+      "path": "scripts/check-product.mjs",
+      "sha256": "63f6d356456b89c13a17b017b0a6d4fb2b2ba43e126b2d98b5dd059fabf83829"
+    },
+    {
+      "path": "site/catalog.js",
+      "sha256": "b72eea8eafcd5a8a9d996c1b78619ca9d113fd530e82c39baade83fee0b28f36"
+    },
+    {
+      "path": "site/explorer.js",
+      "sha256": "72b1e0d06485e235429601ff640772aff4565002a37290454fd08fd40c0a1b79"
+    },
+    {
+      "path": "site/site.css",
+      "sha256": "67332d156b7bfdbb212bef731374bec91f11d376aa938f45be07944fe2490dd9"
+    },
+    {
+      "path": "src/authority-ui.js",
+      "sha256": "96e76a92918a52dff05780b76f59158916540fd38d1ced986fd6001d3ee1482b"
+    },
+    {
+      "path": "src/layer1-uor/browser-authority.js",
+      "sha256": "3b9ba8d4a23fbe056358791d4e2d5ad377faf5a9a3cc2ac3d2dc1c3906087d09"
+    },
+    {
+      "path": "src/layer2-schedulers/policy.js",
+      "sha256": "8f2074f8fe07a7b1fda51896d78f11a797564afb64accebc7291261e5c00639f"
+    },
+    {
+      "path": "src/layer3-storage/custody.js",
+      "sha256": "70ec7500e9a1aea0a2f383344bebea4acbe410c3aff76ccadd8869feaac24aee"
+    },
+    {
+      "path": "src/layer4-compute/replay.js",
+      "sha256": "112653100e2ea57c6b732e64dbc2086fd5237eb2129fe255cb5627498494f1d3"
+    },
+    {
+      "path": "src/layer4-compute/vm-administration.js",
+      "sha256": "2a307a700e38dfb7f38af4a5cfc3207e3d2b274b6c89b943e6b17add424376bc"
+    },
+    {
+      "path": "src/recovery.js",
+      "sha256": "89c7b3abcd713ee1c2131d6a841a94526f59c0a6118ac09834a2e6cf43c3a2c0"
+    },
+    {
+      "path": "tests/authenticated-signaling.test.js",
+      "sha256": "58263f698373030cd4c20007b1c0b0e9dc8b781558a7366f1acd32decdfe6d5f"
+    },
+    {
+      "path": "tests/authority-ui.test.js",
+      "sha256": "d0f986cc126047f3b269dc47509c5ade56a5bfa2e6cf30ee62906a527326cc7d"
+    },
+    {
+      "path": "tests/browser-authority-lifecycle.test.js",
+      "sha256": "6d8f3f41ddf18e5c42615e39e72f2965a39dddc5136f8d6388af5fe396d785b9"
+    },
+    {
+      "path": "tests/browser-authority.test.js",
+      "sha256": "e49b0285c9a1706e73b2e56686f6db8061c91914e2a70dd74654349b43e53c0d"
+    },
+    {
+      "path": "tests/browser/authority.spec.mjs",
+      "sha256": "6e6bd7264dc80bea62459381d27998dc399655f874a36a481daf0bd94af88be2"
+    },
+    {
+      "path": "tests/browser/mesh.spec.mjs",
+      "sha256": "5c77135433b1a26adc59e12a4aefeb9258e2622fcc533a4fccd558a5bada62f1"
+    },
+    {
+      "path": "tests/browser/site.spec.mjs",
+      "sha256": "973145fcf6ad6d5e645a9492f811e28cb3297a1c50d2f4629e15e1da7844cc71"
+    },
+    {
+      "path": "tests/browser/vm.spec.mjs",
+      "sha256": "198cf744f3651923a35f6f9c9a0eccf5e710bf7907b06a46b41d294ef936278c"
+    },
+    {
+      "path": "tests/canonical-json.test.js",
+      "sha256": "927ca86d48dcabef1e376e2244c448672ae845653bf4afd7388b794228d562ab"
+    },
+    {
+      "path": "tests/contracts.test.js",
+      "sha256": "f1ac995b74ceabd230e670476016796ca18c31ad43c0639ddfb700aba52dde60"
+    },
+    {
+      "path": "tests/custody.test.js",
+      "sha256": "7d688bec8a34729197bae605daacd4b3efeedb0e901b8af31322925bd0717329"
+    },
+    {
+      "path": "tests/dns-publication.test.js",
+      "sha256": "02fe2e5e85a715481cd11b55534dffe42b7f27305f63f1fb3bdb03815225d98c"
+    },
+    {
+      "path": "tests/dns-wire.test.js",
+      "sha256": "fadc7ec69c92e0e8ee24cdb827d840b1b3d0f6fabb7ab6379155dc394e30817a"
+    },
+    {
+      "path": "tests/execution-identity.test.js",
+      "sha256": "cd680245065fa6be6ed51fc77324022c29938298f3f53c76b67fc36415e55a56"
+    },
+    {
+      "path": "tests/guest-qualification.test.js",
+      "sha256": "47bfb6d3a8c050f8dae63c33d5ad65e7b32e9a6195e197d0a2b3af2d963b0f0b"
+    },
+    {
+      "path": "tests/operator-ui.test.js",
+      "sha256": "06ffd0c89d0ba6345b7da56284d3a3cec813d4cfd6fea231140ca9bb910e516f"
+    },
+    {
+      "path": "tests/placement-repair.test.js",
+      "sha256": "295ba55268bbcb3be7bd3c9b77a11b4938167ef0bebf83b85facedd536e1ad85"
+    },
+    {
+      "path": "tests/pointer-recovery.test.js",
+      "sha256": "57eb8bab548b1e0f5cd4ee66a3a71dda8057859f18ecf4c751fbd930b4ac0fc4"
+    },
+    {
+      "path": "tests/primitive-operations.test.js",
+      "sha256": "e3c00e18d47db0de4dd19bffeba1edcb58f82b106f8f66d429a725248ec14a98"
+    },
+    {
+      "path": "tests/product-experience.test.js",
+      "sha256": "a519f9b5c014eada46bd6c016be966c7fbe6f84971ac9408185c89422f68439b"
+    },
+    {
+      "path": "tests/product-facets.test.js",
+      "sha256": "7d04460c3ba5b10caf9479bc58a6793a876d4eac33b6d64e862d2fe009b179bd"
+    },
+    {
+      "path": "tests/product-model.test.js",
+      "sha256": "458dbbb991cd042087c778c9a0e76312583da43004235bc2153892db22e46715"
+    },
+    {
+      "path": "tests/recovery.test.js",
+      "sha256": "da7f23c8411b4adc63fffa602351ad3ecd0999909717c48bf91aeb21bc5f9d11"
+    },
+    {
+      "path": "tests/relay-framing.test.js",
+      "sha256": "566cf74aef84b7da5702ad20ce6f71796359db78d898dfef529f130a64deaecc"
+    },
+    {
+      "path": "tests/runtime-admission.test.js",
+      "sha256": "684901ac8a287078f86958f414d3d514e910cd44fa6f6be1b80cd6435c4c3404"
+    },
+    {
+      "path": "tests/site-explorer.test.js",
+      "sha256": "83cbd8bdf511a211a3e4c83ee2e41f34f16f1c021019cecbf0d4bf35622eec45"
+    },
+    {
+      "path": "tests/source-evidence.test.js",
+      "sha256": "5e6f783768f076e1fc037803d87595eb78c34a358fc5d6119a48c5f5e6107a49"
+    },
+    {
+      "path": "tests/transport-generation.test.js",
+      "sha256": "4787ce02dd406ff86055e4aa18c77a760045456772e2b9f78a8f34fc11cb9eec"
+    },
+    {
+      "path": "tests/vm-administration.test.js",
+      "sha256": "db3a943b140e27bf10d8da74140b6359e6570f490eaafe2ddb9d4f492aa566b4"
+    },
+    {
+      "path": "tests/vm-lifecycle.test.js",
+      "sha256": "3864bbceb02efb69ac55ef37c4944c02677b12aabfce57ee50f3914fd0df20af"
+    },
+    {
+      "path": "vendor/distribution.json",
+      "sha256": "02263c2d4bf1a1913a673466554c19593b5a6c39b22a2da32ce4375675868347"
+    }
+  ],
+  "modules": [
+    {
+      "module": "Product.Features",
+      "path": "app/src/Product/Features.lex.tex",
+      "records": 55,
+      "sourcePaths": [
+        "app/src/Product/Experience.lex.tex",
+        "docs/prism-model.md",
+        "docs/product-projection.md",
+        "index.html",
+        "site/catalog.js",
+        "site/explorer.js",
+        "src/authority-ui.js",
+        "tests/authenticated-signaling.test.js",
+        "tests/authority-ui.test.js",
+        "tests/browser-authority-lifecycle.test.js",
+        "tests/browser/authority.spec.mjs",
+        "tests/browser/mesh.spec.mjs",
+        "tests/browser/site.spec.mjs",
+        "tests/browser/vm.spec.mjs",
+        "tests/contracts.test.js",
+        "tests/custody.test.js",
+        "tests/dns-publication.test.js",
+        "tests/execution-identity.test.js",
+        "tests/operator-ui.test.js",
+        "tests/placement-repair.test.js",
+        "tests/pointer-recovery.test.js",
+        "tests/primitive-operations.test.js",
+        "tests/product-facets.test.js",
+        "tests/product-model.test.js",
+        "tests/recovery.test.js",
+        "tests/runtime-admission.test.js",
+        "tests/site-explorer.test.js",
+        "tests/source-evidence.test.js",
+        "tests/transport-generation.test.js",
+        "tests/vm-administration.test.js",
+        "tests/vm-lifecycle.test.js"
+      ],
+      "declarations": 148,
+      "sha256": "55ef7334d5f2a983f308efa0f854472e397e806ca8aed667231689926b100d84"
+    },
+    {
+      "module": "Product.Design",
+      "path": "app/src/Product/Design.lex.tex",
+      "records": 104,
+      "sourcePaths": [
+        "app/src/Product/Architecture.lex.tex",
+        "app/src/Product/Model.lex.tex",
+        "app/src/Stitch/Effects.lex.tex",
+        "docs/lifecycle-effects.md",
+        "docs/prism-model.md"
+      ],
+      "declarations": 107,
+      "sha256": "5dab0d1d4d449817f4001a024258e80a048876a30d8ca6edd497be48b3d5841b"
+    },
+    {
+      "module": "Product.Security",
+      "path": "app/src/Product/Security.lex.tex",
+      "records": 96,
+      "sourcePaths": [
+        "app/src/Product/Architecture.lex.tex",
+        "app/src/Product/Model.lex.tex",
+        "docs/authenticated-signaling.md",
+        "docs/browser-authority.md",
+        "docs/lifecycle-effects.md",
+        "docs/prism-model.md",
+        "docs/recovery.md",
+        "docs/relay-framing.md",
+        "docs/uor-primitives.md",
+        "docs/vendor-provenance.md",
+        "docs/vm-administration.md",
+        "package.json",
+        "tests/authenticated-signaling.test.js",
+        "tests/browser-authority-lifecycle.test.js",
+        "tests/custody.test.js",
+        "tests/dns-publication.test.js",
+        "tests/execution-identity.test.js",
+        "tests/guest-qualification.test.js",
+        "tests/recovery.test.js",
+        "tests/relay-framing.test.js",
+        "tests/runtime-admission.test.js",
+        "tests/source-evidence.test.js",
+        "tests/vm-administration.test.js"
+      ],
+      "declarations": 99,
+      "sha256": "aac798355b882dd6ee8b35b54eac0afaca505948e1dd32087c0cfa09e97bf1fe"
+    },
+    {
+      "module": "Product.Quality",
+      "path": "app/src/Product/Quality.lex.tex",
+      "records": 44,
+      "sourcePaths": [
+        "app/src/Product/Architecture.lex.tex",
+        "app/src/Product/Experience.lex.tex",
+        "docs/browser-authority.md",
+        "docs/prism-model.md",
+        "scripts/check-facets.mjs",
+        "src/layer4-compute/replay.js",
+        "tests/browser-authority-lifecycle.test.js",
+        "tests/dns-publication.test.js",
+        "tests/execution-identity.test.js",
+        "tests/primitive-operations.test.js",
+        "tests/product-experience.test.js",
+        "tests/product-facets.test.js",
+        "tests/runtime-admission.test.js"
+      ],
+      "declarations": 48,
+      "sha256": "f579f472f0cbe605f8b2a062ad94288449b0c6a7c7ef4699b633ac8c7d0d2353"
+    },
+    {
+      "module": "Product.Brand",
+      "path": "app/src/Product/Brand.lex.tex",
+      "records": 1,
+      "sourcePaths": [
+        "index.html",
+        "package.json",
+        "site/site.css"
+      ],
+      "declarations": 8,
+      "sha256": "a06984fa4753d236c8b874a70bf0aca1bc064ad8944a5ce27ac84f1135559578"
+    },
+    {
+      "module": "Product.Users",
+      "path": "app/src/Product/Users.lex.tex",
+      "records": 1,
+      "sourcePaths": [
+        "app/src/Product/Architecture.lex.tex",
+        "app/src/Product/Experience.lex.tex",
+        "docs/operator-experience.md"
+      ],
+      "declarations": 16,
+      "sha256": "f83be58b12bcfbe7cb8453629b8c51dea23bc6e00e4cef24642c2e2d633ad3fa"
+    },
+    {
+      "module": "Product.Persistence",
+      "path": "app/src/Product/Persistence.lex.tex",
+      "records": 8,
+      "sourcePaths": [
+        "docs/browser-authority.md",
+        "docs/recovery.md",
+        "src/layer1-uor/browser-authority.js",
+        "src/layer2-schedulers/policy.js",
+        "src/layer3-storage/custody.js",
+        "src/layer4-compute/replay.js",
+        "src/layer4-compute/vm-administration.js",
+        "src/recovery.js",
+        "tests/browser-authority.test.js",
+        "tests/dns-publication.test.js",
+        "tests/execution-identity.test.js",
+        "tests/placement-repair.test.js",
+        "tests/pointer-recovery.test.js",
+        "tests/recovery.test.js",
+        "tests/runtime-admission.test.js",
+        "tests/vm-administration.test.js"
+      ],
+      "declarations": 18,
+      "sha256": "0f651a6022c345e155563c42137dc0541b3cf9e8c7953caccaa73c9a0a3755cd"
+    },
+    {
+      "module": "Product.Release",
+      "path": "app/src/Product/Release.lex.tex",
+      "records": 37,
+      "sourcePaths": [
+        ".github/workflows/prism.yml",
+        "app/src/Product/Model.lex.tex",
+        "docs/product-projection.md",
+        "docs/vendor-provenance.md",
+        "package.json",
+        "vendor/distribution.json"
+      ],
+      "declarations": 45,
+      "sha256": "3804712856cdb777195d7166a64fabece3bf682ed4dadf70842a01ba494cc67b"
+    },
+    {
+      "module": "Product.Compliance",
+      "path": "app/src/Product/Compliance.lex.tex",
+      "records": 12,
+      "sourcePaths": [
+        ".github/workflows/prism.yml",
+        "app/src/Product/Architecture.lex.tex",
+        "docs/browser-authority.md",
+        "docs/canonical-json.md",
+        "docs/dns-client.md",
+        "docs/product-projection.md",
+        "docs/vendor-provenance.md",
+        "scripts/check-facets.mjs",
+        "scripts/check-product.mjs",
+        "tests/browser-authority-lifecycle.test.js",
+        "tests/canonical-json.test.js",
+        "tests/dns-wire.test.js",
+        "tests/guest-qualification.test.js",
+        "tests/product-facets.test.js"
+      ],
+      "declarations": 17,
+      "sha256": "1a03a88f5d5b860eb9eaff0aa15e3f14cce92ed70bdcf599bd42d66c5e597f1e"
+    }
+  ],
+  "operatorActionCount": 31,
+  "features": [
+    {
+      "id": "join",
+      "declaration": "Product.Features::featureJoin",
+      "control": "reconnectBtn",
+      "journey": "mesh",
+      "label": "Join Mesh and Sync",
+      "acceptance": [
+        "tests/authenticated-signaling.test.js",
+        "tests/transport-generation.test.js",
+        "tests/browser/mesh.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionJoin"
+    },
+    {
+      "id": "store",
+      "declaration": "Product.Features::featureStore",
+      "control": "dbPutBtn",
+      "journey": "objects",
+      "label": "Store and Request Placement",
+      "acceptance": [
+        "tests/custody.test.js",
+        "tests/placement-repair.test.js",
+        "tests/recovery.test.js",
+        "tests/pointer-recovery.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionStore"
+    },
+    {
+      "id": "clear",
+      "declaration": "Product.Features::featureClear",
+      "control": "dbWipeLocalBtn",
+      "journey": "objects",
+      "label": "Clear Local Object Bytes",
+      "acceptance": [
+        "tests/custody.test.js",
+        "tests/placement-repair.test.js",
+        "tests/recovery.test.js",
+        "tests/pointer-recovery.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionClear"
+    },
+    {
+      "id": "recover",
+      "declaration": "Product.Features::featureRecover",
+      "control": "dbSyncBtn",
+      "journey": "objects",
+      "label": "Fetch Reachable Fragments",
+      "acceptance": [
+        "tests/custody.test.js",
+        "tests/placement-repair.test.js",
+        "tests/recovery.test.js",
+        "tests/pointer-recovery.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionRecover"
+    },
+    {
+      "id": "start",
+      "declaration": "Product.Features::featureStart",
+      "control": "startJobBtn",
+      "journey": "compute",
+      "label": "Start Pure Replayable Job",
+      "acceptance": [
+        "tests/execution-identity.test.js",
+        "tests/primitive-operations.test.js",
+        "tests/runtime-admission.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionStart"
+    },
+    {
+      "id": "resume",
+      "declaration": "Product.Features::featureResume",
+      "control": "takeoverJobsBtn",
+      "journey": "compute",
+      "label": "Scan and Resume Pure Jobs",
+      "acceptance": [
+        "tests/execution-identity.test.js",
+        "tests/primitive-operations.test.js",
+        "tests/runtime-admission.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionResume"
+    },
+    {
+      "id": "boot",
+      "declaration": "Product.Features::featureBoot",
+      "control": "bootVmBtn",
+      "journey": "vm",
+      "label": "Boot Linux VM",
+      "acceptance": [
+        "tests/vm-lifecycle.test.js",
+        "tests/vm-administration.test.js",
+        "tests/browser/vm.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionBoot"
+    },
+    {
+      "id": "execute",
+      "declaration": "Product.Features::featureExecute",
+      "control": "runVmCmdBtn",
+      "journey": "vm",
+      "label": "Run Guest Command and Store Stdout",
+      "acceptance": [
+        "tests/vm-lifecycle.test.js",
+        "tests/vm-administration.test.js",
+        "tests/browser/vm.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionExecute"
+    },
+    {
+      "id": "srv",
+      "declaration": "Product.Features::featureSrv",
+      "control": "resolveSrvBtn",
+      "journey": "pointers",
+      "label": "Discover SRV Records",
+      "acceptance": [
+        "tests/dns-publication.test.js",
+        "tests/browser-authority-lifecycle.test.js",
+        "tests/browser/authority.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionSrv"
+    },
+    {
+      "id": "txt",
+      "declaration": "Product.Features::featureTxt",
+      "control": "resolveTxtBtn",
+      "journey": "pointers",
+      "label": "Discover and Check TXT Pointers",
+      "acceptance": [
+        "tests/dns-publication.test.js",
+        "tests/browser-authority-lifecycle.test.js",
+        "tests/browser/authority.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionTxt"
+    },
+    {
+      "id": "pin",
+      "declaration": "Product.Features::featurePin",
+      "control": "pinSessionAuthorityBtn",
+      "journey": "pointers",
+      "label": "Trust Saved Key or Create Session Key",
+      "acceptance": [
+        "tests/dns-publication.test.js",
+        "tests/browser-authority-lifecycle.test.js",
+        "tests/browser/authority.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionPin"
+    },
+    {
+      "id": "admit",
+      "declaration": "Product.Features::featureAdmit",
+      "control": "admitPointerBtn",
+      "journey": "pointers",
+      "label": "Admit Pasted Pointer",
+      "acceptance": [
+        "tests/dns-publication.test.js",
+        "tests/browser-authority-lifecycle.test.js",
+        "tests/browser/authority.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionAdmit"
+    },
+    {
+      "id": "publish",
+      "declaration": "Product.Features::featurePublish",
+      "control": "writeSignedDnsBtn",
+      "journey": "pointers",
+      "label": "Admit Next Pointer and Publish TXT",
+      "acceptance": [
+        "tests/dns-publication.test.js",
+        "tests/browser-authority-lifecycle.test.js",
+        "tests/browser/authority.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionPublish"
+    },
+    {
+      "id": "reconcile",
+      "declaration": "Product.Features::featureReconcile",
+      "control": "reconcilePointerBtn",
+      "journey": "pointers",
+      "label": "Reconcile Unknown Publication",
+      "acceptance": [
+        "tests/dns-publication.test.js",
+        "tests/browser-authority-lifecycle.test.js",
+        "tests/browser/authority.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionReconcile"
+    },
+    {
+      "id": "renew",
+      "declaration": "Product.Features::featureRenew",
+      "control": "renewBudgetBtn",
+      "journey": "resources",
+      "label": "Start New Epoch with These Limits",
+      "acceptance": [
+        "tests/runtime-admission.test.js",
+        "tests/operator-ui.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionRenew"
+    },
+    {
+      "id": "export",
+      "declaration": "Product.Features::featureExport",
+      "control": "exportBudgetHistoryBtn",
+      "journey": "resources",
+      "label": "Export Policy History",
+      "acceptance": [
+        "tests/runtime-admission.test.js",
+        "tests/operator-ui.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionExport"
+    },
+    {
+      "id": "RecoveryExport",
+      "declaration": "Product.Features::featureRecoveryExport",
+      "control": "exportRecoveryBtn",
+      "journey": "objects",
+      "label": "Export Live Evidence",
+      "acceptance": [
+        "tests/custody.test.js",
+        "tests/placement-repair.test.js",
+        "tests/recovery.test.js",
+        "tests/pointer-recovery.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionRecoveryExport"
+    },
+    {
+      "id": "RecoveryImport",
+      "declaration": "Product.Features::featureRecoveryImport",
+      "control": "importRecoveryBtn",
+      "journey": "objects",
+      "label": "Verify and Import Locally",
+      "acceptance": [
+        "tests/custody.test.js",
+        "tests/placement-repair.test.js",
+        "tests/recovery.test.js",
+        "tests/pointer-recovery.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionRecoveryImport"
+    },
+    {
+      "id": "RecoverySave",
+      "declaration": "Product.Features::featureRecoverySave",
+      "control": "exportRecoveredBtn",
+      "journey": "objects",
+      "label": "Export Recovery Vault",
+      "acceptance": [
+        "tests/custody.test.js",
+        "tests/placement-repair.test.js",
+        "tests/recovery.test.js",
+        "tests/pointer-recovery.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionRecoverySave"
+    },
+    {
+      "id": "RecoveryDownload",
+      "declaration": "Product.Features::featureRecoveryDownload",
+      "control": "downloadRecoveredObjectBtn",
+      "journey": "objects",
+      "label": "Download Verified Object",
+      "acceptance": [
+        "tests/custody.test.js",
+        "tests/placement-repair.test.js",
+        "tests/recovery.test.js",
+        "tests/pointer-recovery.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionRecoveryDownload"
+    },
+    {
+      "id": "RecoveryFinish",
+      "declaration": "Product.Features::featureRecoveryFinish",
+      "control": "resumeRecoveredJobBtn",
+      "journey": "objects",
+      "label": "Finish Pure Job Locally",
+      "acceptance": [
+        "tests/custody.test.js",
+        "tests/placement-repair.test.js",
+        "tests/recovery.test.js",
+        "tests/pointer-recovery.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionRecoveryFinish"
+    },
+    {
+      "id": "RecoveryTrust",
+      "declaration": "Product.Features::featureRecoveryTrust",
+      "control": "acceptRecoveryAnchorBtn",
+      "journey": "objects",
+      "label": "Accept Exact Recent Anchor",
+      "acceptance": [
+        "tests/custody.test.js",
+        "tests/placement-repair.test.js",
+        "tests/recovery.test.js",
+        "tests/pointer-recovery.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionRecoveryTrust"
+    },
+    {
+      "id": "VmStop",
+      "declaration": "Product.Features::featureVmStop",
+      "control": "stopVmBtn",
+      "journey": "vm",
+      "label": "Stop VM",
+      "acceptance": [
+        "tests/vm-lifecycle.test.js",
+        "tests/vm-administration.test.js",
+        "tests/browser/vm.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionVmStop"
+    },
+    {
+      "id": "VmDestroy",
+      "declaration": "Product.Features::featureVmDestroy",
+      "control": "destroyVmBtn",
+      "journey": "vm",
+      "label": "Destroy VM",
+      "acceptance": [
+        "tests/vm-lifecycle.test.js",
+        "tests/vm-administration.test.js",
+        "tests/browser/vm.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionVmDestroy"
+    },
+    {
+      "id": "VmCancel",
+      "declaration": "Product.Features::featureVmCancel",
+      "control": "cancelVmObservationBtn",
+      "journey": "vm",
+      "label": "Cancel and Stop VM",
+      "acceptance": [
+        "tests/vm-lifecycle.test.js",
+        "tests/vm-administration.test.js",
+        "tests/browser/vm.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionVmCancel"
+    },
+    {
+      "id": "VmReconcile",
+      "declaration": "Product.Features::featureVmReconcile",
+      "control": "reconcileVmCommandBtn",
+      "journey": "vm",
+      "label": "Observe Selected Command Result",
+      "acceptance": [
+        "tests/vm-lifecycle.test.js",
+        "tests/vm-administration.test.js",
+        "tests/browser/vm.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionVmReconcile"
+    },
+    {
+      "id": "VmForget",
+      "declaration": "Product.Features::featureVmForget",
+      "control": "forgetVmCommandBtn",
+      "journey": "vm",
+      "label": "Forget Resolved Command Evidence",
+      "acceptance": [
+        "tests/vm-lifecycle.test.js",
+        "tests/vm-administration.test.js",
+        "tests/browser/vm.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionVmForget"
+    },
+    {
+      "id": "saveAuthority",
+      "declaration": "Product.Features::featureSaveAuthority",
+      "control": "saveAuthorityBtn",
+      "journey": "pointers",
+      "label": "Set Up or Restore Saved Authority",
+      "acceptance": [
+        "tests/dns-publication.test.js",
+        "tests/browser-authority-lifecycle.test.js",
+        "tests/browser/authority.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionSaveAuthority"
+    },
+    {
+      "id": "loadPublication",
+      "declaration": "Product.Features::featureLoadPublication",
+      "control": "loadPublicationBtn",
+      "journey": "pointers",
+      "label": "Load Saved Publication",
+      "acceptance": [
+        "tests/dns-publication.test.js",
+        "tests/browser-authority-lifecycle.test.js",
+        "tests/browser/authority.spec.mjs"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionLoadPublication"
+    },
+    {
+      "id": "RecoveryRestore",
+      "declaration": "Product.Features::featureRecoveryRestore",
+      "control": "restoreRecoveryAnchorBtn",
+      "journey": "objects",
+      "label": "Restore Accepted Live Head",
+      "acceptance": [
+        "tests/custody.test.js",
+        "tests/placement-repair.test.js",
+        "tests/recovery.test.js",
+        "tests/pointer-recovery.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionRecoveryRestore"
+    },
+    {
+      "id": "PlacementRepair",
+      "declaration": "Product.Features::featurePlacementRepair",
+      "control": "repairPlacementBtn",
+      "journey": "objects",
+      "label": "Repair Selected Placement",
+      "acceptance": [
+        "tests/custody.test.js",
+        "tests/placement-repair.test.js",
+        "tests/recovery.test.js",
+        "tests/pointer-recovery.test.js"
+      ],
+      "source": "app/src/Product/Experience.lex.tex",
+      "sourceDeclaration": "actionPlacementRepair"
+    },
+    {
+      "id": "LearnProtocol",
+      "control": "encodeExample",
+      "journey": "reader",
+      "label": "Explore exact fragment recovery locally",
+      "statement": "Change the input, withhold a fragment or alter a byte using the real custody verifier; no mesh or persistence effects.",
+      "source": "site/explorer.js",
+      "acceptance": [
+        "tests/site-explorer.test.js",
+        "tests/browser/site.spec.mjs"
+      ],
+      "declaration": "Product.Features::featureLearnProtocol",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "InspectFacetSources",
+      "control": "facetCatalogContent",
+      "journey": "reviewer",
+      "label": "Inspect source-derived product facets",
+      "statement": "Read declaration counts, source links and evidence boundaries without a verification badge.",
+      "source": "site/catalog.js",
+      "acceptance": [
+        "tests/site-explorer.test.js",
+        "tests/product-facets.test.js"
+      ],
+      "declaration": "Product.Features::featureInspectFacetSources",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "ReviewHostBoundaries",
+      "control": "docs/product-projection.md",
+      "journey": "reviewer",
+      "label": "Review whole-product host and release boundaries",
+      "statement": "Separate exact-source/native probe results from actual browser, network, VM and provider qualification.",
+      "source": "docs/product-projection.md",
+      "acceptance": [
+        "tests/source-evidence.test.js",
+        "tests/product-model.test.js"
+      ],
+      "declaration": "Product.Features::featureReviewHostBoundaries",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "ExtendProtocol",
+      "control": "docs/prism-model.md",
+      "journey": "integrator",
+      "label": "Extend source-owned protocol contracts",
+      "statement": "Locate versioned encoding dependencies, reserve-before-effect limits, replay identity and positive/negative evidence before extending adapters.",
+      "source": "docs/prism-model.md",
+      "acceptance": [
+        "tests/contracts.test.js",
+        "tests/execution-identity.test.js",
+        "tests/product-model.test.js"
+      ],
+      "declaration": "Product.Features::featureExtendProtocol",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "InspectAuthorityStorage",
+      "control": "inspectAuthorityStorageBtn",
+      "journey": "authority",
+      "label": "Inspect Origin Storage and Journal",
+      "statement": "Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 0; no new global identity, implicit trust or resolution of unknown effects.",
+      "source": "src/authority-ui.js",
+      "acceptance": [
+        "tests/authority-ui.test.js",
+        "tests/browser-authority-lifecycle.test.js"
+      ],
+      "declaration": "Product.Features::featureInspectAuthorityStorage",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "RotateAuthority",
+      "control": "rotateAuthorityBtn",
+      "journey": "authority",
+      "label": "Rotate Saved Signing Key",
+      "statement": "Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 1; no new global identity, implicit trust or resolution of unknown effects.",
+      "source": "src/authority-ui.js",
+      "acceptance": [
+        "tests/authority-ui.test.js",
+        "tests/browser-authority-lifecycle.test.js"
+      ],
+      "declaration": "Product.Features::featureRotateAuthority",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "RevokeAuthority",
+      "control": "revokeAuthorityBtn",
+      "journey": "authority",
+      "label": "Revoke Saved Signing Key Locally",
+      "statement": "Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 2; no new global identity, implicit trust or resolution of unknown effects.",
+      "source": "src/authority-ui.js",
+      "acceptance": [
+        "tests/authority-ui.test.js",
+        "tests/browser-authority-lifecycle.test.js"
+      ],
+      "declaration": "Product.Features::featureRevokeAuthority",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "SaveTrustedAnchor",
+      "control": "saveTrustedAnchorBtn",
+      "journey": "authority",
+      "label": "Save Current Exact Trust Anchor",
+      "statement": "Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 3; no new global identity, implicit trust or resolution of unknown effects.",
+      "source": "src/authority-ui.js",
+      "acceptance": [
+        "tests/authority-ui.test.js",
+        "tests/browser-authority-lifecycle.test.js"
+      ],
+      "declaration": "Product.Features::featureSaveTrustedAnchor",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "RestoreTrustedAnchor",
+      "control": "restoreTrustedAnchorBtn",
+      "journey": "authority",
+      "label": "Restore Saved Head to Current Pin",
+      "statement": "Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 4; no new global identity, implicit trust or resolution of unknown effects.",
+      "source": "src/authority-ui.js",
+      "acceptance": [
+        "tests/authority-ui.test.js",
+        "tests/browser-authority-lifecycle.test.js"
+      ],
+      "declaration": "Product.Features::featureRestoreTrustedAnchor",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "MigrateTrustedAnchor",
+      "control": "migrateTrustedAnchorBtn",
+      "journey": "authority",
+      "label": "Migrate Saved Trust to Pasted Anchor",
+      "statement": "Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 5; no new global identity, implicit trust or resolution of unknown effects.",
+      "source": "src/authority-ui.js",
+      "acceptance": [
+        "tests/authority-ui.test.js",
+        "tests/browser-authority-lifecycle.test.js"
+      ],
+      "declaration": "Product.Features::featureMigrateTrustedAnchor",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "RevokeTrustedAnchor",
+      "control": "revokeTrustedAnchorBtn",
+      "journey": "authority",
+      "label": "Revoke Saved Trust Locally",
+      "statement": "Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 6; no new global identity, implicit trust or resolution of unknown effects.",
+      "source": "src/authority-ui.js",
+      "acceptance": [
+        "tests/authority-ui.test.js",
+        "tests/browser-authority-lifecycle.test.js"
+      ],
+      "declaration": "Product.Features::featureRevokeTrustedAnchor",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "PersistAuthorityStorage",
+      "control": "persistAuthorityStorageBtn",
+      "journey": "authority",
+      "label": "Request Browser Storage Persistence",
+      "statement": "Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 7; no new global identity, implicit trust or resolution of unknown effects.",
+      "source": "src/authority-ui.js",
+      "acceptance": [
+        "tests/authority-ui.test.js",
+        "tests/browser-authority-lifecycle.test.js"
+      ],
+      "declaration": "Product.Features::featurePersistAuthorityStorage",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "ExportAuthorityJournal",
+      "control": "exportAuthorityJournalBtn",
+      "journey": "authority",
+      "label": "Export Public Authority Journal",
+      "statement": "Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 8; no new global identity, implicit trust or resolution of unknown effects.",
+      "source": "src/authority-ui.js",
+      "acceptance": [
+        "tests/authority-ui.test.js",
+        "tests/browser-authority-lifecycle.test.js"
+      ],
+      "declaration": "Product.Features::featureExportAuthorityJournal",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    },
+    {
+      "id": "CompactAuthorityJournal",
+      "control": "compactAuthorityJournalBtn",
+      "journey": "authority",
+      "label": "Remove Definitely Refused Journal Entries",
+      "statement": "Explicit origin-local operation admitted by Stitch.Authority::controlAllowed code 9; no new global identity, implicit trust or resolution of unknown effects.",
+      "source": "src/authority-ui.js",
+      "acceptance": [
+        "tests/authority-ui.test.js",
+        "tests/browser-authority-lifecycle.test.js"
+      ],
+      "declaration": "Product.Features::featureCompactAuthorityJournal",
+      "sourceDeclaration": "source-bound surface",
+      "operatorAction": false
+    }
+  ],
+  "journeys": [
+    {
+      "id": "mesh",
+      "declaration": "Product.Features::journeyMesh",
+      "title": "Join a mesh",
+      "summary": "Review public signaling disclosure, join explicitly, then inspect reachable peers.",
+      "steps": [
+        "Product.Features::featureJoin"
+      ],
+      "ordering": "Documented operator path; each step retains its own admission guard. Optional/reconciliation steps are not automatic."
+    },
+    {
+      "id": "objects",
+      "declaration": "Product.Features::journeyObjects",
+      "title": "Store, place and recover objects",
+      "summary": "Separate local integrity from conditional peer custody and actual recovery.",
+      "steps": [
+        "Product.Features::featureStore",
+        "Product.Features::featurePlacementRepair",
+        "Product.Features::featureRecoveryExport",
+        "Product.Features::featureRecoveryImport",
+        "Product.Features::featureRecoveryDownload"
+      ],
+      "ordering": "Documented operator path; each step retains its own admission guard. Optional/reconciliation steps are not automatic."
+    },
+    {
+      "id": "compute",
+      "declaration": "Product.Features::journeyCompute",
+      "title": "Run and resume pure jobs",
+      "summary": "Replay deterministic checkpoints before continuation; VM effects have a separate contract.",
+      "steps": [
+        "Product.Features::featureStart",
+        "Product.Features::featureResume"
+      ],
+      "ordering": "Documented operator path; each step retains its own admission guard. Optional/reconciliation steps are not automatic."
+    },
+    {
+      "id": "vm",
+      "declaration": "Product.Features::journeyVm",
+      "title": "Inspect host VM effects",
+      "summary": "Boot and execute only through the observed VM lifecycle. Output integrity does not certify execution.",
+      "steps": [
+        "Product.Features::featureBoot",
+        "Product.Features::featureExecute",
+        "Product.Features::featureVmReconcile",
+        "Product.Features::featureVmStop",
+        "Product.Features::featureVmDestroy"
+      ],
+      "ordering": "Documented operator path; each step retains its own admission guard. Optional/reconciliation steps are not automatic."
+    },
+    {
+      "id": "pointers",
+      "declaration": "Product.Features::journeyPointers",
+      "title": "Pin, discover and publish pointers",
+      "summary": "Pin authority independently, retain the local head, and reconcile uncertain provider writes.",
+      "steps": [
+        "Product.Features::featureSaveAuthority",
+        "Product.Features::featurePin",
+        "Product.Features::featureTxt",
+        "Product.Features::featureAdmit",
+        "Product.Features::featurePublish",
+        "Product.Features::featureLoadPublication",
+        "Product.Features::featureReconcile"
+      ],
+      "ordering": "Documented operator path; each step retains its own admission guard. Optional/reconciliation steps are not automatic."
+    },
+    {
+      "id": "resources",
+      "declaration": "Product.Features::journeyResources",
+      "title": "Inspect and renew allowances",
+      "summary": "Inspect bounded application charges, export them, and explicitly grant a new epoch.",
+      "steps": [
+        "Product.Features::featureExport",
+        "Product.Features::featureRenew"
+      ],
+      "ordering": "Documented operator path; each step retains its own admission guard. Optional/reconciliation steps are not automatic."
+    },
+    {
+      "id": "reader",
+      "actor": "reader",
+      "declaration": "Product.Features::journeyReader",
+      "title": "Understand the Stitch protocol",
+      "summary": "Understand the Stitch protocol. Each operation retains its source-owned consent and evidence boundary.",
+      "steps": [
+        "Product.Features::featureLearnProtocol",
+        "Product.Features::featureInspectFacetSources"
+      ],
+      "ordering": "Explicit user-directed path; operations never run merely because the journey is declared."
+    },
+    {
+      "id": "reviewer",
+      "actor": "reviewer",
+      "declaration": "Product.Features::journeyReviewer",
+      "title": "Audit evidence and assumptions",
+      "summary": "Audit evidence and assumptions. Each operation retains its source-owned consent and evidence boundary.",
+      "steps": [
+        "Product.Features::featureInspectFacetSources",
+        "Product.Features::featureReviewHostBoundaries"
+      ],
+      "ordering": "Explicit user-directed path; operations never run merely because the journey is declared."
+    },
+    {
+      "id": "integrator",
+      "actor": "systemIntegrator",
+      "declaration": "Product.Features::journeyIntegrator",
+      "title": "Extend the protocol safely",
+      "summary": "Extend the protocol safely. Each operation retains its source-owned consent and evidence boundary.",
+      "steps": [
+        "Product.Features::featureLearnProtocol",
+        "Product.Features::featureReviewHostBoundaries",
+        "Product.Features::featureExtendProtocol"
+      ],
+      "ordering": "Explicit user-directed path; operations never run merely because the journey is declared."
+    },
+    {
+      "id": "authority",
+      "actor": "operator",
+      "declaration": "Product.Features::journeyAuthority",
+      "title": "Care for saved identity and trust",
+      "summary": "Care for saved identity and trust. Each operation retains its source-owned consent and evidence boundary.",
+      "steps": [
+        "Product.Features::featureInspectAuthorityStorage",
+        "Product.Features::featureSaveTrustedAnchor",
+        "Product.Features::featureRestoreTrustedAnchor",
+        "Product.Features::featureExportAuthorityJournal"
+      ],
+      "ordering": "Explicit user-directed path; operations never run merely because the journey is declared."
+    }
+  ],
+  "design": {
+    "components": 18,
+    "connectors": 31,
+    "views": [
+      {
+        "id": "viewComponents",
+        "title": "Five-layer browser component relationships",
+        "diagram": "umlComponent"
+      },
+      {
+        "id": "viewObjectProcess",
+        "title": "Recoverable object process",
+        "diagram": "opmObjectProcess"
+      },
+      {
+        "id": "viewPublicationSequence",
+        "title": "Scoped publication and read-only reconciliation",
+        "diagram": "umlSequence"
+      },
+      {
+        "id": "viewPublicationState",
+        "title": "Unknown writes are never repeated",
+        "diagram": "umlStateMachine"
+      }
+    ],
+    "states": [
+      "Idle",
+      "Published",
+      "Refused",
+      "Unknown"
+    ],
+    "transitions": [
+      [
+        "Idle",
+        "Unknown",
+        "BeginWrite"
+      ],
+      [
+        "Published",
+        "Unknown",
+        "BeginWrite"
+      ],
+      [
+        "Refused",
+        "Unknown",
+        "BeginWrite"
+      ],
+      [
+        "Unknown",
+        "Published",
+        "Confirm"
+      ],
+      [
+        "Unknown",
+        "Published",
+        "Reconcile"
+      ],
+      [
+        "Unknown",
+        "Refused",
+        "Refuse"
+      ],
+      [
+        "Unknown",
+        "Unknown",
+        "RetainUnknown"
+      ]
+    ]
+  },
+  "security": [
+    {
+      "id": "AuthoritySpoofing",
+      "asset": "pointerAuthority",
+      "category": "spoofing",
+      "likelihood": "high",
+      "impact": "critical",
+      "threat": "An arbitrary valid self-signature is mistaken for an independently pinned writer.",
+      "control": "Exact independently accepted key/name/head; strict successor CAS and revocation gates.",
+      "evidence": [
+        "tests/browser-authority-lifecycle.test.js",
+        "docs/browser-authority.md"
+      ],
+      "index": 0,
+      "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
+    },
+    {
+      "id": "CheckpointForgery",
+      "asset": "compute",
+      "category": "tampering",
+      "likelihood": "high",
+      "impact": "major",
+      "threat": "A hashed but impossible state is accepted as computation.",
+      "control": "Replay exact program/input/execution identity before accepting or resuming.",
+      "evidence": [
+        "tests/execution-identity.test.js",
+        "docs/uor-primitives.md"
+      ],
+      "index": 1,
+      "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
+    },
+    {
+      "id": "Disclosure",
+      "asset": "publicRelay",
+      "category": "informationDisclosure",
+      "likelihood": "high",
+      "impact": "major",
+      "threat": "A mesh topic or relay is mistaken for private storage.",
+      "control": "Separate public signaling and payload-relay consent; explicit disclosure and no privacy claim.",
+      "evidence": [
+        "tests/relay-framing.test.js",
+        "docs/relay-framing.md"
+      ],
+      "index": 2,
+      "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
+    },
+    {
+      "id": "EffectReplay",
+      "asset": "discovery",
+      "category": "repudiation",
+      "likelihood": "medium",
+      "impact": "major",
+      "threat": "An unknown DNS write is repeated after restart or key rotation.",
+      "control": "Strict write-ahead intent and exact read-only reconciliation; unknown journal retention.",
+      "evidence": [
+        "tests/dns-publication.test.js",
+        "docs/lifecycle-effects.md"
+      ],
+      "index": 3,
+      "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
+    },
+    {
+      "id": "FragmentTampering",
+      "asset": "storage",
+      "category": "tampering",
+      "likelihood": "high",
+      "impact": "major",
+      "threat": "A holder supplies modified, duplicate-index or wrong-manifest bytes.",
+      "control": "Full domain-separated commitments and exact compatible indexed recovery.",
+      "evidence": [
+        "tests/custody.test.js",
+        "docs/prism-model.md"
+      ],
+      "index": 4,
+      "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
+    },
+    {
+      "id": "GuestPrivilege",
+      "asset": "vm",
+      "category": "elevationOfPrivilege",
+      "likelihood": "medium",
+      "impact": "critical",
+      "threat": "Guest output is mistaken for trusted execution or broad host authority.",
+      "control": "Separate VM effects, bounded mounts and explicit lifecycle/command reconciliation.",
+      "evidence": [
+        "tests/vm-administration.test.js",
+        "docs/vm-administration.md"
+      ],
+      "index": 5,
+      "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
+    },
+    {
+      "id": "OriginCompromise",
+      "asset": "browser",
+      "category": "elevationOfPrivilege",
+      "likelihood": "medium",
+      "impact": "critical",
+      "threat": "Malicious same-origin code can use retained key handles and read local data.",
+      "control": "Source/asset inventory and origin boundary; nonextractability is not protection from active same-origin code.",
+      "evidence": [
+        "tests/source-evidence.test.js",
+        "docs/browser-authority.md"
+      ],
+      "index": 6,
+      "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
+    },
+    {
+      "id": "ResourceExhaustion",
+      "asset": "admission",
+      "category": "denialOfService",
+      "likelihood": "high",
+      "impact": "major",
+      "threat": "Untrusted messages, replay or unknown effects exhaust application allowances.",
+      "control": "Reserve each independent resource before effects; unknown outcomes stay charged.",
+      "evidence": [
+        "tests/runtime-admission.test.js",
+        "docs/prism-model.md"
+      ],
+      "index": 7,
+      "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
+    },
+    {
+      "id": "SignalingSpoofing",
+      "asset": "transport",
+      "category": "spoofing",
+      "likelihood": "high",
+      "impact": "major",
+      "threat": "A relay replays or substitutes SDP/ICE and stale session callbacks.",
+      "control": "Signed exact signaling, session/generation fencing and bounded channel flow.",
+      "evidence": [
+        "tests/authenticated-signaling.test.js",
+        "docs/authenticated-signaling.md"
+      ],
+      "index": 8,
+      "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
+    },
+    {
+      "id": "StorageLoss",
+      "asset": "storage",
+      "category": "denialOfService",
+      "likelihood": "medium",
+      "impact": "major",
+      "threat": "Tab loss or eviction removes the only object fragments or recent trust anchor.",
+      "control": "Explicit recovery export and origin-storage evidence; no guarantee after total information loss.",
+      "evidence": [
+        "tests/recovery.test.js",
+        "docs/recovery.md"
+      ],
+      "index": 9,
+      "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
+    },
+    {
+      "id": "VendorSubstitution",
+      "asset": "vm",
+      "category": "tampering",
+      "likelihood": "medium",
+      "impact": "critical",
+      "threat": "Loaded emulator, BIOS or guest differs from reviewed inventory.",
+      "control": "Retained corresponding-source materials and exact local asset digests; live load-time remote integrity remains an assumption.",
+      "evidence": [
+        "tests/guest-qualification.test.js",
+        "docs/vendor-provenance.md"
+      ],
+      "index": 10,
+      "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
+    }
+  ],
+  "quality": [
+    {
+      "id": "ActionCoverage",
+      "characteristic": "FunctionalSuitability",
+      "sub": "FunctionalCompleteness",
+      "threshold": 31,
+      "unit": "modeled actions",
+      "method": "Count Product.Experience Action definitions, require one official Feature per action.",
+      "source": "app/src/Product/Experience.lex.tex",
+      "evidence": "tests/product-facets.test.js",
+      "kind": "derived"
+    },
+    {
+      "id": "AuthorityRollback",
+      "characteristic": "Security",
+      "sub": "Authenticity",
+      "threshold": 0,
+      "unit": "accepted stale or foreign trust transitions",
+      "method": "Exact saved head comparison and independent writer/digest acceptance.",
+      "source": "docs/browser-authority.md",
+      "evidence": "tests/browser-authority-lifecycle.test.js",
+      "kind": "requirement"
+    },
+    {
+      "id": "ComponentCoverage",
+      "characteristic": "Maintainability",
+      "sub": "Modularity",
+      "threshold": 18,
+      "unit": "components",
+      "method": "Every actual architecture component is represented in the design view.",
+      "source": "app/src/Product/Architecture.lex.tex",
+      "evidence": "tests/product-facets.test.js",
+      "kind": "derived"
+    },
+    {
+      "id": "ForgedCheckpoints",
+      "characteristic": "Security",
+      "sub": "Integrity",
+      "threshold": 0,
+      "unit": "accepted impossible checkpoints",
+      "method": "Zero-defect requirement exercised by adversarial replay tests.",
+      "source": "docs/prism-model.md",
+      "evidence": "tests/execution-identity.test.js",
+      "kind": "requirement"
+    },
+    {
+      "id": "ProgramInstructions",
+      "characteristic": "PerformanceEfficiency",
+      "sub": "Capacity",
+      "threshold": 1024,
+      "unit": "instructions",
+      "method": "Configured acceptance ceiling, not observed capacity or performance.",
+      "source": "src/layer4-compute/replay.js",
+      "evidence": "tests/primitive-operations.test.js",
+      "kind": "configured"
+    },
+    {
+      "id": "ProgramWork",
+      "characteristic": "PerformanceEfficiency",
+      "sub": "Capacity",
+      "threshold": 1000000,
+      "unit": "abstract work units",
+      "method": "Model-derived work charged before replay; does not meter VM/browser/TLS overhead.",
+      "source": "src/layer4-compute/replay.js",
+      "evidence": "tests/runtime-admission.test.js",
+      "kind": "configured"
+    },
+    {
+      "id": "SilentEvidencePromotion",
+      "characteristic": "InteractionCapability",
+      "sub": "SelfDescriptiveness",
+      "threshold": 0,
+      "unit": "unknown host outcomes displayed as verified",
+      "method": "Persistent evidence labels distinguish digest, replay, unknown effects and unqualified hosts.",
+      "source": "app/src/Product/Experience.lex.tex",
+      "evidence": "tests/product-experience.test.js",
+      "kind": "requirement"
+    },
+    {
+      "id": "SourceDrift",
+      "characteristic": "Maintainability",
+      "sub": "Testability",
+      "threshold": 0,
+      "unit": "unregenerated model or facet outputs",
+      "method": "Regeneration must reproduce committed output bytes.",
+      "source": "scripts/check-facets.mjs",
+      "evidence": "tests/product-facets.test.js",
+      "kind": "requirement"
+    },
+    {
+      "id": "TermWidth",
+      "characteristic": "PerformanceEfficiency",
+      "sub": "Capacity",
+      "threshold": 32768,
+      "unit": "bits",
+      "method": "Explicit parsing/memory envelope, not an upstream ring semantic limit.",
+      "source": "src/layer4-compute/replay.js",
+      "evidence": "tests/primitive-operations.test.js",
+      "kind": "configured"
+    },
+    {
+      "id": "UnknownWriteReplay",
+      "characteristic": "Reliability",
+      "sub": "Recoverability",
+      "threshold": 0,
+      "unit": "blind retries of unknown DNS writes",
+      "method": "Unknown publication permits read-only reconciliation, never another mutation.",
+      "source": "docs/browser-authority.md",
+      "evidence": "tests/dns-publication.test.js",
+      "kind": "requirement"
+    }
+  ],
+  "brand": {
+    "name": "Stitch",
+    "promise": "Model-driven recoverable objects and replayable computation across changing peers",
+    "tokens": [
+      {
+        "name": "bg",
+        "value": "#0a0a0a",
+        "type": "color",
+        "source": "index.html"
+      },
+      {
+        "name": "panel",
+        "value": "#111111",
+        "type": "color",
+        "source": "index.html"
+      },
+      {
+        "name": "border",
+        "value": "#2a2a2a",
+        "type": "color",
+        "source": "index.html"
+      },
+      {
+        "name": "fg",
+        "value": "#e8e8e8",
+        "type": "color",
+        "source": "index.html"
+      },
+      {
+        "name": "muted",
+        "value": "#888888",
+        "type": "color",
+        "source": "index.html"
+      },
+      {
+        "name": "font",
+        "value": "\"JetBrains Mono\", \"Fira Code\", Consolas, monospace",
+        "type": "fontFamily",
+        "source": "index.html"
+      },
+      {
+        "name": "accent",
+        "value": "#bde8cc",
+        "type": "color",
+        "source": "site/site.css"
+      },
+      {
+        "name": "site-muted",
+        "value": "#a1aaa4",
+        "type": "color",
+        "source": "site/site.css"
+      },
+      {
+        "name": "site-line",
+        "value": "#303832",
+        "type": "color",
+        "source": "site/site.css"
+      }
+    ],
+    "contrasts": [
+      {
+        "foreground": "fg",
+        "background": "bg",
+        "observedMilli": 16158,
+        "requiredMilli": 4500,
+        "scope": "Declared opaque text colors only; not whole-page WCAG conformance."
+      },
+      {
+        "foreground": "fg",
+        "background": "panel",
+        "observedMilli": 15411,
+        "requiredMilli": 4500,
+        "scope": "Declared opaque text colors only; not whole-page WCAG conformance."
+      },
+      {
+        "foreground": "muted",
+        "background": "panel",
+        "observedMilli": 5326,
+        "requiredMilli": 4500,
+        "scope": "Declared opaque text colors only; not whole-page WCAG conformance."
+      },
+      {
+        "foreground": "accent",
+        "background": "bg",
+        "observedMilli": 14686,
+        "requiredMilli": 4500,
+        "scope": "Declared opaque text colors only; not whole-page WCAG conformance."
+      },
+      {
+        "foreground": "site-muted",
+        "background": "bg",
+        "observedMilli": 8297,
+        "requiredMilli": 4500,
+        "scope": "Declared opaque text colors only; not whole-page WCAG conformance."
+      }
+    ],
+    "scope": "Stitch own dark technical surface, monospace operator workbench and source-owned reader accent palette. No inherited Prism-DevRel or UORust character or theme."
+  },
+  "users": {
+    "groups": [
+      {
+        "id": "operator",
+        "characteristics": "Chooses mesh participation, public disclosure, trusted pointer authority, DNS writes and VM actions."
+      },
+      {
+        "id": "reader",
+        "characteristics": "Learns the object, fragment, custody, replay and authority protocol before taking part."
+      },
+      {
+        "id": "reviewer",
+        "characteristics": "Reviews exact-source evidence, host assumptions, vendor provenance and qualification gaps."
+      },
+      {
+        "id": "systemIntegrator",
+        "characteristics": "Embeds or extends the protocol without bypassing resource, trust or effect admission."
+      }
+    ],
+    "goals": [
+      {
+        "user": 0,
+        "journey": "Product.Features::journeyMesh",
+        "outcome": "Review public signaling disclosure, join explicitly, then inspect reachable peers.",
+        "id": "mesh",
+        "steps": [
+          "Product.Features::featureJoin"
+        ]
+      },
+      {
+        "user": 0,
+        "journey": "Product.Features::journeyObjects",
+        "outcome": "Separate local integrity from conditional peer custody and actual recovery.",
+        "id": "objects",
+        "steps": [
+          "Product.Features::featureStore",
+          "Product.Features::featurePlacementRepair",
+          "Product.Features::featureRecoveryExport",
+          "Product.Features::featureRecoveryImport",
+          "Product.Features::featureRecoveryDownload"
+        ]
+      },
+      {
+        "user": 0,
+        "journey": "Product.Features::journeyCompute",
+        "outcome": "Replay deterministic checkpoints before continuation; VM effects have a separate contract.",
+        "id": "compute",
+        "steps": [
+          "Product.Features::featureStart",
+          "Product.Features::featureResume"
+        ]
+      },
+      {
+        "user": 0,
+        "journey": "Product.Features::journeyVm",
+        "outcome": "Boot and execute only through the observed VM lifecycle. Output integrity does not certify execution.",
+        "id": "vm",
+        "steps": [
+          "Product.Features::featureBoot",
+          "Product.Features::featureExecute",
+          "Product.Features::featureVmReconcile",
+          "Product.Features::featureVmStop",
+          "Product.Features::featureVmDestroy"
+        ]
+      },
+      {
+        "user": 0,
+        "journey": "Product.Features::journeyPointers",
+        "outcome": "Pin authority independently, retain the local head, and reconcile uncertain provider writes.",
+        "id": "pointers",
+        "steps": [
+          "Product.Features::featureSaveAuthority",
+          "Product.Features::featurePin",
+          "Product.Features::featureTxt",
+          "Product.Features::featureAdmit",
+          "Product.Features::featurePublish",
+          "Product.Features::featureLoadPublication",
+          "Product.Features::featureReconcile"
+        ]
+      },
+      {
+        "user": 0,
+        "journey": "Product.Features::journeyResources",
+        "outcome": "Inspect bounded application charges, export them, and explicitly grant a new epoch.",
+        "id": "resources",
+        "steps": [
+          "Product.Features::featureExport",
+          "Product.Features::featureRenew"
+        ]
+      },
+      {
+        "user": 1,
+        "journey": "Product.Features::journeyReader",
+        "outcome": "Understand the Stitch protocol. Each operation retains its source-owned consent and evidence boundary.",
+        "id": "reader",
+        "steps": [
+          "Product.Features::featureLearnProtocol",
+          "Product.Features::featureInspectFacetSources"
+        ]
+      },
+      {
+        "user": 2,
+        "journey": "Product.Features::journeyReviewer",
+        "outcome": "Audit evidence and assumptions. Each operation retains its source-owned consent and evidence boundary.",
+        "id": "reviewer",
+        "steps": [
+          "Product.Features::featureInspectFacetSources",
+          "Product.Features::featureReviewHostBoundaries"
+        ]
+      },
+      {
+        "user": 3,
+        "journey": "Product.Features::journeyIntegrator",
+        "outcome": "Extend the protocol safely. Each operation retains its source-owned consent and evidence boundary.",
+        "id": "integrator",
+        "steps": [
+          "Product.Features::featureLearnProtocol",
+          "Product.Features::featureReviewHostBoundaries",
+          "Product.Features::featureExtendProtocol"
+        ]
+      },
+      {
+        "user": 0,
+        "journey": "Product.Features::journeyAuthority",
+        "outcome": "Care for saved identity and trust. Each operation retains its source-owned consent and evidence boundary.",
+        "id": "authority",
+        "steps": [
+          "Product.Features::featureInspectAuthorityStorage",
+          "Product.Features::featureSaveTrustedAnchor",
+          "Product.Features::featureRestoreTrustedAnchor",
+          "Product.Features::featureExportAuthorityJournal"
+        ]
+      }
+    ],
+    "tasks": [
+      {
+        "goal": 0,
+        "order": 0,
+        "feature": "Product.Features::featureJoin"
+      },
+      {
+        "goal": 1,
+        "order": 0,
+        "feature": "Product.Features::featureStore"
+      },
+      {
+        "goal": 1,
+        "order": 1,
+        "feature": "Product.Features::featurePlacementRepair"
+      },
+      {
+        "goal": 1,
+        "order": 2,
+        "feature": "Product.Features::featureRecoveryExport"
+      },
+      {
+        "goal": 1,
+        "order": 3,
+        "feature": "Product.Features::featureRecoveryImport"
+      },
+      {
+        "goal": 1,
+        "order": 4,
+        "feature": "Product.Features::featureRecoveryDownload"
+      },
+      {
+        "goal": 2,
+        "order": 0,
+        "feature": "Product.Features::featureStart"
+      },
+      {
+        "goal": 2,
+        "order": 1,
+        "feature": "Product.Features::featureResume"
+      },
+      {
+        "goal": 3,
+        "order": 0,
+        "feature": "Product.Features::featureBoot"
+      },
+      {
+        "goal": 3,
+        "order": 1,
+        "feature": "Product.Features::featureExecute"
+      },
+      {
+        "goal": 3,
+        "order": 2,
+        "feature": "Product.Features::featureVmReconcile"
+      },
+      {
+        "goal": 3,
+        "order": 3,
+        "feature": "Product.Features::featureVmStop"
+      },
+      {
+        "goal": 3,
+        "order": 4,
+        "feature": "Product.Features::featureVmDestroy"
+      },
+      {
+        "goal": 4,
+        "order": 0,
+        "feature": "Product.Features::featureSaveAuthority"
+      },
+      {
+        "goal": 4,
+        "order": 1,
+        "feature": "Product.Features::featurePin"
+      },
+      {
+        "goal": 4,
+        "order": 2,
+        "feature": "Product.Features::featureTxt"
+      },
+      {
+        "goal": 4,
+        "order": 3,
+        "feature": "Product.Features::featureAdmit"
+      },
+      {
+        "goal": 4,
+        "order": 4,
+        "feature": "Product.Features::featurePublish"
+      },
+      {
+        "goal": 4,
+        "order": 5,
+        "feature": "Product.Features::featureLoadPublication"
+      },
+      {
+        "goal": 4,
+        "order": 6,
+        "feature": "Product.Features::featureReconcile"
+      },
+      {
+        "goal": 5,
+        "order": 0,
+        "feature": "Product.Features::featureExport"
+      },
+      {
+        "goal": 5,
+        "order": 1,
+        "feature": "Product.Features::featureRenew"
+      },
+      {
+        "goal": 6,
+        "order": 0,
+        "feature": "Product.Features::featureLearnProtocol"
+      },
+      {
+        "goal": 6,
+        "order": 1,
+        "feature": "Product.Features::featureInspectFacetSources"
+      },
+      {
+        "goal": 7,
+        "order": 0,
+        "feature": "Product.Features::featureInspectFacetSources"
+      },
+      {
+        "goal": 7,
+        "order": 1,
+        "feature": "Product.Features::featureReviewHostBoundaries"
+      },
+      {
+        "goal": 8,
+        "order": 0,
+        "feature": "Product.Features::featureLearnProtocol"
+      },
+      {
+        "goal": 8,
+        "order": 1,
+        "feature": "Product.Features::featureReviewHostBoundaries"
+      },
+      {
+        "goal": 8,
+        "order": 2,
+        "feature": "Product.Features::featureExtendProtocol"
+      },
+      {
+        "goal": 9,
+        "order": 0,
+        "feature": "Product.Features::featureInspectAuthorityStorage"
+      },
+      {
+        "goal": 9,
+        "order": 1,
+        "feature": "Product.Features::featureSaveTrustedAnchor"
+      },
+      {
+        "goal": 9,
+        "order": 2,
+        "feature": "Product.Features::featureRestoreTrustedAnchor"
+      },
+      {
+        "goal": 9,
+        "order": 3,
+        "feature": "Product.Features::featureExportAuthorityJournal"
+      }
+    ],
+    "measures": [
+      {
+        "goal": 0,
+        "outcome": "effectiveness",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 0,
+        "outcome": "efficiency",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 0,
+        "outcome": "satisfaction",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 1,
+        "outcome": "effectiveness",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 1,
+        "outcome": "efficiency",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 1,
+        "outcome": "satisfaction",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 2,
+        "outcome": "effectiveness",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 2,
+        "outcome": "efficiency",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 2,
+        "outcome": "satisfaction",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 3,
+        "outcome": "effectiveness",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 3,
+        "outcome": "efficiency",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 3,
+        "outcome": "satisfaction",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 4,
+        "outcome": "effectiveness",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 4,
+        "outcome": "efficiency",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 4,
+        "outcome": "satisfaction",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 5,
+        "outcome": "effectiveness",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 5,
+        "outcome": "efficiency",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 5,
+        "outcome": "satisfaction",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 6,
+        "outcome": "effectiveness",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 6,
+        "outcome": "efficiency",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 6,
+        "outcome": "satisfaction",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 7,
+        "outcome": "effectiveness",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 7,
+        "outcome": "efficiency",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 7,
+        "outcome": "satisfaction",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 8,
+        "outcome": "effectiveness",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 8,
+        "outcome": "efficiency",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 8,
+        "outcome": "satisfaction",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 9,
+        "outcome": "effectiveness",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 9,
+        "outcome": "efficiency",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      },
+      {
+        "goal": 9,
+        "outcome": "satisfaction",
+        "observed": null,
+        "method": "open: no user study on this exact product revision; acceptance tests and task counts are not usability observations"
+      }
+    ]
+  },
+  "persistence": [
+    {
+      "id": "SavedSigner",
+      "storage": "Origin IndexedDB nonextractable CryptoKey",
+      "restore": "Startup restores only a valid active existing record.",
+      "automatic": true,
+      "trust": "Missing, malformed or revoked records never authorize automatic replacement.",
+      "failure": "Origin eviction or device loss can destroy the only key.",
+      "source": "src/layer1-uor/browser-authority.js",
+      "evidence": "tests/browser-authority.test.js"
+    },
+    {
+      "id": "TrustedHead",
+      "storage": "Origin IndexedDB exact name/key/digest with history",
+      "restore": "Admitted successors persist by exact CAS before the live head changes; live restore is explicit.",
+      "automatic": false,
+      "trust": "Independent exact key and recent digest acceptance is not derived from a self-signature.",
+      "failure": "Storage failure preserves the previous live head; total loss requires independent recent evidence.",
+      "source": "src/layer1-uor/browser-authority.js",
+      "evidence": "tests/pointer-recovery.test.js"
+    },
+    {
+      "id": "UnknownPublication",
+      "storage": "Origin IndexedDB strict write-ahead intent",
+      "restore": "Load the exact scoped candidate and perform read-only reconciliation.",
+      "automatic": false,
+      "trust": "No timer takeover, blind retry or deletion of unresolved intent.",
+      "failure": "An absent provider read does not prove the old mutation never occurred.",
+      "source": "src/layer1-uor/browser-authority.js",
+      "evidence": "tests/dns-publication.test.js"
+    },
+    {
+      "id": "ObjectCustody",
+      "storage": "Session RAM plus conditionally reachable peer fragments",
+      "restore": "Automatically verify received bytes; repair only within admitted budgets and checked receipts.",
+      "automatic": true,
+      "trust": "Different peer IDs do not prove failure-domain independence or future retention.",
+      "failure": "All-byte loss cannot be repaired; local storage persistence does not make object cache durable.",
+      "source": "src/layer3-storage/custody.js",
+      "evidence": "tests/placement-repair.test.js"
+    },
+    {
+      "id": "PureCheckpoint",
+      "storage": "Session state or explicitly exported recovery bundle",
+      "restore": "Every received checkpoint is replayed against its exact program/input/execution identity.",
+      "automatic": true,
+      "trust": "Replay does not grant exclusive execution or prove arbitrary guest effects.",
+      "failure": "Older execution identities are refused without explicit revalidation.",
+      "source": "src/layer4-compute/replay.js",
+      "evidence": "tests/execution-identity.test.js"
+    },
+    {
+      "id": "RecoveryVault",
+      "storage": "Session-only checked vault and user-saved external file",
+      "restore": "Verify complete bundle atomically; export strips accepted-trust status.",
+      "automatic": false,
+      "trust": "Imported keys and anchors are supplied evidence, not trusted authority.",
+      "failure": "External export is not a durability certificate; stale/conflicting imports refuse.",
+      "source": "src/recovery.js",
+      "evidence": "tests/recovery.test.js"
+    },
+    {
+      "id": "BudgetLedger",
+      "storage": "Session-local epochs plus explicit history export",
+      "restore": "Unknown effects remain charged; renewal is a deliberate new allowance.",
+      "automatic": false,
+      "trust": "No automatic refund or epoch rollover.",
+      "failure": "Browser reload is not durable preservation of the budget ledger.",
+      "source": "src/layer2-schedulers/policy.js",
+      "evidence": "tests/runtime-admission.test.js"
+    },
+    {
+      "id": "VmCommand",
+      "storage": "Retained host command handles and observed lifecycle",
+      "restore": "Observe the selected old command result without dispatching it again.",
+      "automatic": false,
+      "trust": "A timeout is an unknown outcome, not cancellation or rollback.",
+      "failure": "Stop/destroy are pending until host confirmation; external effects are not reversible.",
+      "source": "src/layer4-compute/vm-administration.js",
+      "evidence": "tests/vm-administration.test.js"
+    }
+  ],
+  "release": {
+    "version": "0.2.0",
+    "deployments": [
+      {
+        "id": "browserSession",
+        "entry": "index.html",
+        "requiredCapabilities": [
+          "dom",
+          "crypto",
+          "monotonicClock",
+          "wallClock",
+          "sessionStorage",
+          "artifactFetch"
+        ]
+      },
+      {
+        "id": "pureProbe",
+        "entry": "app/src/StitchApp.lex.tex",
+        "requiredCapabilities": []
+      }
+    ],
+    "assets": [
+      {
+        "path": "src/layer1-uor/effects.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/product-experience.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "index.html",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer1-uor/contracts.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer1-uor/custody.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer1-uor/generated-model.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer1-uor/index.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer1-uor/pointer.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer2-schedulers/index.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer2-schedulers/policy.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer3-storage/custody.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer3-storage/index.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer4-compute/index.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer4-compute/replay.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer5-transport/index.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "v86/libv86.js",
+        "source": "",
+        "licenseStatus": "BSD/MIT incorporated notices and source supplied in vendor/v86; include accompanying materials in distribution",
+        "redistributionCleared": true
+      },
+      {
+        "path": "v86/v86.wasm",
+        "source": "",
+        "licenseStatus": "BSD/MIT incorporated notices and source supplied in vendor/v86; include accompanying materials in distribution",
+        "redistributionCleared": true
+      },
+      {
+        "path": "v86/seabios.bin",
+        "source": "",
+        "licenseStatus": "LGPLv3 source, config, build instructions and licenses supplied in vendor/seabios; include accompanying materials in distribution",
+        "redistributionCleared": true
+      },
+      {
+        "path": "v86/vgabios.bin",
+        "source": "",
+        "licenseStatus": "LGPLv3 source, config, build instructions and licenses supplied in vendor/seabios; include accompanying materials in distribution",
+        "redistributionCleared": true
+      },
+      {
+        "path": "images/buildroot-bzimage.bin",
+        "source": "",
+        "licenseStatus": "Corresponding source, configs, patches and licenses published at immutable commit fd59fae669e9a40271fb584ca071270d8ed0b8f8; preserve vendor/guest/SOURCE-NOTICE.md and equivalent source access with image",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/lib.rs",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer1-uor/browser-authority.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/authority-ui.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer5-transport/dns-wire.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer5-transport/relay-framing.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/recovery.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/recovery-ui.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer5-transport/signaling.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer5-transport/channel-flow.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "src/layer4-compute/vm-administration.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "site/site.css",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "site/explorer.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "site/stitch-fabric.svg",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "site/facets.json",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      },
+      {
+        "path": "site/catalog.js",
+        "source": "",
+        "licenseStatus": "Project declares MIT; audit applies",
+        "redistributionCleared": true
+      }
+    ],
+    "gate": ".github/workflows/prism.yml",
+    "boundary": "Static publication, source verification, native artifact acceptance and browser qualification are distinct. This inventory reports no current pass result."
+  },
+  "compliance": [
+    {
+      "id": "Architecture",
+      "standard": "ISO/IEC/IEEE 42010",
+      "obligation": "Represent every component, flow, stakeholder and concern with traceable viewpoints.",
+      "source": "app/src/Product/Architecture.lex.tex",
+      "evidence": "scripts/check-product.mjs",
+      "status": "Documented obligation and named evidence procedure; not an external compliance certification."
+    },
+    {
+      "id": "Design",
+      "standard": "ISO/PAS 19450 and UML 2.5.1",
+      "obligation": "Provide OPM object/process and UML component, sequence and state-machine views; views remain conditional on real domain predicates.",
+      "source": "app/src/Product/Design.lex.tex",
+      "evidence": "scripts/check-facets.mjs",
+      "status": "Documented obligation and named evidence procedure; not an external compliance certification."
+    },
+    {
+      "id": "Features",
+      "standard": "Prism official feature and journey facets",
+      "obligation": "Every existing action has a declared call and named acceptance evidence; each journey names declared features.",
+      "source": "app/src/Product/Features.lex.tex",
+      "evidence": "tests/product-facets.test.js",
+      "status": "Documented obligation and named evidence procedure; not an external compliance certification."
+    },
+    {
+      "id": "ThreatModel",
+      "standard": "ISO 27034, ISO 27005 and STRIDE",
+      "obligation": "Give every threat a traceable control/evidence path while retaining qualitative assessment and residual host assumptions.",
+      "source": "app/src/Product/Security.lex.tex",
+      "evidence": "tests/product-facets.test.js",
+      "status": "Documented obligation and named evidence procedure; not an external compliance certification."
+    },
+    {
+      "id": "Quality",
+      "standard": "ISO/IEC 25010:2023",
+      "obligation": "Distinguish source-derived counts, configured limits, zero-defect obligations and unmeasured observations.",
+      "source": "app/src/Product/Quality.lex.tex",
+      "evidence": "tests/product-facets.test.js",
+      "status": "Documented obligation and named evidence procedure; not an external compliance certification."
+    },
+    {
+      "id": "CanonicalBytes",
+      "standard": "RFC 8785",
+      "obligation": "Canonical JSON and framed commitments are checked at byte boundaries.",
+      "source": "docs/canonical-json.md",
+      "evidence": "tests/canonical-json.test.js",
+      "status": "Documented obligation and named evidence procedure; not an external compliance certification."
+    },
+    {
+      "id": "Dns",
+      "standard": "RFC 1035, RFC 8484 and provider contracts",
+      "obligation": "DNS wire decoding and full multipart pointer publication retain exact scope and unknown-effect reconciliation.",
+      "source": "docs/dns-client.md",
+      "evidence": "tests/dns-wire.test.js",
+      "status": "Documented obligation and named evidence procedure; not an external compliance certification."
+    },
+    {
+      "id": "IdentityPersistence",
+      "standard": "Origin storage and WebCrypto contracts",
+      "obligation": "Restore only existing active saved identity; do not infer trust from supplied data or recover keys after total loss.",
+      "source": "docs/browser-authority.md",
+      "evidence": "tests/browser-authority-lifecycle.test.js",
+      "status": "Documented obligation and named evidence procedure; not an external compliance certification."
+    },
+    {
+      "id": "ContextOfUse",
+      "standard": "ISO 9241-11 and ISO 9241-210",
+      "obligation": "Connect stakeholders to goals, tasks and environments; unmeasured effectiveness, efficiency and satisfaction remain open.",
+      "source": "app/src/Product/Users.lex.tex",
+      "evidence": "tests/product-facets.test.js",
+      "status": "Documented obligation and named evidence procedure; not an external compliance certification."
+    },
+    {
+      "id": "Brand",
+      "standard": "Wheeler; W3C Design Tokens; scoped WCAG 2.2 measurements",
+      "obligation": "Preserve Stitch identity and source its design tokens. Listed contrast measurements are not whole-page accessibility conformance.",
+      "source": "app/src/Product/Brand.lex.tex",
+      "evidence": "tests/product-facets.test.js",
+      "status": "Documented obligation and named evidence procedure; not an external compliance certification."
+    },
+    {
+      "id": "Distribution",
+      "standard": "Dependency source and license obligations",
+      "obligation": "Keep exact asset identity and accompanying materials, separately from security/qualification evidence.",
+      "source": "docs/vendor-provenance.md",
+      "evidence": "tests/guest-qualification.test.js",
+      "status": "Documented obligation and named evidence procedure; not an external compliance certification."
+    },
+    {
+      "id": "Release",
+      "standard": "Pinned SDK and exact-revision acceptance",
+      "obligation": "Source, native artifact, runtime, hosted browser and field qualification are distinct gates.",
+      "source": "docs/product-projection.md",
+      "evidence": ".github/workflows/prism.yml",
+      "status": "Documented obligation and named evidence procedure; not an external compliance certification."
+    }
+  ]
+}

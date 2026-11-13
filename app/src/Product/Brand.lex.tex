@@ -1,0 +1,70 @@
+\begin{lexlean}{Product.Brand}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{stitch.domain@1.0.0}
+\importmodule{Foundation.Experience.V1.Model}
+\title{Stitch brand and design system}
+\begin{semanticmodule}
+structure{
+  name: Source,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: record, type: String},
+    {name: path, type: String},
+    {name: firstLine, type: Nat},
+    {name: lastLine, type: Nat},
+    {name: sha256, type: String}
+  ]
+}
+
+definition{
+  name: sources,
+  parameters: [],
+  result: (List Source),
+  body: (cons (record Source {record := "Product.Brand", path := "index.html", firstLine := 0, lastLine := 0, sha256 := "b8e573b5b50c533114532ef4a6f851efc1508082c3a42d2d1002e20f22400801"}) (cons (record Source {record := "Product.Brand", path := "package.json", firstLine := 0, lastLine := 0, sha256 := "4cca578575a541919497c9ed1c517e970b7d820d464c7d594b8f0cb7bd23a3f4"}) (cons (record Source {record := "Product.Brand", path := "site/site.css", firstLine := 0, lastLine := 0, sha256 := "67332d156b7bfdbb212bef731374bec91f11d376aa938f45be07944fe2490dd9"}) (nil Source))))
+}
+
+definition{
+  name: authority,
+  parameters: [],
+  result: Foundation.Experience.V1.Model::Authority,
+  body: (record Foundation.Experience.V1.Model::Authority {framework := "Wheeler brand identity; W3C Design Tokens; WCAG 2.2 SC 1.4.3 for the listed opaque text pairs only", repository := "https://github.com/Syntra-Labs/stitch", commit := "the exact revision of the cited sources"})
+}
+
+definition{
+  name: brandSources,
+  parameters: [],
+  result: (List Foundation.Experience.V1.Model::Source),
+  body: (cons (record Foundation.Experience.V1.Model::Source {record := "Product.Brand", path := "index.html", firstLine := 0, lastLine := 0, kappa := "a5ee649c755a33ab8f60100f7dd357185424684cd75d935eda63274a98b60571"}) (cons (record Foundation.Experience.V1.Model::Source {record := "Product.Brand", path := "package.json", firstLine := 0, lastLine := 0, kappa := "073d458c9054acdf160b3a62feb1fb66a8525ecdd0f10d8b518318bb5611faa3"}) (cons (record Foundation.Experience.V1.Model::Source {record := "Product.Brand", path := "site/site.css", firstLine := 0, lastLine := 0, kappa := "3173583a128388aada2e80ad1dcbc311ffc4f76b399632c17de2b2ff2958d671"}) (nil Foundation.Experience.V1.Model::Source))))
+}
+
+definition{
+  name: elements,
+  parameters: [],
+  result: (List Foundation.Experience.V1.Model::BrandElement),
+  body: (cons (record Foundation.Experience.V1.Model::BrandElement {kind := (ctor Foundation.Experience.V1.Model::BrandElementKind.productName), text := "Stitch", source := 1}) (cons (record Foundation.Experience.V1.Model::BrandElement {kind := (ctor Foundation.Experience.V1.Model::BrandElementKind.productPromise), text := "Model-driven recoverable objects and replayable computation across changing peers", source := 1}) (cons (record Foundation.Experience.V1.Model::BrandElement {kind := (ctor Foundation.Experience.V1.Model::BrandElementKind.typography), text := "\"JetBrains Mono\", \"Fira Code\", Consolas, monospace", source := 0}) (cons (record Foundation.Experience.V1.Model::BrandElement {kind := (ctor Foundation.Experience.V1.Model::BrandElementKind.palette), text := "bg #0a0a0a; panel #111111; border #2a2a2a; fg #e8e8e8; muted #888888; accent #bde8cc; site-muted #a1aaa4; site-line #303832", source := 0}) (nil Foundation.Experience.V1.Model::BrandElement)))))
+}
+
+definition{
+  name: tokens,
+  parameters: [],
+  result: (List Foundation.Experience.V1.Model::DesignToken),
+  body: (cons (record Foundation.Experience.V1.Model::DesignToken {name := "bg", type := (ctor Foundation.Experience.V1.Model::TokenType.color), value := "#0a0a0a", hex := "#0a0a0a", source := 0}) (cons (record Foundation.Experience.V1.Model::DesignToken {name := "panel", type := (ctor Foundation.Experience.V1.Model::TokenType.color), value := "#111111", hex := "#111111", source := 0}) (cons (record Foundation.Experience.V1.Model::DesignToken {name := "border", type := (ctor Foundation.Experience.V1.Model::TokenType.color), value := "#2a2a2a", hex := "#2a2a2a", source := 0}) (cons (record Foundation.Experience.V1.Model::DesignToken {name := "fg", type := (ctor Foundation.Experience.V1.Model::TokenType.color), value := "#e8e8e8", hex := "#e8e8e8", source := 0}) (cons (record Foundation.Experience.V1.Model::DesignToken {name := "muted", type := (ctor Foundation.Experience.V1.Model::TokenType.color), value := "#888888", hex := "#888888", source := 0}) (cons (record Foundation.Experience.V1.Model::DesignToken {name := "font", type := (ctor Foundation.Experience.V1.Model::TokenType.fontFamily), value := "\"JetBrains Mono\", \"Fira Code\", Consolas, monospace", hex := "", source := 0}) (cons (record Foundation.Experience.V1.Model::DesignToken {name := "accent", type := (ctor Foundation.Experience.V1.Model::TokenType.color), value := "#bde8cc", hex := "#bde8cc", source := 2}) (cons (record Foundation.Experience.V1.Model::DesignToken {name := "site-muted", type := (ctor Foundation.Experience.V1.Model::TokenType.color), value := "#a1aaa4", hex := "#a1aaa4", source := 2}) (cons (record Foundation.Experience.V1.Model::DesignToken {name := "site-line", type := (ctor Foundation.Experience.V1.Model::TokenType.color), value := "#303832", hex := "#303832", source := 2}) (nil Foundation.Experience.V1.Model::DesignToken))))))))))
+}
+
+definition{
+  name: contrasts,
+  parameters: [],
+  result: (List Foundation.Experience.V1.Model::ContrastPair),
+  body: (cons (record Foundation.Experience.V1.Model::ContrastPair {foreground := 3, background := 0, backgroundAlphaMilli := 1000, criterion := (ctor Foundation.Experience.V1.Model::ContrastCriterion.text), observedMilli := 16158, requiredMilli := 4500, source := 0}) (cons (record Foundation.Experience.V1.Model::ContrastPair {foreground := 3, background := 1, backgroundAlphaMilli := 1000, criterion := (ctor Foundation.Experience.V1.Model::ContrastCriterion.text), observedMilli := 15411, requiredMilli := 4500, source := 0}) (cons (record Foundation.Experience.V1.Model::ContrastPair {foreground := 4, background := 1, backgroundAlphaMilli := 1000, criterion := (ctor Foundation.Experience.V1.Model::ContrastCriterion.text), observedMilli := 5326, requiredMilli := 4500, source := 0}) (cons (record Foundation.Experience.V1.Model::ContrastPair {foreground := 6, background := 0, backgroundAlphaMilli := 1000, criterion := (ctor Foundation.Experience.V1.Model::ContrastCriterion.text), observedMilli := 14686, requiredMilli := 4500, source := 0}) (cons (record Foundation.Experience.V1.Model::ContrastPair {foreground := 7, background := 0, backgroundAlphaMilli := 1000, criterion := (ctor Foundation.Experience.V1.Model::ContrastCriterion.text), observedMilli := 8297, requiredMilli := 4500, source := 0}) (nil Foundation.Experience.V1.Model::ContrastPair))))))
+}
+
+definition{
+  name: contrastScope,
+  parameters: [],
+  result: String,
+  body: "These are arithmetic observations over the listed declared opaque text pairs. Focus, disabled states, overlays, browser rendering, user agents and assistive technologies need independent checks. A missing or failing pair cannot establish whole-page accessibility."
+}
+\end{semanticmodule}
+\end{lexlean}

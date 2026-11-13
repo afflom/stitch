@@ -105,7 +105,7 @@ definition{
   name: componentBrowser,
   parameters: [],
   result: Component,
-  body: (record Component {id := "browser", role := "Interactive five-layer Stitch product", implementation := (cons "index.html" (cons "src/product-experience.js" (cons "src/recovery-ui.js" (cons "src/authority-ui.js" (nil String))))), models := (cons "Product.Experience" (cons "Stitch.Recovery" (cons "Product.Host" (cons "Product.Model" (nil String))))), trustBoundary := true})
+  body: (record Component {id := "browser", role := "Interactive five-layer Stitch product", implementation := (cons "site/catalog.js" (cons "site/site.css" (cons "site/explorer.js" (cons "site/stitch-fabric.svg" (cons "site/facets.json" (cons "index.html" (cons "src/product-experience.js" (cons "src/recovery-ui.js" (cons "src/authority-ui.js" (nil String)))))))))), models := (cons "Product.Experience" (cons "Stitch.Recovery" (cons "Product.Host" (cons "Product.Model" (nil String))))), trustBoundary := true})
 }
 
 definition{
@@ -729,10 +729,45 @@ definition{
 }
 
 definition{
+  name: assetSiteStyle,
+  parameters: [],
+  result: Asset,
+  body: (record Asset {path := "site/site.css", role := "Project-owned product site presentation", origin := "Project-owned source checkout", licenseStatus := "Project declares MIT; audit applies", redistributionCleared := true})
+}
+
+definition{
+  name: assetSiteExplorer,
+  parameters: [],
+  result: Asset,
+  body: (record Asset {path := "site/explorer.js", role := "Local exact-byte recovery demonstration and source-facet renderer", origin := "Project-owned source checkout", licenseStatus := "Project declares MIT; audit applies", redistributionCleared := true})
+}
+
+definition{
+  name: assetSiteFabric,
+  parameters: [],
+  result: Asset,
+  body: (record Asset {path := "site/stitch-fabric.svg", role := "Project-owned Stitch fabric illustration", origin := "Project-owned source checkout", licenseStatus := "Project declares MIT; audit applies", redistributionCleared := true})
+}
+
+definition{
+  name: assetSiteFacets,
+  parameters: [],
+  result: Asset,
+  body: (record Asset {path := "site/facets.json", role := "Generated source-facet inventory; not verification evidence", origin := "Project-owned source checkout", licenseStatus := "Project declares MIT; audit applies", redistributionCleared := true})
+}
+
+definition{
+  name: assetSiteCatalog,
+  parameters: [],
+  result: Asset,
+  body: (record Asset {path := "site/catalog.js", role := "Source-derived facet catalog presentation with explicit assurance limits", origin := "Project-owned source checkout", licenseStatus := "Project declares MIT; audit applies", redistributionCleared := true})
+}
+
+definition{
   name: product,
   parameters: [],
   result: Model,
-  body: (record Model {productId := "stitch", owner := "Syntra Labs; repository origin afflom/stitch", version := "0.3.0", lifecycle := "development", components := (cons (componentAdmission) (cons (componentBrowser) (cons (componentCompute) (cons (componentCryptography) (cons (componentDiscovery) (cons (componentIdentity) (cons (componentLegacy) (cons (componentNativeRouting) (cons (componentPeers) (cons (componentPointerAuthority) (cons (componentPublicRelay) (cons (componentRuntimeHost) (cons (componentScheduler) (cons (componentSignaling) (cons (componentStaticHost) (cons (componentStorage) (cons (componentTransport) (cons (componentVm) (nil Component))))))))))))))))))), assumptions := (cons (assumptionArtifactConformance) (cons (assumptionBrowserSemantics) (cons (assumptionCryptographicSecurity) (cons (assumptionDisclosureConsent) (cons (assumptionFailureDomains) (cons (assumptionNetworkAvailability) (cons (assumptionObserverAnchor) (cons (assumptionPeerAssertion) (cons (assumptionSerializedJournal) (cons (assumptionTimeSources) (cons (assumptionVmIsolation) (nil Assumption)))))))))))), capabilityContracts := (cons (capabilityDom) (cons (capabilityCrypto) (cons (capabilityMonotonicClock) (cons (capabilityWallClock) (cons (capabilitySessionStorage) (cons (capabilityPeerChannel) (cons (capabilityLocalBroadcast) (cons (capabilityPublicSignaling) (cons (capabilityDnsRead) (cons (capabilityDnsWrite) (cons (capabilityPublicRelay) (cons (capabilityVm) (cons (capabilityArtifactFetch) (cons (capabilityNativeRouting) (cons (capabilityOriginStorage) (cons (capabilityWebLock) (nil CapabilityContract))))))))))))))))), dependencies := (cons (dependencyBrowserApis) (cons (dependencyCloudflareDns) (cons (dependencyCloudflareWriter) (cons (dependencyGoogleStun) (cons (dependencyCloudflareStun) (cons (dependencyNtfySignaling) (cons (dependencyNtfyRelay) (cons (dependencyStaticOrigin) (cons (dependencyVmAssets) (cons (dependencyPrismSdk) (cons (dependencyPrismCode) (nil Dependency)))))))))))), deployments := (cons (deploymentBrowserSession) (cons (deploymentPureProbe) (nil Deployment))), assets := (cons (assetRelayFraming) (cons (assetDnsWire) (cons (assetLifecycleEffects) (cons (assetProductExperience) (cons (assetFile0) (cons (assetFile1) (cons (assetFile2) (cons (assetFile3) (cons (assetFile4) (cons (assetFile5) (cons (assetFile6) (cons (assetFile7) (cons (assetFile8) (cons (assetFile9) (cons (assetFile10) (cons (assetFile11) (cons (assetFile12) (cons (assetFile13) (cons (assetFile14) (cons (assetFile15) (cons (assetFile16) (cons (assetFile17) (cons (assetRustConformance) (cons (assetRecovery) (cons (assetRecoveryUi) (cons (assetSignaling) (cons (assetChannelFlow) (cons (assetVmAdministration) (cons (assetBrowserAuthority) (cons (assetAuthorityUi) (nil Asset)))))))))))))))))))))))))))))))})
+  body: (record Model {productId := "stitch", owner := "Syntra Labs; repository origin afflom/stitch", version := "0.3.0", lifecycle := "development", components := (cons (componentAdmission) (cons (componentBrowser) (cons (componentCompute) (cons (componentCryptography) (cons (componentDiscovery) (cons (componentIdentity) (cons (componentLegacy) (cons (componentNativeRouting) (cons (componentPeers) (cons (componentPointerAuthority) (cons (componentPublicRelay) (cons (componentRuntimeHost) (cons (componentScheduler) (cons (componentSignaling) (cons (componentStaticHost) (cons (componentStorage) (cons (componentTransport) (cons (componentVm) (nil Component))))))))))))))))))), assumptions := (cons (assumptionArtifactConformance) (cons (assumptionBrowserSemantics) (cons (assumptionCryptographicSecurity) (cons (assumptionDisclosureConsent) (cons (assumptionFailureDomains) (cons (assumptionNetworkAvailability) (cons (assumptionObserverAnchor) (cons (assumptionPeerAssertion) (cons (assumptionSerializedJournal) (cons (assumptionTimeSources) (cons (assumptionVmIsolation) (nil Assumption)))))))))))), capabilityContracts := (cons (capabilityDom) (cons (capabilityCrypto) (cons (capabilityMonotonicClock) (cons (capabilityWallClock) (cons (capabilitySessionStorage) (cons (capabilityPeerChannel) (cons (capabilityLocalBroadcast) (cons (capabilityPublicSignaling) (cons (capabilityDnsRead) (cons (capabilityDnsWrite) (cons (capabilityPublicRelay) (cons (capabilityVm) (cons (capabilityArtifactFetch) (cons (capabilityNativeRouting) (cons (capabilityOriginStorage) (cons (capabilityWebLock) (nil CapabilityContract))))))))))))))))), dependencies := (cons (dependencyBrowserApis) (cons (dependencyCloudflareDns) (cons (dependencyCloudflareWriter) (cons (dependencyGoogleStun) (cons (dependencyCloudflareStun) (cons (dependencyNtfySignaling) (cons (dependencyNtfyRelay) (cons (dependencyStaticOrigin) (cons (dependencyVmAssets) (cons (dependencyPrismSdk) (cons (dependencyPrismCode) (nil Dependency)))))))))))), deployments := (cons (deploymentBrowserSession) (cons (deploymentPureProbe) (nil Deployment))), assets := (cons (assetSiteCatalog) (cons (assetSiteStyle) (cons (assetSiteExplorer) (cons (assetSiteFabric) (cons (assetSiteFacets) (cons (assetRelayFraming) (cons (assetDnsWire) (cons (assetLifecycleEffects) (cons (assetProductExperience) (cons (assetFile0) (cons (assetFile1) (cons (assetFile2) (cons (assetFile3) (cons (assetFile4) (cons (assetFile5) (cons (assetFile6) (cons (assetFile7) (cons (assetFile8) (cons (assetFile9) (cons (assetFile10) (cons (assetFile11) (cons (assetFile12) (cons (assetFile13) (cons (assetFile14) (cons (assetFile15) (cons (assetFile16) (cons (assetFile17) (cons (assetRustConformance) (cons (assetRecovery) (cons (assetRecoveryUi) (cons (assetSignaling) (cons (assetChannelFlow) (cons (assetVmAdministration) (cons (assetBrowserAuthority) (cons (assetAuthorityUi) (nil Asset))))))))))))))))))))))))))))))))))))})
 }
 
 definition{

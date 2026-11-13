@@ -4,6 +4,33 @@ Recover exact objects and resume deterministic computation while the available p
 
 Stitch retains its five layers: object/ring operations, scheduling, storage, compute, and transport. A Prism/LexLean model defines the state and acceptance rules across those layers. The browser applies model-derived admission predicates and independently checks bytes and execution before accepting them.
 
+## Start here
+
+Stitch is a browser-based experiment in recovering exact data and continuing deterministic work while peers change. It combines five layers: identity and operations, scheduling, storage, compute, and transport. It does not turn internet routers into storage or guarantee survival after every copy is lost.
+
+![Stitch recovery path: an object splits into A, B and parity; A and parity recover the exact object when B is unavailable.](site/stitch-fabric.svg)
+
+### Recover an object
+
+1. **Commit to the bytes.** A full SHA-256 commitment identifies the object. Its filename is only a label.
+2. **Distribute compatible fragments.** Stitch creates two byte halves and an XOR parity fragment. A request to store one is not a checked receipt from a holder.
+3. **Recover and verify.** Any two distinct, compatible fragments can reconstruct the object. Stitch checks their commitments and the reconstructed bytes before accepting the result. Enough information must remain reachable.
+
+### Continue a pure job
+
+A checkpoint carries the identified program, input and execution state. Stitch replays that state before continuing, so a plausible-looking but impossible checkpoint is refused. This applies to deterministic ring programs, not arbitrary Linux VM effects. Partitions may duplicate pure computation.
+
+### Choose your route
+
+- **[Try it in the browser](https://syntra-labs.github.io/stitch/):** change a message, withhold a fragment or alter a byte in a local example. Then open the live operator console if you want to use the network.
+- **[Understand the protocol](docs/prism-model.md):** read the object, custody, pointer, computation and resource contracts, with their assumptions and nonclaims.
+- **[Inspect the product model](app/src/Product/):** follow the typed source and the source-derived facet inventory on the site. Inventory coverage is not proof acceptance.
+- **[Run locally](#run-and-test):** install dependencies, serve the repository and run its checks.
+
+The local example uses Stitch's actual object/fragment verifier without joining a mesh or sending its text. Withholding a fragment models unavailable information, not a real peer failure. The live console has separate opt-ins for public signaling and public object relay. Publishing sufficient fragments reveals their content.
+
+The [reader experience contract](docs/reader-experience.md) documents the resolution-independent illustration, local example, accessibility, bounded inputs and test coverage. Implementation details and exact evidence boundaries follow below.
+
 ## What changed
 
 - **Objects have full cryptographic commitments.** Canonical manifests bind raw encoding, byte lengths, indexed XOR fragments and every required dependency. Legacy FNV addresses remain in regression/conformance simulations.
@@ -35,12 +62,12 @@ make serve
 
 Open `http://localhost:8080`. Join a mesh to exchange data with peers. Enable the public relay only for intentionally public demonstration data. Fewer than three eligible remote peers means partial placement, not fabricated redundancy.
 
-The original Rust UOR conformance check is `cargo test --locked`. Both the Node/Python runtime checks and Rust conformance passed in [the initial fork CI run](https://github.com/afflom/stitch/actions/runs/42797265770); that historical formal SDK stage did not pass. The expanded source has passed actual pinned LexLean/Lean/leanchecker/axiom verification, recorded in [the exact-source summary](product/source-verification.json) and [actual verifier attestation](product/source-attestation.json); native Prism artifact acceptance remains pending. [Actual Chromium qualification](https://github.com/afflom/stitch/actions/runs/42909486101/job/130156053948) passed seven scenarios on `2f1fde8`, including authenticated WebRTC payload/recovery, browser authority persistence and real guest shell/stop/destroy. This evidence does not qualify other browsers, physical NAT topologies or a replacement guest. This is still an unqualified development checkpoint. `make test` runs Node and Rust checks. The default JavaScript suite includes in-process transports and real bundled-v86 guest execution. Dedicated hosted Chromium scenarios exercise native browser behavior; neither substitutes for physical WebRTC/NAT trials.
+The original Rust UOR conformance check is `cargo test --locked`. Both the Node/Python runtime checks and Rust conformance passed in [the initial fork CI run](https://github.com/afflom/stitch/actions/runs/42797265770); that historical formal SDK stage did not pass. The historical 25-module checkpoint passed pinned LexLean/Lean/leanchecker/axiom verification, recorded in [the retained exact-source summary](product/source-verification.json) and [actual verifier attestation](product/source-attestation.json). Those records do not verify the newly expanded facet sources, which are pending an actual SDK verification refresh. Native Prism artifact acceptance also remains pending. [Actual Chromium qualification](https://github.com/afflom/stitch/actions/runs/42909486101/job/130156053948) passed seven scenarios on `2f1fde8`, including authenticated WebRTC payload/recovery, browser authority persistence and real guest shell/stop/destroy. This evidence does not qualify other browsers, physical NAT topologies or a replacement guest. This is still an unqualified development checkpoint. `make test` runs Node and Rust checks. The default JavaScript suite includes in-process transports and real bundled-v86 guest execution. Dedicated hosted Chromium scenarios exercise native browser behavior; neither substitutes for physical WebRTC/NAT trials.
 
 ## Model and verification
 
 - `app/src/Stitch/`: typed domain models and theorem obligations.
-- `app/src/Product/`: complete component/flow, capability, deployment and dependency contracts, projected through the official architecture facet.
+- `app/src/Product/`: component/flow, capability, deployment and dependency contracts plus the expanded product facets. See [complete Prism coverage and evidence boundaries](docs/complete-prism.md) and the [source-derived facet catalog](product/facets.json); catalog coverage is not verification acceptance.
 - `product/contracts.json`: source-bound project-owned contract/asset inventory, not a certificate.
 - `app/language/`: versioned project vocabulary using LexLean extensibility.
 - `src/layer1-uor/generated-model.js`: pure behavior extracted from the model with exact source binding. It is an application adapter, not a replacement Prism compiler or proof certificate.

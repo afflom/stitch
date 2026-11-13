@@ -1,0 +1,17 @@
+spec = "lexlean/entry/1"
+id = "stitch-product-features"
+category = "label-word"
+surface_arity = 0
+frame = "atom"
+
+[denotation]
+kind = "document"
+module = "Product.Features"
+component = "sources"
+
+[[form]]
+id = "stitch-product-features"
+channel = "text"
+surface = "Stitch features and journeys"
+canonical_source = true
+features = ["sentence-case", "singular"]

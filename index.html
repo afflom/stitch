@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>stitch — Live UOR Mesh Database, Distributed Compute & In-Browser Linux VM</title>
+  <title>Stitch · Recoverable objects. Replayable computation.</title>
+  <meta name="description" content="Explore how Stitch recovers exact objects from checked fragments and resumes pure computation across changing peers. An interactive protocol guide and live operator console." />
   <script src="./v86/libv86.js"></script>
   <style>
     :root {
@@ -155,11 +156,85 @@
     .mono-out { overflow-wrap: anywhere; }
     [hidden] { display: none !important; }
   </style>
+  <link rel="stylesheet" href="./site/site.css" />
 </head>
 <body>
+  <main id="stitchApp">
+  <div class="site-shell">
+    <nav class="site-nav" aria-label="Stitch overview">
+      <div class="site-wordmark"><svg class="stitch-mark" viewBox="0 0 32 32" aria-hidden="true"><path d="M6 6v8h8V6m4 20v-8h8v8M6 26l20-20M6 6h8m4 20h8" fill="none" stroke="currentColor" stroke-width="2"/></svg>stitch</div>
+      <div class="site-nav-actions"><button class="nav-explore" type="button" data-scroll-to="protocolExplorer">Try the protocol</button><button type="button" data-scroll-to="operatorConsole">Open console ↗</button><a href="https://github.com/Syntra-Labs/stitch">Source ↗</a></div>
+    </nav>
+    <section class="site-hero" aria-labelledby="siteHeroTitle">
+      <div>
+        <p class="site-eyebrow">A fabric for changing peers</p>
+        <h1 id="siteHeroTitle">Keep the bytes.<br/><span>Change the peers.</span></h1>
+        <p class="site-lead">Stitch splits objects into verifiable fragments and replays pure computation from checked checkpoints. Explore what can survive a missing peer, and what evidence recovery actually needs.</p>
+        <div class="site-cta-row"><button class="site-primary" type="button" data-scroll-to="protocolExplorer">Try losing a fragment ↓</button><button class="site-secondary" type="button" data-scroll-to="protocolMap">How Stitch works</button></div>
+        <p class="site-note">Open source · Browser-native experiment · Local example first</p>
+      </div>
+      <figure class="site-figure"><img src="./site/stitch-fabric.svg" width="1440" height="1080" fetchpriority="high" alt="An object splits into A, B and XOR parity. With B unavailable, A and parity reconstruct the exact object after verification."/><figcaption>Protocol illustration, not live custody or network evidence.</figcaption></figure>
+    </section>
+    <div class="site-principles">
+      <article><h2>01 / Identity follows the bytes</h2><p>Full commitments bind the object, encoding and each fragment. A convenient filename never substitutes for identity.</p></article>
+      <article><h2>02 / Recovery has a threshold</h2><p>Any two compatible, checked XOR fragments can reconstruct the object. Enough information must still be reachable.</p></article>
+      <article><h2>03 / Continuation is checked</h2><p>Pure jobs carry their program and input. Stitch replays a checkpoint before continuing its computation.</p></article>
+    </div>
+
+    <section id="protocolExplorer" class="site-section" tabindex="-1" aria-labelledby="explorerTitle">
+      <div class="site-section-head"><div><p class="site-eyebrow">01 / Learn by changing the inputs</p><h2 id="explorerTitle">One missing piece.<br/>The same exact object.</h2></div><p>Encode your own short message. Withhold a fragment, then change a byte. The same verifier used by Stitch checks the result in this browser.</p></div>
+      <div class="example-box">
+        <form id="exampleForm" class="example-top">
+          <div class="example-input-wrap"><label for="exampleInput">YOUR OBJECT · UP TO 256 UTF-8 BYTES</label><input id="exampleInput" type="text" maxlength="256" value="Keep the bytes. Change the peers." autocomplete="off" aria-describedby="exampleInputStatus exampleScope"/><p id="exampleInputStatus" role="status" aria-live="polite">Initializing the local example…</p></div>
+          <button id="encodeExample" class="site-primary" type="submit">Encode locally ↗</button>
+        </form>
+        <div id="exampleControls" hidden>
+          <div class="example-presets" aria-label="Local recovery scenarios"><span>TRY A SCENARIO</span><button id="presetcomplete" type="button">All fragments</button><button id="presetone" type="button">Lose one</button><button id="presettwo" type="button">Lose two</button><button id="presettamper" type="button">Change a byte</button></div>
+          <div class="fragment-grid">
+            <article class="fragment-card" id="fragment0"><div class="fragment-card-head"><h3>A</h3><span id="fragmentSize0"></span></div><p class="fragment-state" id="fragmentState0"></p><p class="fragment-hex" id="fragmentBytes0" aria-label="Fragment A hexadecimal bytes"></p><label for="available0">Supply fragment A <input id="available0" type="checkbox" checked/></label><button id="corrupt0" type="button" aria-pressed="false" aria-label="Change or restore one byte in fragment A">Change one byte</button></article>
+            <article class="fragment-card" id="fragment1"><div class="fragment-card-head"><h3>B</h3><span id="fragmentSize1"></span></div><p class="fragment-state" id="fragmentState1"></p><p class="fragment-hex" id="fragmentBytes1" aria-label="Fragment B hexadecimal bytes"></p><label for="available1">Supply fragment B <input id="available1" type="checkbox" checked/></label><button id="corrupt1" type="button" aria-pressed="false" aria-label="Change or restore one byte in fragment B">Change one byte</button></article>
+            <article class="fragment-card" id="fragment2"><div class="fragment-card-head"><h3>A ⊕ B</h3><span id="fragmentSize2"></span></div><p class="fragment-state" id="fragmentState2"></p><p class="fragment-hex" id="fragmentBytes2" aria-label="Parity fragment hexadecimal bytes"></p><label for="available2">Supply parity <input id="available2" type="checkbox" checked/></label><button id="corrupt2" type="button" aria-pressed="false" aria-label="Change or restore one byte in parity">Change one byte</button></article>
+          </div>
+          <div id="exampleResult" class="example-result" role="status" aria-live="polite" aria-atomic="true" data-state="checking"><div class="recovery-counter"><div id="recoveryCount">3 / 3</div><span>fragments supplied</span></div><div><h3 id="exampleResultTitle">Checking exact commitments…</h3><p id="exampleResultDetail"></p><output id="recoveredText" aria-label="Recovered object text"></output></div></div>
+          <details class="example-evidence"><summary>Inspect the object commitment and verification scope</summary><code id="exampleCommitment"></code><p>The object uses Stitch's versioned, domain-separated SHA-256 commitment. Fragment bytes are shown in hex, truncated after 16 bytes. A and B are equal-size byte halves; odd-length objects add padding to B. Parity is their bytewise XOR. Recovery removes padding and checks the original object digest.</p><p>This local result establishes checked reconstruction for these supplied bytes. It says nothing about remote retention, trusted peer identity or independent machines. <a href="https://github.com/Syntra-Labs/stitch/blob/main/docs/prism-model.md">Read the exact wire contract ↗</a></p></details>
+        </div>
+      </div>
+      <p id="exampleScope" class="site-boundary"><strong>Local experiment, real byte checks.</strong> These controls do not join a mesh, send your text, change live objects or consume the console's network allowance. Withholding a fragment models unavailable information; it does not disconnect a real peer. The live console below has separate network consent.</p>
+      <noscript><p class="site-boundary">Enable JavaScript to run the local experiment. The diagram and protocol explanation remain readable without it.</p></noscript>
+    </section>
+
+    <section id="protocolMap" class="site-section" tabindex="-1" aria-labelledby="protocolTitle">
+      <div class="site-section-head"><div><p class="site-eyebrow">02 / Five layers, explicit boundaries</p><h2 id="protocolTitle">From bytes to reachable peers.</h2></div><p>Each layer has a different job. Keeping those jobs separate makes the guarantees, assumptions and failure states easier to inspect.</p></div>
+      <div class="layer-list">
+        <article class="layer-row"><span class="layer-number">L1</span><h3>Identity &amp; operations</h3><p>Commit to exact bytes, interpret ring operations and check signed pointer succession.</p><p class="layer-limit">Integrity is not availability. A valid signature still needs an independently trusted writer.</p></article>
+        <article class="layer-row"><span class="layer-number">L2</span><h3>Scheduling &amp; budgets</h3><p>Propose refreshes and reserve bounded resources before effects.</p><p class="layer-limit">An unknown outcome remains charged. The survival heuristic is experimental.</p></article>
+        <article class="layer-row"><span class="layer-number">L3</span><h3>Storage &amp; custody</h3><p>Encode fragments, collect checked receipts and repair selected placements.</p><p class="layer-limit">Sending is not storing. Recovery depends on enough compatible fragments remaining reachable.</p></article>
+        <article class="layer-row"><span class="layer-number">L4</span><h3>Compute &amp; replay</h3><p>Validate deterministic checkpoints against the identified program and input before resuming.</p><p class="layer-limit">Partitions may duplicate pure work. Linux VM effects have a separate host contract.</p></article>
+        <article class="layer-row"><span class="layer-number">L5</span><h3>Transport &amp; discovery</h3><p>Use WebRTC for peer transfers, DNS for discovery and an optional public relay.</p><p class="layer-limit">DNS is not consensus. This browser does not store data inside routers or speak BGP.</p></article>
+      </div>
+    </section>
+
+    <section id="facetCatalog" class="site-section site-boundaries" aria-labelledby="facetTitle">
+      <div class="site-section-head"><div><p class="site-eyebrow">03 / Inspect the product model</p><h2 id="facetTitle">Follow the contract to its source.</h2></div><p>Browse the product facets, declared relationships and their evidence boundaries. Catalog coverage is an inventory, not a verification result.</p></div>
+      <div id="facetCatalogContent"><p class="site-boundary">Loading the source-derived facet inventory…</p></div>
+      <p id="facetCatalogStatus" class="site-note" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="site-section site-boundaries" aria-labelledby="evidenceTitle">
+      <div class="site-section-head"><div><p class="site-eyebrow">04 / Read the evidence carefully</p><h2 id="evidenceTitle">Checked claims. Visible limits.</h2></div></div>
+      <div class="boundary-grid">
+        <article class="boundary-card"><h3>What the implementation checks</h3><ul><li>Object and fragment commitments before accepting reconstruction.</li><li>Program, input and semantic replay before accepting a pure checkpoint.</li><li>Pinned writer, exact succession and validity intervals for pointers.</li><li>Resource admission and explicit acknowledgment states before effects are treated as complete.</li></ul></article>
+        <article class="boundary-card"><h3>What those checks do not establish</h3><ul><li>Durability after every copy is lost, or independent physical failure domains.</li><li>Private storage on the public relay. Enough shared fragments reveal the content.</li><li>Exclusive job ownership, exactly-once effects or globally ordered DNS state.</li><li>Whole-browser, network or Linux VM correctness from a model proof.</li></ul></article>
+      </div>
+      <div class="boundary-links"><a href="https://github.com/Syntra-Labs/stitch/blob/main/docs/prism-model.md">Model &amp; evidence boundaries ↗</a><a href="https://github.com/Syntra-Labs/stitch/blob/main/product/source-verification.json">Retained source evidence ↗</a><a href="https://github.com/Syntra-Labs/stitch/blob/main/docs/guest-browser-qualification.md">Browser qualification scope ↗</a></div>
+      <p class="site-note">Verification applies to the exact inputs recorded in each report. A source record, local demo or passing browser scenario does not by itself establish native Prism artifact acceptance or a production qualification.</p>
+    </section>
+  </div>
+  <div id="operatorConsole" class="console-shell" tabindex="-1">
+    <div class="console-intro"><p class="site-eyebrow">05 / Operate the real implementation</p><h2>Go from explanation to observation.</h2><p>Start a local object or pure job, or explicitly join a mesh to exchange data. Network signaling and public object relay have separate consent controls. Advanced actions retain their modeled guards, resource limits and evidence labels.</p></div>
   <header>
     <div>
-      <h1 id="productTitle">Stitch / recoverable objects and replayable pure jobs</h1>
+      <h2 id="productTitle">Stitch / recoverable objects and replayable pure jobs</h2>
       <div class="muted">
         Local Node: <strong id="nodeIdLabel">...</strong> |
         WebRTC Open Peers: <strong id="peerCountLabel">0</strong> |
@@ -565,6 +640,11 @@ Object sharing and Ethernet bridging start off. Grants expose data to the guest 
     </div>
   </div>
 
+  </div>
+  </main>
+  <footer class="site-footer"><span>STITCH / SYNTRA LABS</span><span>Exact bytes. Explicit assumptions. <a href="https://github.com/Syntra-Labs/stitch">Inspect the source ↗</a></span></footer>
+  <script type="module" src="./site/explorer.js"></script>
+  <script type="module" src="./site/catalog.js"></script>
   <script type="module">
     import { benchmarkUorHashers } from './src/layer1-uor/index.js';
     import {

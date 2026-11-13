@@ -1,0 +1,709 @@
+\begin{lexlean}{Product.Security}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{stitch.domain@1.0.0}
+\importmodule{Foundation.Sec}
+\importmodule{Production.ThreatModel}
+\importmodule{Product.Architecture}
+\title{Stitch security and threat model}
+\begin{semanticmodule}
+structure{
+  name: Source,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: record, type: String},
+    {name: path, type: String},
+    {name: firstLine, type: Nat},
+    {name: lastLine, type: Nat},
+    {name: sha256, type: String}
+  ]
+}
+
+definition{
+  name: sources,
+  parameters: [],
+  result: (List Source),
+  body: (cons (record Source {record := "Product.Security", path := "app/src/Product/Architecture.lex.tex", firstLine := 0, lastLine := 0, sha256 := "fe5aac05827654477ad09282f0ef977890e00d5db753718c0e6e35139ff15958"}) (cons (record Source {record := "Product.Security", path := "app/src/Product/Model.lex.tex", firstLine := 0, lastLine := 0, sha256 := "6081a53375794cab60ddad0199956db978be3d4b91e102f1890dd0e3bc2697c8"}) (cons (record Source {record := "Product.Security", path := "docs/authenticated-signaling.md", firstLine := 0, lastLine := 0, sha256 := "fe052f6e80d800c60bedfce5ed7eecaa7cf8cf03feff4bdc995ccb26ec108e2c"}) (cons (record Source {record := "Product.Security", path := "docs/browser-authority.md", firstLine := 0, lastLine := 0, sha256 := "642c15248bd22ef2de107c9ca1e1b9dcecc24bb5ac8b59b78b14b98c6995a3c9"}) (cons (record Source {record := "Product.Security", path := "docs/lifecycle-effects.md", firstLine := 0, lastLine := 0, sha256 := "7205e561aaf22ce66cb06af54a8d82a11c85c0ad6b55bc0821a91004d0750a80"}) (cons (record Source {record := "Product.Security", path := "docs/prism-model.md", firstLine := 0, lastLine := 0, sha256 := "ece338421a27de9e0f588e66badf477eebe3012d194103f14a722db02cec24c7"}) (cons (record Source {record := "Product.Security", path := "docs/recovery.md", firstLine := 0, lastLine := 0, sha256 := "32cb3e8e5579de6e05afd3a716bf97837032ae6efba6dd12748decf9b57cd4db"}) (cons (record Source {record := "Product.Security", path := "docs/relay-framing.md", firstLine := 0, lastLine := 0, sha256 := "eddf3c94dd9eb249aff1a6a5becdcb907ac8d3689a7eae5421f88c1a4f6111db"}) (cons (record Source {record := "Product.Security", path := "docs/uor-primitives.md", firstLine := 0, lastLine := 0, sha256 := "cd7a1b556424b4c5c8a555fcc741dea1ad859d2232fbf6f80308d9bbdb8d7544"}) (cons (record Source {record := "Product.Security", path := "docs/vendor-provenance.md", firstLine := 0, lastLine := 0, sha256 := "fe73438c181889157487931d6d2501175bf9becdbad5f6977b2edc6751fb986b"}) (cons (record Source {record := "Product.Security", path := "docs/vm-administration.md", firstLine := 0, lastLine := 0, sha256 := "8990baed1a08871cca032f6696646690831dd900abe506d19ad00327e4feb529"}) (cons (record Source {record := "Product.Security", path := "package.json", firstLine := 0, lastLine := 0, sha256 := "4cca578575a541919497c9ed1c517e970b7d820d464c7d594b8f0cb7bd23a3f4"}) (cons (record Source {record := "Product.Security", path := "tests/authenticated-signaling.test.js", firstLine := 0, lastLine := 0, sha256 := "58263f698373030cd4c20007b1c0b0e9dc8b781558a7366f1acd32decdfe6d5f"}) (cons (record Source {record := "Product.Security", path := "tests/browser-authority-lifecycle.test.js", firstLine := 0, lastLine := 0, sha256 := "6d8f3f41ddf18e5c42615e39e72f2965a39dddc5136f8d6388af5fe396d785b9"}) (cons (record Source {record := "Product.Security", path := "tests/custody.test.js", firstLine := 0, lastLine := 0, sha256 := "7d688bec8a34729197bae605daacd4b3efeedb0e901b8af31322925bd0717329"}) (cons (record Source {record := "Product.Security", path := "tests/dns-publication.test.js", firstLine := 0, lastLine := 0, sha256 := "02fe2e5e85a715481cd11b55534dffe42b7f27305f63f1fb3bdb03815225d98c"}) (cons (record Source {record := "Product.Security", path := "tests/execution-identity.test.js", firstLine := 0, lastLine := 0, sha256 := "cd680245065fa6be6ed51fc77324022c29938298f3f53c76b67fc36415e55a56"}) (cons (record Source {record := "Product.Security", path := "tests/guest-qualification.test.js", firstLine := 0, lastLine := 0, sha256 := "47bfb6d3a8c050f8dae63c33d5ad65e7b32e9a6195e197d0a2b3af2d963b0f0b"}) (cons (record Source {record := "Product.Security", path := "tests/recovery.test.js", firstLine := 0, lastLine := 0, sha256 := "da7f23c8411b4adc63fffa602351ad3ecd0999909717c48bf91aeb21bc5f9d11"}) (cons (record Source {record := "Product.Security", path := "tests/relay-framing.test.js", firstLine := 0, lastLine := 0, sha256 := "566cf74aef84b7da5702ad20ce6f71796359db78d898dfef529f130a64deaecc"}) (cons (record Source {record := "Product.Security", path := "tests/runtime-admission.test.js", firstLine := 0, lastLine := 0, sha256 := "684901ac8a287078f86958f414d3d514e910cd44fa6f6be1b80cd6435c4c3404"}) (cons (record Source {record := "Product.Security", path := "tests/source-evidence.test.js", firstLine := 0, lastLine := 0, sha256 := "5e6f783768f076e1fc037803d87595eb78c34a358fc5d6119a48c5f5e6107a49"}) (cons (record Source {record := "Product.Security", path := "tests/vm-administration.test.js", firstLine := 0, lastLine := 0, sha256 := "db3a943b140e27bf10d8da74140b6359e6570f490eaafe2ddb9d4f492aa566b4"}) (nil Source))))))))))))))))))))))))
+}
+
+definition{
+  name: assessmentPolicy,
+  parameters: [],
+  result: String,
+  body: "Likelihood and impact are explicit conservative qualitative engineering assessments, not observed probabilities, numeric risk scores or certification. Named gates are evidence procedures, not assertions that a run passed. Residual host/crypto/storage assumptions remain open."
+}
+
+definition{
+  name: assetAdmission,
+  parameters: [],
+  result: Foundation.Sec::Asset,
+  body: (record Foundation.Sec::Asset {index := 0, componentIndex := 0})
+}
+
+definition{
+  name: modeledAssetAdmission,
+  parameters: [],
+  result: Production.ThreatModel::ModeledAsset,
+  body: (record Production.ThreatModel::ModeledAsset {asset := "Product.Security::assetAdmission", name := "admission", text := "Four-dimensional reservation ledger. Implementation: src/layer2-schedulers/policy.js. Domain contracts: Stitch.Budget."})
+}
+
+definition{
+  name: assetBrowser,
+  parameters: [],
+  result: Foundation.Sec::Asset,
+  body: (record Foundation.Sec::Asset {index := 1, componentIndex := 1})
+}
+
+definition{
+  name: modeledAssetBrowser,
+  parameters: [],
+  result: Production.ThreatModel::ModeledAsset,
+  body: (record Production.ThreatModel::ModeledAsset {asset := "Product.Security::assetBrowser", name := "browser", text := "Interactive five-layer Stitch product. Implementation: index.html. Host or external boundary; semantics require independent evidence."})
+}
+
+definition{
+  name: assetCompute,
+  parameters: [],
+  result: Foundation.Sec::Asset,
+  body: (record Foundation.Sec::Asset {index := 2, componentIndex := 2})
+}
+
+definition{
+  name: modeledAssetCompute,
+  parameters: [],
+  result: Production.ThreatModel::ModeledAsset,
+  body: (record Production.ThreatModel::ModeledAsset {asset := "Product.Security::assetCompute", name := "compute", text := "Deterministic program and checkpoint replay. Implementation: src/layer4-compute/index.js, src/layer4-compute/replay.js. Domain contracts: Stitch.Compute."})
+}
+
+definition{
+  name: assetDiscovery,
+  parameters: [],
+  result: Foundation.Sec::Asset,
+  body: (record Foundation.Sec::Asset {index := 3, componentIndex := 4})
+}
+
+definition{
+  name: modeledAssetDiscovery,
+  parameters: [],
+  result: Production.ThreatModel::ModeledAsset,
+  body: (record Production.ThreatModel::ModeledAsset {asset := "Product.Security::assetDiscovery", name := "discovery", text := "DNS-over-HTTPS resolver and scoped DNS writer. Implementation: src/layer5-transport/index.js. Host or external boundary; semantics require independent evidence."})
+}
+
+definition{
+  name: assetPointerAuthority,
+  parameters: [],
+  result: Foundation.Sec::Asset,
+  body: (record Foundation.Sec::Asset {index := 4, componentIndex := 9})
+}
+
+definition{
+  name: modeledAssetPointerAuthority,
+  parameters: [],
+  result: Production.ThreatModel::ModeledAsset,
+  body: (record Production.ThreatModel::ModeledAsset {asset := "Product.Security::assetPointerAuthority", name := "pointerAuthority", text := "Independently pinned single-writer key. Implementation: src/layer1-uor/pointer.js. Host or external boundary; semantics require independent evidence."})
+}
+
+definition{
+  name: assetPublicRelay,
+  parameters: [],
+  result: Foundation.Sec::Asset,
+  body: (record Foundation.Sec::Asset {index := 5, componentIndex := 10})
+}
+
+definition{
+  name: modeledAssetPublicRelay,
+  parameters: [],
+  result: Production.ThreatModel::ModeledAsset,
+  body: (record Production.ThreatModel::ModeledAsset {asset := "Product.Security::assetPublicRelay", name := "publicRelay", text := "Optional public ntfy warm cache. Host or external boundary; semantics require independent evidence."})
+}
+
+definition{
+  name: assetStorage,
+  parameters: [],
+  result: Foundation.Sec::Asset,
+  body: (record Foundation.Sec::Asset {index := 6, componentIndex := 15})
+}
+
+definition{
+  name: modeledAssetStorage,
+  parameters: [],
+  result: Production.ThreatModel::ModeledAsset,
+  body: (record Production.ThreatModel::ModeledAsset {asset := "Product.Security::assetStorage", name := "storage", text := "Ephemeral local cache and conditional peer custody. Implementation: src/layer3-storage/custody.js, src/layer3-storage/index.js. Domain contracts: Stitch.Custody, Stitch.System."})
+}
+
+definition{
+  name: assetTransport,
+  parameters: [],
+  result: Foundation.Sec::Asset,
+  body: (record Foundation.Sec::Asset {index := 7, componentIndex := 16})
+}
+
+definition{
+  name: modeledAssetTransport,
+  parameters: [],
+  result: Production.ThreatModel::ModeledAsset,
+  body: (record Production.ThreatModel::ModeledAsset {asset := "Product.Security::assetTransport", name := "transport", text := "WebRTC channels, bounded messages and VM Ethernet bridge. Implementation: src/layer5-transport/index.js. Host or external boundary; semantics require independent evidence."})
+}
+
+definition{
+  name: assetVm,
+  parameters: [],
+  result: Foundation.Sec::Asset,
+  body: (record Foundation.Sec::Asset {index := 8, componentIndex := 17})
+}
+
+definition{
+  name: modeledAssetVm,
+  parameters: [],
+  result: Production.ThreatModel::ModeledAsset,
+  body: (record Production.ThreatModel::ModeledAsset {asset := "Product.Security::assetVm", name := "vm", text := "v86 x86 Linux guest and 9p filesystem bridge. Implementation: src/layer4-compute/index.js, v86/libv86.js, v86/v86.wasm, v86/seabios.bin, v86/vgabios.bin, images/buildroot-bzimage.bin. Host or external boundary; semantics require independent evidence."})
+}
+
+definition{
+  name: threatAuthoritySpoofing,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 0})
+}
+
+definition{
+  name: riskAuthoritySpoofing,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 0, assetIndex := 4, threatIndex := 0, likelihood := (ctor Foundation.Sec::Likelihood.high), impact := (ctor Foundation.Sec::Impact.critical)})
+}
+
+definition{
+  name: controlAuthoritySpoofing,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 0, riskIndex := 0})
+}
+
+definition{
+  name: activityAuthoritySpoofing,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 0, controlIndex := 0})
+}
+
+definition{
+  name: modeledThreatAuthoritySpoofing,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Product.Security::threatAuthoritySpoofing", name := "AuthoritySpoofing", text := "An arbitrary valid self-signature is mistaken for an independently pinned writer.", category := (ctor Production.ThreatModel::Stride.spoofing)})
+}
+
+definition{
+  name: modeledControlAuthoritySpoofing,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Product.Security::controlAuthoritySpoofing", name := "AuthoritySpoofing", text := "Exact independently accepted key/name/head; strict successor CAS and revocation gates.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "tests/browser-authority-lifecycle.test.js"}) (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.review), reference := "docs/browser-authority.md"}) (nil Production.ThreatModel::Evidence)))})
+}
+
+definition{
+  name: mappingAuthoritySpoofing,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Product.Security::threatAuthoritySpoofing", controls := (cons "Product.Security::controlAuthoritySpoofing" (nil String))})
+}
+
+definition{
+  name: threatCheckpointForgery,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 1})
+}
+
+definition{
+  name: riskCheckpointForgery,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 1, assetIndex := 2, threatIndex := 1, likelihood := (ctor Foundation.Sec::Likelihood.high), impact := (ctor Foundation.Sec::Impact.major)})
+}
+
+definition{
+  name: controlCheckpointForgery,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 1, riskIndex := 1})
+}
+
+definition{
+  name: activityCheckpointForgery,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 1, controlIndex := 1})
+}
+
+definition{
+  name: modeledThreatCheckpointForgery,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Product.Security::threatCheckpointForgery", name := "CheckpointForgery", text := "A hashed but impossible state is accepted as computation.", category := (ctor Production.ThreatModel::Stride.tampering)})
+}
+
+definition{
+  name: modeledControlCheckpointForgery,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Product.Security::controlCheckpointForgery", name := "CheckpointForgery", text := "Replay exact program/input/execution identity before accepting or resuming.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "tests/execution-identity.test.js"}) (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.review), reference := "docs/uor-primitives.md"}) (nil Production.ThreatModel::Evidence)))})
+}
+
+definition{
+  name: mappingCheckpointForgery,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Product.Security::threatCheckpointForgery", controls := (cons "Product.Security::controlCheckpointForgery" (nil String))})
+}
+
+definition{
+  name: threatDisclosure,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 2})
+}
+
+definition{
+  name: riskDisclosure,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 2, assetIndex := 5, threatIndex := 2, likelihood := (ctor Foundation.Sec::Likelihood.high), impact := (ctor Foundation.Sec::Impact.major)})
+}
+
+definition{
+  name: controlDisclosure,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 2, riskIndex := 2})
+}
+
+definition{
+  name: activityDisclosure,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 2, controlIndex := 2})
+}
+
+definition{
+  name: modeledThreatDisclosure,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Product.Security::threatDisclosure", name := "Disclosure", text := "A mesh topic or relay is mistaken for private storage.", category := (ctor Production.ThreatModel::Stride.informationDisclosure)})
+}
+
+definition{
+  name: modeledControlDisclosure,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Product.Security::controlDisclosure", name := "Disclosure", text := "Separate public signaling and payload-relay consent; explicit disclosure and no privacy claim.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "tests/relay-framing.test.js"}) (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.review), reference := "docs/relay-framing.md"}) (nil Production.ThreatModel::Evidence)))})
+}
+
+definition{
+  name: mappingDisclosure,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Product.Security::threatDisclosure", controls := (cons "Product.Security::controlDisclosure" (nil String))})
+}
+
+definition{
+  name: threatEffectReplay,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 3})
+}
+
+definition{
+  name: riskEffectReplay,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 3, assetIndex := 3, threatIndex := 3, likelihood := (ctor Foundation.Sec::Likelihood.medium), impact := (ctor Foundation.Sec::Impact.major)})
+}
+
+definition{
+  name: controlEffectReplay,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 3, riskIndex := 3})
+}
+
+definition{
+  name: activityEffectReplay,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 3, controlIndex := 3})
+}
+
+definition{
+  name: modeledThreatEffectReplay,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Product.Security::threatEffectReplay", name := "EffectReplay", text := "An unknown DNS write is repeated after restart or key rotation.", category := (ctor Production.ThreatModel::Stride.repudiation)})
+}
+
+definition{
+  name: modeledControlEffectReplay,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Product.Security::controlEffectReplay", name := "EffectReplay", text := "Strict write-ahead intent and exact read-only reconciliation; unknown journal retention.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "tests/dns-publication.test.js"}) (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.review), reference := "docs/lifecycle-effects.md"}) (nil Production.ThreatModel::Evidence)))})
+}
+
+definition{
+  name: mappingEffectReplay,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Product.Security::threatEffectReplay", controls := (cons "Product.Security::controlEffectReplay" (nil String))})
+}
+
+definition{
+  name: threatFragmentTampering,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 4})
+}
+
+definition{
+  name: riskFragmentTampering,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 4, assetIndex := 6, threatIndex := 4, likelihood := (ctor Foundation.Sec::Likelihood.high), impact := (ctor Foundation.Sec::Impact.major)})
+}
+
+definition{
+  name: controlFragmentTampering,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 4, riskIndex := 4})
+}
+
+definition{
+  name: activityFragmentTampering,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 4, controlIndex := 4})
+}
+
+definition{
+  name: modeledThreatFragmentTampering,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Product.Security::threatFragmentTampering", name := "FragmentTampering", text := "A holder supplies modified, duplicate-index or wrong-manifest bytes.", category := (ctor Production.ThreatModel::Stride.tampering)})
+}
+
+definition{
+  name: modeledControlFragmentTampering,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Product.Security::controlFragmentTampering", name := "FragmentTampering", text := "Full domain-separated commitments and exact compatible indexed recovery.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "tests/custody.test.js"}) (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.review), reference := "docs/prism-model.md"}) (nil Production.ThreatModel::Evidence)))})
+}
+
+definition{
+  name: mappingFragmentTampering,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Product.Security::threatFragmentTampering", controls := (cons "Product.Security::controlFragmentTampering" (nil String))})
+}
+
+definition{
+  name: threatGuestPrivilege,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 5})
+}
+
+definition{
+  name: riskGuestPrivilege,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 5, assetIndex := 8, threatIndex := 5, likelihood := (ctor Foundation.Sec::Likelihood.medium), impact := (ctor Foundation.Sec::Impact.critical)})
+}
+
+definition{
+  name: controlGuestPrivilege,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 5, riskIndex := 5})
+}
+
+definition{
+  name: activityGuestPrivilege,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 5, controlIndex := 5})
+}
+
+definition{
+  name: modeledThreatGuestPrivilege,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Product.Security::threatGuestPrivilege", name := "GuestPrivilege", text := "Guest output is mistaken for trusted execution or broad host authority.", category := (ctor Production.ThreatModel::Stride.elevationOfPrivilege)})
+}
+
+definition{
+  name: modeledControlGuestPrivilege,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Product.Security::controlGuestPrivilege", name := "GuestPrivilege", text := "Separate VM effects, bounded mounts and explicit lifecycle/command reconciliation.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "tests/vm-administration.test.js"}) (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.review), reference := "docs/vm-administration.md"}) (nil Production.ThreatModel::Evidence)))})
+}
+
+definition{
+  name: mappingGuestPrivilege,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Product.Security::threatGuestPrivilege", controls := (cons "Product.Security::controlGuestPrivilege" (nil String))})
+}
+
+definition{
+  name: threatOriginCompromise,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 6})
+}
+
+definition{
+  name: riskOriginCompromise,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 6, assetIndex := 1, threatIndex := 6, likelihood := (ctor Foundation.Sec::Likelihood.medium), impact := (ctor Foundation.Sec::Impact.critical)})
+}
+
+definition{
+  name: controlOriginCompromise,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 6, riskIndex := 6})
+}
+
+definition{
+  name: activityOriginCompromise,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 6, controlIndex := 6})
+}
+
+definition{
+  name: modeledThreatOriginCompromise,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Product.Security::threatOriginCompromise", name := "OriginCompromise", text := "Malicious same-origin code can use retained key handles and read local data.", category := (ctor Production.ThreatModel::Stride.elevationOfPrivilege)})
+}
+
+definition{
+  name: modeledControlOriginCompromise,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Product.Security::controlOriginCompromise", name := "OriginCompromise", text := "Source/asset inventory and origin boundary; nonextractability is not protection from active same-origin code.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "tests/source-evidence.test.js"}) (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.review), reference := "docs/browser-authority.md"}) (nil Production.ThreatModel::Evidence)))})
+}
+
+definition{
+  name: mappingOriginCompromise,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Product.Security::threatOriginCompromise", controls := (cons "Product.Security::controlOriginCompromise" (nil String))})
+}
+
+definition{
+  name: threatResourceExhaustion,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 7})
+}
+
+definition{
+  name: riskResourceExhaustion,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 7, assetIndex := 0, threatIndex := 7, likelihood := (ctor Foundation.Sec::Likelihood.high), impact := (ctor Foundation.Sec::Impact.major)})
+}
+
+definition{
+  name: controlResourceExhaustion,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 7, riskIndex := 7})
+}
+
+definition{
+  name: activityResourceExhaustion,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 7, controlIndex := 7})
+}
+
+definition{
+  name: modeledThreatResourceExhaustion,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Product.Security::threatResourceExhaustion", name := "ResourceExhaustion", text := "Untrusted messages, replay or unknown effects exhaust application allowances.", category := (ctor Production.ThreatModel::Stride.denialOfService)})
+}
+
+definition{
+  name: modeledControlResourceExhaustion,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Product.Security::controlResourceExhaustion", name := "ResourceExhaustion", text := "Reserve each independent resource before effects; unknown outcomes stay charged.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "tests/runtime-admission.test.js"}) (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.review), reference := "docs/prism-model.md"}) (nil Production.ThreatModel::Evidence)))})
+}
+
+definition{
+  name: mappingResourceExhaustion,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Product.Security::threatResourceExhaustion", controls := (cons "Product.Security::controlResourceExhaustion" (nil String))})
+}
+
+definition{
+  name: threatSignalingSpoofing,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 8})
+}
+
+definition{
+  name: riskSignalingSpoofing,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 8, assetIndex := 7, threatIndex := 8, likelihood := (ctor Foundation.Sec::Likelihood.high), impact := (ctor Foundation.Sec::Impact.major)})
+}
+
+definition{
+  name: controlSignalingSpoofing,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 8, riskIndex := 8})
+}
+
+definition{
+  name: activitySignalingSpoofing,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 8, controlIndex := 8})
+}
+
+definition{
+  name: modeledThreatSignalingSpoofing,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Product.Security::threatSignalingSpoofing", name := "SignalingSpoofing", text := "A relay replays or substitutes SDP/ICE and stale session callbacks.", category := (ctor Production.ThreatModel::Stride.spoofing)})
+}
+
+definition{
+  name: modeledControlSignalingSpoofing,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Product.Security::controlSignalingSpoofing", name := "SignalingSpoofing", text := "Signed exact signaling, session/generation fencing and bounded channel flow.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "tests/authenticated-signaling.test.js"}) (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.review), reference := "docs/authenticated-signaling.md"}) (nil Production.ThreatModel::Evidence)))})
+}
+
+definition{
+  name: mappingSignalingSpoofing,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Product.Security::threatSignalingSpoofing", controls := (cons "Product.Security::controlSignalingSpoofing" (nil String))})
+}
+
+definition{
+  name: threatStorageLoss,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 9})
+}
+
+definition{
+  name: riskStorageLoss,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 9, assetIndex := 6, threatIndex := 9, likelihood := (ctor Foundation.Sec::Likelihood.medium), impact := (ctor Foundation.Sec::Impact.major)})
+}
+
+definition{
+  name: controlStorageLoss,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 9, riskIndex := 9})
+}
+
+definition{
+  name: activityStorageLoss,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 9, controlIndex := 9})
+}
+
+definition{
+  name: modeledThreatStorageLoss,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Product.Security::threatStorageLoss", name := "StorageLoss", text := "Tab loss or eviction removes the only object fragments or recent trust anchor.", category := (ctor Production.ThreatModel::Stride.denialOfService)})
+}
+
+definition{
+  name: modeledControlStorageLoss,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Product.Security::controlStorageLoss", name := "StorageLoss", text := "Explicit recovery export and origin-storage evidence; no guarantee after total information loss.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "tests/recovery.test.js"}) (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.review), reference := "docs/recovery.md"}) (nil Production.ThreatModel::Evidence)))})
+}
+
+definition{
+  name: mappingStorageLoss,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Product.Security::threatStorageLoss", controls := (cons "Product.Security::controlStorageLoss" (nil String))})
+}
+
+definition{
+  name: threatVendorSubstitution,
+  parameters: [],
+  result: Foundation.Sec::Threat,
+  body: (record Foundation.Sec::Threat {index := 10})
+}
+
+definition{
+  name: riskVendorSubstitution,
+  parameters: [],
+  result: Foundation.Sec::Risk,
+  body: (record Foundation.Sec::Risk {index := 10, assetIndex := 8, threatIndex := 10, likelihood := (ctor Foundation.Sec::Likelihood.medium), impact := (ctor Foundation.Sec::Impact.critical)})
+}
+
+definition{
+  name: controlVendorSubstitution,
+  parameters: [],
+  result: Foundation.Sec::ApplicationSecurityControl,
+  body: (record Foundation.Sec::ApplicationSecurityControl {index := 10, riskIndex := 10})
+}
+
+definition{
+  name: activityVendorSubstitution,
+  parameters: [],
+  result: Foundation.Sec::SecurityActivity,
+  body: (record Foundation.Sec::SecurityActivity {index := 10, controlIndex := 10})
+}
+
+definition{
+  name: modeledThreatVendorSubstitution,
+  parameters: [],
+  result: Production.ThreatModel::ModeledThreat,
+  body: (record Production.ThreatModel::ModeledThreat {threat := "Product.Security::threatVendorSubstitution", name := "VendorSubstitution", text := "Loaded emulator, BIOS or guest differs from reviewed inventory.", category := (ctor Production.ThreatModel::Stride.tampering)})
+}
+
+definition{
+  name: modeledControlVendorSubstitution,
+  parameters: [],
+  result: Production.ThreatModel::ModeledControl,
+  body: (record Production.ThreatModel::ModeledControl {control := "Product.Security::controlVendorSubstitution", name := "VendorSubstitution", text := "Retained corresponding-source materials and exact local asset digests; live load-time remote integrity remains an assumption.", evidence := (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.gate), reference := "tests/guest-qualification.test.js"}) (cons (record Production.ThreatModel::Evidence {kind := (ctor Production.ThreatModel::EvidenceKind.review), reference := "docs/vendor-provenance.md"}) (nil Production.ThreatModel::Evidence)))})
+}
+
+definition{
+  name: mappingVendorSubstitution,
+  parameters: [],
+  result: Production.ThreatModel::ThreatMapping,
+  body: (record Production.ThreatModel::ThreatMapping {threat := "Product.Security::threatVendorSubstitution", controls := (cons "Product.Security::controlVendorSubstitution" (nil String))})
+}
+
+definition{
+  name: controlSet,
+  parameters: [],
+  result: Production.ThreatModel::ControlSet,
+  body: (record Production.ThreatModel::ControlSet {title := "Stitch scoped adversarial boundaries", text := "Traceable prevention, refusal and recovery procedures; residual assumptions are retained in Product.Model.", version := "0.2.0", lastModified := "2026-11-13T00:00:00Z"})
+}
+\end{semanticmodule}
+\end{lexlean}
