@@ -21,7 +21,7 @@ LexLean's `kappa` package and PrismPM ADR-017. It differs from the older
 
 | Kind | Signed by | Meaning |
 | --- | --- | --- |
-| `prism/device/1` | none (public record) | A device's class (`browser`, `native`, `mobile`, `embedded`), its claimed key protection (`software`, `platform`, `secure-element`), and its P-256 signing and agreement public keys. Its kappa is the device id. Private keys are non-extractable. |
+| `prism/device/1` | none (public record) | A device's class (`browser`, `native`, `mobile`, `embedded`, `recovery`), its claimed key protection (`software`, `platform`, `secure-element`), and its P-256 signing and agreement public keys. Its kappa is the device id. Private keys are non-extractable. |
 | `prism/genesis/1` | the first device | Creates the prism. prism id = kappa of this body. The first device is a member. |
 | `prism/bind/1` | an active member | Links a device as a `member` (no scope) or a `delegate` (a non-empty list of actions). |
 | `prism/revoke/1` | a linked member | Removes a device. `keep` lists the binds the revoked device made that stay valid. `epoch` and `wraps` carry a new private boundary key wrapped to each remaining member. |
@@ -93,6 +93,27 @@ everyone else. A boundary with two or more identities is shared, and is public
 to its members (`Stitch.PrismId.boundaryShared`). A published boundary is public
 to all. `sealPrivate` and `openPrivate` keep content in the private boundary;
 the sealed object's kappa is its address.
+
+## Recovery
+
+Recovery lives in `src/prism-id.js`. A recovery device is an ordinary `prism/device/1` of class `recovery`,
+linked by the ordinary link flow, whose private keys live outside every
+browser: sealed (AES-GCM) in a `prism/recovery-escrow/1` object under a key
+derived (HKDF) from a 32-byte seed. The owner keeps the seed as a recovery
+code: 56 Crockford base32 characters, the seed and three check bytes. The
+escrow carries the recovery device's keys, every private boundary key it holds
+and the log as it stood, so it alone restores the prism. It is public-safe ciphertext,
+kept in any content-addressed store and found by its locator, the kappa of a
+value derived from the seed.
+
+With the code, `recoverOnto` opens the escrow and links the new browser's own
+non-extractable device to the prism, again through `createLinkOffer`,
+`acceptLinkRequest` and `completeLink`, so `Stitch.PrismId` decides it like any
+link (the page itself supplies the six-digit confirmation, since both ends are
+its own). As a member, the recovery device receives the wrap of every later
+rotation, so a code made before a revocation still opens what is sealed
+after it. A recovery device revoked in a newer log links nothing. The new device
+can then revoke the lost one. No rule is added to the model.
 
 ## Sync over the substrate
 
