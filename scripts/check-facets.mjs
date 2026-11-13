@@ -274,10 +274,10 @@ export function generateFacets(base=root) {
     'System integrator: locate five-layer contracts, action guards, host effects and extension boundaries without inferring durable storage or consensus.'
   ])));
   const users={groups:stakeholders.map(s=>({id:s.declaration,characteristics:s.text})),goals,tasks,measures};
-  body.push(`definition{\n  name: goalsHaveUsers,\n  parameters: [items : (List ${E}Goal), users : Nat],\n  result: Bool,\n  body: (match items | List.nil => true | List.cons head rest => (((project head user) <? users) && (goalsHaveUsers rest users))),\n  recursive_argument: items\n}\n`);
-  body.push(`definition{\n  name: tasksHaveGoals,\n  parameters: [items : (List ${E}Task), count : Nat],\n  result: Bool,\n  body: (match items | List.nil => true | List.cons head rest => (((project head goal) <? count) && (tasksHaveGoals rest count))),\n  recursive_argument: items\n}\n`);
+  body.push(`definition{\n  name: goalsHaveUsers,\n  parameters: [items : (List ${E}Goal), users : Nat],\n  result: Bool,\n  body: (match items\n    | List.nil => true\n    | List.cons head rest => (((project head user) <? users) && (goalsHaveUsers rest users))),\n  recursive_argument: items\n}\n`);
+  body.push(`definition{\n  name: tasksHaveGoals,\n  parameters: [items : (List ${E}Task), count : Nat],\n  result: Bool,\n  body: (match items\n    | List.nil => true\n    | List.cons head rest => (((project head goal) <? count) && (tasksHaveGoals rest count))),\n  recursive_argument: items\n}\n`);
   body.push(`definition{\n  name: nonemptyAcceptance,\n  parameters: [items : (List String)],\n  result: Bool,\n  body: (match items | List.nil => false | List.cons head rest => true)\n}\n`);
-  body.push(`definition{\n  name: tasksHaveAcceptance,\n  parameters: [items : (List ${E}Task)],\n  result: Bool,\n  body: (match items | List.nil => true | List.cons head rest => ((nonemptyAcceptance (project (project head feature) acceptance)) && (tasksHaveAcceptance rest))),\n  recursive_argument: items\n}\n`);
+  body.push(`definition{\n  name: tasksHaveAcceptance,\n  parameters: [items : (List ${E}Task)],\n  result: Bool,\n  body: (match items\n    | List.nil => true\n    | List.cons head rest => ((nonemptyAcceptance (project (project head feature) acceptance)) && (tasksHaveAcceptance rest))),\n  recursive_argument: items\n}\n`);
   body.push(theorem('everyGoalNamesAUser',`(goalsHaveUsers (goals) ${stakeholders.length})`));
   body.push(theorem('everyTaskNamesAGoal',`(tasksHaveGoals (tasks) ${goals.length})`));
   body.push(theorem('everyTaskNamesAcceptanceEvidence','(tasksHaveAcceptance (tasks))'));

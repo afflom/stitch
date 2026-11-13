@@ -72,3 +72,23 @@ test('nested Feature acceptance projection directly imports its owner without we
   assert.match(users,/\(project \(project head feature\) acceptance\)/);
   assert.match(users,/name: everyTaskNamesAcceptanceEvidence,[\s\S]*?statement: \(\(tasksHaveAcceptance \(tasks\)\) = true\),[\s\S]*?proof: decide\{\}/);
 });
+
+// Genuine pinned SDK formatter output from authoring run 43445915817.
+// Keep complete match bodies exact so formatting fixes cannot weaken the predicates.
+test('Users match predicates reproduce the pinned SDK canonical format',()=>{
+  const users=generateFacets(root).outputs.get('app/src/Product/Users.lex.tex');
+  const predicates=[
+    ['goalsHaveUsers','Goal), users : Nat','(((project head user) <? users) && (goalsHaveUsers rest users))'],
+    ['tasksHaveGoals','Task), count : Nat','(((project head goal) <? count) && (tasksHaveGoals rest count))'],
+    ['tasksHaveAcceptance','Task)','((nonemptyAcceptance (project (project head feature) acceptance)) && (tasksHaveAcceptance rest))']
+  ];
+  for(const [name,parameters,branch]of predicates){
+    const expected=`definition{\n  name: ${name},\n  parameters: [items : (List Foundation.Experience.V1.Model::${parameters}],\n  result: Bool,\n  body: (match items\n    | List.nil => true\n    | List.cons head rest => ${branch}),\n  recursive_argument: items\n}`;
+    assert.ok(users.includes(expected),`${name} diverges from the observed SDK format`);
+  }
+  for(const [name,expression]of [
+    ['everyGoalNamesAUser','goalsHaveUsers (goals) 4'],
+    ['everyTaskNamesAGoal','tasksHaveGoals (tasks) 10'],
+    ['everyTaskNamesAcceptanceEvidence','tasksHaveAcceptance (tasks)']
+  ])assert.ok(users.includes(`name: ${name},\n  parameters: [],\n  statement: ((${expression}) = true),\n  proof: decide{}`));
+});

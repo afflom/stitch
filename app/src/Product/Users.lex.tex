@@ -25,7 +25,7 @@ definition{
   name: sources,
   parameters: [],
   result: (List Source),
-  body: (cons (record Source {record := "Product.Users", path := "app/src/Product/Architecture.lex.tex", firstLine := 0, lastLine := 0, sha256 := "fe5aac05827654477ad09282f0ef977890e00d5db753718c0e6e35139ff15958"}) (cons (record Source {record := "Product.Users", path := "app/src/Product/Experience.lex.tex", firstLine := 0, lastLine := 0, sha256 := "6f2625fdce3d3d51899cabc17ce3d57ec0a9381dd3bf3e6477da6ae3ccfb84bd"}) (cons (record Source {record := "Product.Users", path := "docs/operator-experience.md", firstLine := 0, lastLine := 0, sha256 := "6385da9f6040a7103cf14d57bf5b109890ca6df0f31e621f57faf0ff8b35ac3f"}) (nil Source))))
+  body: (cons (record Source {record := "Product.Users", path := "app/src/Product/Architecture.lex.tex", firstLine := 0, lastLine := 0, sha256 := "11fbfff4c0db249ddc97970018f3ec9218147e961f1b1b5ea5a6d1389af02085"}) (cons (record Source {record := "Product.Users", path := "app/src/Product/Experience.lex.tex", firstLine := 0, lastLine := 0, sha256 := "6f2625fdce3d3d51899cabc17ce3d57ec0a9381dd3bf3e6477da6ae3ccfb84bd"}) (cons (record Source {record := "Product.Users", path := "docs/operator-experience.md", firstLine := 0, lastLine := 0, sha256 := "6385da9f6040a7103cf14d57bf5b109890ca6df0f31e621f57faf0ff8b35ac3f"}) (nil Source))))
 }
 
 definition{
@@ -81,7 +81,9 @@ definition{
   name: goalsHaveUsers,
   parameters: [items : (List Foundation.Experience.V1.Model::Goal), users : Nat],
   result: Bool,
-  body: (match items | List.nil => true | List.cons head rest => (((project head user) <? users) && (goalsHaveUsers rest users))),
+  body: (match items
+    | List.nil => true
+    | List.cons head rest => (((project head user) <? users) && (goalsHaveUsers rest users))),
   recursive_argument: items
 }
 
@@ -89,7 +91,9 @@ definition{
   name: tasksHaveGoals,
   parameters: [items : (List Foundation.Experience.V1.Model::Task), count : Nat],
   result: Bool,
-  body: (match items | List.nil => true | List.cons head rest => (((project head goal) <? count) && (tasksHaveGoals rest count))),
+  body: (match items
+    | List.nil => true
+    | List.cons head rest => (((project head goal) <? count) && (tasksHaveGoals rest count))),
   recursive_argument: items
 }
 
@@ -104,7 +108,9 @@ definition{
   name: tasksHaveAcceptance,
   parameters: [items : (List Foundation.Experience.V1.Model::Task)],
   result: Bool,
-  body: (match items | List.nil => true | List.cons head rest => ((nonemptyAcceptance (project (project head feature) acceptance)) && (tasksHaveAcceptance rest))),
+  body: (match items
+    | List.nil => true
+    | List.cons head rest => ((nonemptyAcceptance (project (project head feature) acceptance)) && (tasksHaveAcceptance rest))),
   recursive_argument: items
 }
 

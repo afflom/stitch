@@ -23,11 +23,13 @@ docker pull "$SDK_IMAGE"
 run_sdk sh -c 'lexlean --version; lean --version; prismpm --version' > verification-output/compiler-identity.log
 node scripts/check-facets.mjs --write
 run_sdk sh scripts/check-model-sdk.sh --prepare
-# The official writer delegates to the same lock-selected SDK through host Docker.
-node node_modules/prism-code/bin/prism-code.mjs axioms --write --project app | tee verification-output/axioms.log
 run_sdk sh -c 'cd app && lexlean fmt --check && lexlean lock --check'
 # Fail before expensive proof if the actual formatter and source renderer differ.
 node scripts/check-facets.mjs --check
+# The supported Prism check validates official facet projections, not just Lean types.
+run_sdk prismpm --project app check 2>&1 | tee verification-output/prismpm-check.log
+# The unmodified verifier enforces every declared exact axiom policy itself.
+# A policy mismatch (including LLV7005) fails here; no helper result can override it.
 if run_sdk sh -c 'cd app && lexlean verify --all' > verification-output/lexlean-verify.stdout.log 2> verification-output/lexlean-verify.stderr.log; then
   cat verification-output/lexlean-verify.stdout.log
   node scripts/retain-authoring-evidence.mjs verification-output/lexlean-verify.stdout.log

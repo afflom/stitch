@@ -1183,7 +1183,7 @@
       "licenseStatus": "Project declares MIT; audit applies",
       "redistributionCleared": true,
       "bytes": 1232836,
-      "sha256": "147f70db329ba9bfd69142f692ae1ae9ab0a6d55c404609a50cbbab0914fe171"
+      "sha256": "9feda37912952d7920a462139af36b4d7595da7287ef50c4ed4f9230c143dd5a"
     },
     {
       "declaration": "assetFile4",
@@ -2309,7 +2309,7 @@
     },
     {
       "path": "app/src/Product/Architecture.lex.tex",
-      "sha256": "fe5aac05827654477ad09282f0ef977890e00d5db753718c0e6e35139ff15958"
+      "sha256": "11fbfff4c0db249ddc97970018f3ec9218147e961f1b1b5ea5a6d1389af02085"
     },
     {
       "path": "app/src/Product/Brand.lex.tex",
@@ -2317,11 +2317,11 @@
     },
     {
       "path": "app/src/Product/Compliance.lex.tex",
-      "sha256": "61fdd56345a7a97c46073bed7e1199c6b89197c15a8e745b7ddadba803e829ea"
+      "sha256": "96b13c61adfcfcf477b4784635343967da72fa6e29c9445f1be05ea50747bf10"
     },
     {
       "path": "app/src/Product/Design.lex.tex",
-      "sha256": "5dab0d1d4d449817f4001a024258e80a048876a30d8ca6edd497be48b3d5841b"
+      "sha256": "2c6d1e0a3429c58d47caa549462526760cb92090ff6303c1ceda4c13d32ee5e3"
     },
     {
       "path": "app/src/Product/Experience.lex.tex",
@@ -2329,7 +2329,7 @@
     },
     {
       "path": "app/src/Product/Features.lex.tex",
-      "sha256": "3420da99aa7df9a2722569f145fbaf5530ec6c772a38a41185cfb7067e0dc28e"
+      "sha256": "0c10cd85a8fd472bc2b3e3748f01105bc56d0eb8ff2bd9bb5108426916b1b5fe"
     },
     {
       "path": "app/src/Product/Host.lex.tex",
@@ -2345,7 +2345,7 @@
     },
     {
       "path": "app/src/Product/Quality.lex.tex",
-      "sha256": "a2df33acd23b3e2928d6b78f0c8e223d0e68f9c0c58a0c718873e04af6df0fc1"
+      "sha256": "41a99ff01cc8d25a74ef10f1fa6d93cd3b6d472849af57bea4a4c29b0928377f"
     },
     {
       "path": "app/src/Product/Release.lex.tex",
@@ -2353,11 +2353,11 @@
     },
     {
       "path": "app/src/Product/Security.lex.tex",
-      "sha256": "aac798355b882dd6ee8b35b54eac0afaca505948e1dd32087c0cfa09e97bf1fe"
+      "sha256": "b84a3b68cc5d44b871a75046f7016368430c49d7e80ff44d2ba8d54703b00224"
     },
     {
       "path": "app/src/Product/Users.lex.tex",
-      "sha256": "a823d74d26f6718d0de606241e9912487c275eccb92dbdb5234599def914c7dc"
+      "sha256": "9bc83fc400a5f0f6402e0e75118c7aacf653fa9a4b0103390145b4509c600d37"
     },
     {
       "path": "app/src/Production/ThreatModel.lex.tex",
@@ -2465,7 +2465,7 @@
     },
     {
       "path": "docs/complete-prism.md",
-      "sha256": "324f2f476020a3020cc2e97325f0a55bc2d2962c56c2548e889f7298bb5157b3"
+      "sha256": "9df27b79101647ccaa1a8981f4d082d8b868aa21fd54534a1b40536f52ca5a67"
     },
     {
       "path": "docs/dns-client.md",
@@ -2680,6 +2680,14 @@
       "sha256": "29aface6c13fc58242ee67eb576b501e2e0ac66c60642bee73b774054acee22a"
     },
     {
+      "path": "docs/evidence/source-authoring/5002a66d/budget-audit.process.json",
+      "sha256": "48bb5972cbb70022d0cfb9d26abbdd6a41e30e50d42d06987faaeacdf1fbce93"
+    },
+    {
+      "path": "docs/evidence/source-authoring/5002a66d/provenance.json",
+      "sha256": "89717980cd334d8d435e5be489411b60984814fc5592c6df07eb6595ff15a305"
+    },
+    {
       "path": "docs/guest-browser-qualification.md",
       "sha256": "b499ce4d9f256fdda2151a26eaad0262da31c53afa77416600c76a2f0bc9eb95"
     },
@@ -2769,7 +2777,7 @@
     },
     {
       "path": "product/facets.json",
-      "sha256": "08007fa20195e6c24ed80207b5a3b03c962ffdf86046975991e88a7c7e46520b"
+      "sha256": "73d4714c1f13ce3fc5ca789db8122378271583876966a739ed508bb3aa5c044c"
     },
     {
       "path": "product/source-attestation.json",
@@ -2785,11 +2793,11 @@
     },
     {
       "path": "scripts/author-source.sh",
-      "sha256": "2d603f4fb9ec607a6567a6f5025f12336da3bad3b5687868e5f24378ca87bc0d"
+      "sha256": "a4ec9f5e6fd230c4c0ffae999a696ac15ea7f37f5f686db6dc8884a7d924a935"
     },
     {
       "path": "scripts/check-facets.mjs",
-      "sha256": "3a884fb0eac201f85fd8a19bbb085df87f938af20b31a142d6cc64f8a82120eb"
+      "sha256": "cda1b5fab8fc905e5631f9bfa1498fb24cb18c1580ddc84b06c0411c140c7dea"
     },
     {
       "path": "scripts/check-model-sdk.sh",
@@ -2973,7 +2981,7 @@
     },
     {
       "path": "tests/product-facets.test.js",
-      "sha256": "13c34c5ff45b036db93ca8c0a647552a9df33a7c0689ad33aecab5cb064e6a87"
+      "sha256": "f297e31dbeb6384f78449981e4a68e798c4f86089a8dbd78869e6cf408a8a811"
     },
     {
       "path": "tests/product-inventory.test.js",
@@ -3009,7 +3017,7 @@
     },
     {
       "path": "tests/source-authoring.test.js",
-      "sha256": "54c3506851afdac846c384d05bc354e315128da963c9afbe7d300510a2f3ed6c"
+      "sha256": "23368c2dce248f3f9d8083e5c5be09c86d91cd82a0c8f976cbb6e56584b96808"
     },
     {
       "path": "tests/source-evidence.test.js",
@@ -3036,5 +3044,5 @@
       "sha256": "02263c2d4bf1a1913a673466554c19593b5a6c39b22a2da32ce4375675868347"
     }
   ],
-  "sourceDigest": "sha256:515e51ec60365f662ac42342f2ae86a5dd5a19886839f854034091f4d2bbbb71"
+  "sourceDigest": "sha256:53edc1b36b4b511255ad7a72a70551d2cd860bd3b1e15c871177158dfcd9bc46"
 }

@@ -43159,12 +43159,12 @@ const types = {
     ]
   }
 };
-export const modelSourceDigest = "sha256:707df906d1e31d1be26f3e3645b5a8c545d468ed3cb5f9cba45fbc84fbfd40d2";
+export const modelSourceDigest = "sha256:1a058f0a51f63312261f10832a978d91e21a9f8a286397e81e996db7c9f8aa7b";
 export const modelExecutionDigest = "sha256:d79f1371e5ea16d16d5b9f56fbcce57cb8044df145dae91a63b9a4cbcb5c50de";
 export const MODEL_SOURCE = Object.freeze({
   "schema": "stitch/source-bindings/1",
   "verification": "source-derived, not kernel-checked",
-  "sourceDigest": "sha256:707df906d1e31d1be26f3e3645b5a8c545d468ed3cb5f9cba45fbc84fbfd40d2",
+  "sourceDigest": "sha256:1a058f0a51f63312261f10832a978d91e21a9f8a286397e81e996db7c9f8aa7b",
   "executionDigest": "sha256:d79f1371e5ea16d16d5b9f56fbcce57cb8044df145dae91a63b9a4cbcb5c50de",
   "executionIdentity": {
     "adapterSources": [
@@ -46786,7 +46786,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Architecture.lex.tex",
-      "sha256": "fe5aac05827654477ad09282f0ef977890e00d5db753718c0e6e35139ff15958"
+      "sha256": "11fbfff4c0db249ddc97970018f3ec9218147e961f1b1b5ea5a6d1389af02085"
     },
     {
       "path": "app/src/Product/Brand.lex.tex",
@@ -46794,11 +46794,11 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Compliance.lex.tex",
-      "sha256": "61fdd56345a7a97c46073bed7e1199c6b89197c15a8e745b7ddadba803e829ea"
+      "sha256": "96b13c61adfcfcf477b4784635343967da72fa6e29c9445f1be05ea50747bf10"
     },
     {
       "path": "app/src/Product/Design.lex.tex",
-      "sha256": "5dab0d1d4d449817f4001a024258e80a048876a30d8ca6edd497be48b3d5841b"
+      "sha256": "2c6d1e0a3429c58d47caa549462526760cb92090ff6303c1ceda4c13d32ee5e3"
     },
     {
       "path": "app/src/Product/Experience.lex.tex",
@@ -46806,7 +46806,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Features.lex.tex",
-      "sha256": "3420da99aa7df9a2722569f145fbaf5530ec6c772a38a41185cfb7067e0dc28e"
+      "sha256": "0c10cd85a8fd472bc2b3e3748f01105bc56d0eb8ff2bd9bb5108426916b1b5fe"
     },
     {
       "path": "app/src/Product/Host.lex.tex",
@@ -46822,7 +46822,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Quality.lex.tex",
-      "sha256": "a2df33acd23b3e2928d6b78f0c8e223d0e68f9c0c58a0c718873e04af6df0fc1"
+      "sha256": "41a99ff01cc8d25a74ef10f1fa6d93cd3b6d472849af57bea4a4c29b0928377f"
     },
     {
       "path": "app/src/Product/Release.lex.tex",
@@ -46830,11 +46830,11 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Security.lex.tex",
-      "sha256": "aac798355b882dd6ee8b35b54eac0afaca505948e1dd32087c0cfa09e97bf1fe"
+      "sha256": "b84a3b68cc5d44b871a75046f7016368430c49d7e80ff44d2ba8d54703b00224"
     },
     {
       "path": "app/src/Product/Users.lex.tex",
-      "sha256": "a823d74d26f6718d0de606241e9912487c275eccb92dbdb5234599def914c7dc"
+      "sha256": "9bc83fc400a5f0f6402e0e75118c7aacf653fa9a4b0103390145b4509c600d37"
     },
     {
       "path": "app/src/Production/ThreatModel.lex.tex",

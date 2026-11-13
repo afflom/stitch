@@ -1,0 +1,13 @@
+{
+  "scope": "Original audit process record for diagnosing a convenience-parser defect; not a verification attestation or native certificate",
+  "repository": "afflom/stitch",
+  "revision": "5002a66d01915161049506198b05bbd1ec443b56",
+  "run": "https://github.com/afflom/stitch/actions/runs/43445915817",
+  "artifact_id": 14047868120,
+  "artifact_bytes": 3924126,
+  "artifact_sha256": "c30544930868cd51ba3dc81b058257777db9478aba303846ce9d47d4399c92e7",
+  "artifact_member": ".lexlean/axioms/audit/LexLeanAudit.Aec976503f7b238e67406ed6378c2a66c.StitchModel.Stitch.Budget.process.json",
+  "retained_file": "docs/evidence/source-authoring/5002a66d/budget-audit.process.json",
+  "retained_bytes": 13911,
+  "retained_sha256": "48bb5972cbb70022d0cfb9d26abbdd6a41e30e50d42d06987faaeacdf1fbce93"
+}

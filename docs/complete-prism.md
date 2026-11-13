@@ -75,11 +75,13 @@ deploys, publishes a release, or changes the SDK pin.
 1. A fresh checkout, the exact image from `prismpm.lock`, and unchanged SDK,
    standards, npm and native-gate inputs.
 2. Facet generation followed by the unchanged SDK `--prepare` authoring command.
-3. The actual npm-lock-pinned `prism-code@0.7.2 axioms --write --project app`
-   writer on the Actions host. That official writer delegates to the committed
-   SDK through host Docker; it is not run inside a nested Docker container.
-4. Canonical formatting, source-lock and facet freshness checks, followed by a
-   real `lexlean verify --all` in the committed SDK.
+3. Canonical formatting, source-lock and facet freshness checks, then the actual
+   `prismpm --project app check` for official facet projection acceptance. A
+   failed Prism check stops before proof retention.
+4. Unmodified `lexlean verify --all` in the committed SDK. It enforces every
+   exact declared axiom policy, runs the real Lean/leanchecker proof stages and
+   emits its own original attestation. An axiom-policy refusal such as LLV7005
+   remains a failure; no convenience-helper result can override it.
 5. Selection of exactly the attestation ID printed by that successful process.
    `scripts/retain-authoring-evidence.mjs` reads that specific verified directory
    and the build ID it binds, checks original manifest bytes, then delegates to
@@ -93,6 +95,45 @@ compiler output and a full Git patch for review. A failed process cannot reach
 retention, even if its stdout contains success-like text. Review and verify the
 artifact against its exact workflow source before importing generated changes.
 A workflow artifact alone is not authority to accept arbitrary supplied JSON.
+
+
+## Explicit axiom authoring and the pinned helper defect
+
+When a declaration actually requires an authoring-policy change, the official
+writer remains a separate, explicit host command using the existing pinned
+package and SDK:
+
+```sh
+node node_modules/prism-code/bin/prism-code.mjs axioms --write --project app
+```
+
+It is not an automatic proof prerequisite. On
+[authoring run 43445915817](https://github.com/afflom/stitch/actions/runs/43445915817)
+for source `5002a66d01915161049506198b05bbd1ec443b56`, the SDK passed source checking
+for all 38 modules. The pinned `prism-code@0.7.2` helper then missed 15 real Lean
+axiom reports because it parses one line at a time and Lean wrapped the bracketed
+axiom lists across lines. It incorrectly reported an existing Budget declaration
+as unaudited. The original audit process exited successfully and contains the
+missing report; the package and its parser have not been patched locally.
+
+The exact original Budget audit bytes are retained in
+[`budget-audit.process.json`](evidence/source-authoring/5002a66d/budget-audit.process.json),
+with [artifact provenance](evidence/source-authoring/5002a66d/provenance.json).
+The complete original artifact is
+[14047868120](https://github.com/afflom/stitch/actions/runs/43445915817/artifacts/14047868120),
+3,924,126 bytes, SHA-256
+`c30544930868cd51ba3dc81b058257777db9478aba303846ce9d47d4399c92e7`.
+Diagnostic reading of those original wrapped reports found no policy mismatches
+or unaudited declarations among the 1,378 source definitions/theorems. That
+observation is not proof or authorization to rewrite policies. The helper stopped
+before certificate publication; only a successful strict verifier run on the
+current source can establish its source proof.
+
+Default authoring therefore runs the strict owning verifier directly. No proof
+stage, exact-axiom check, policy or verification flag is removed. If a real policy
+mismatch is reported, stop and retain that diagnostic; use a correctly functioning
+official authoring path rather than silently editing installed dependencies or
+inventing observations. The native Prism gate remains independent and unchanged.
 
 ## Native acceptance remains a separate gate
 
