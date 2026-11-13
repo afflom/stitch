@@ -62,7 +62,13 @@ make serve
 
 Open `http://localhost:8080`. Join a mesh to exchange data with peers. Enable the public relay only for intentionally public demonstration data. Fewer than three eligible remote peers means partial placement, not fabricated redundancy.
 
-The original Rust UOR conformance check is `cargo test --locked`. Both the Node/Python runtime checks and Rust conformance passed in [the initial fork CI run](https://github.com/afflom/stitch/actions/runs/42797265770); that historical formal SDK stage did not pass. The historical 25-module checkpoint passed pinned LexLean/Lean/leanchecker/axiom verification, recorded in [the retained exact-source summary](product/source-verification.json) and [actual verifier attestation](product/source-attestation.json). Those records do not verify the newly expanded facet sources, which are pending an actual SDK verification refresh. Native Prism artifact acceptance also remains pending. [Actual Chromium qualification](https://github.com/afflom/stitch/actions/runs/42909486101/job/130156053948) passed seven scenarios on `2f1fde8`, including authenticated WebRTC payload/recovery, browser authority persistence and real guest shell/stop/destroy. This evidence does not qualify other browsers, physical NAT topologies or a replacement guest. This is still an unqualified development checkpoint. `make test` runs Node and Rust checks. The default JavaScript suite includes in-process transports and real bundled-v86 guest execution. Dedicated hosted Chromium scenarios exercise native browser behavior; neither substitutes for physical WebRTC/NAT trials.
+The original Rust UOR conformance check is `cargo test --locked`. Node/Python runtime checks and Rust conformance passed in [the initial fork CI run](https://github.com/afflom/stitch/actions/runs/42797265770); its formal SDK stage did not pass.
+
+For input revision `6c393bf736e316a9f58db38a3cc498948bd226fe`, [source authoring run 43451144439](https://github.com/afflom/stitch/actions/runs/43451144439) used the unchanged pinned SDK, formatted zero modules, passed the actual Prism projection check and verified all **38 modules**, including the expanded product facets, with LexLean/Lean/leanchecker and exact axiom policies. The [retained exact-source summary](product/source-verification.json) and [original verifier attestation](product/source-attestation.json) record 1,910 successful declaration audits and 124 successful proof processes. With its generated source lock and retained evidence, that authoring run passed all **419 JavaScript tests** and all five strata.
+
+[Actual Chromium qualification on the same input revision](https://github.com/afflom/stitch/actions/runs/43451144395/job/131973315941) passed **14 scenarios**, including reader interactions, authenticated WebRTC recovery, browser authority persistence and real guest lifecycle behavior. These results do not qualify other browsers, physical NAT topologies or a replacement guest. **Native Prism artifact acceptance remains pending**; source proof and browser tests do not clear the separate old-SDK native-build issue. This remains a development checkpoint, not a qualified release.
+
+`make test` runs Node and Rust checks. The default JavaScript suite includes in-process transports and real bundled-v86 guest execution. Dedicated hosted Chromium scenarios exercise native browser behavior; neither substitutes for physical WebRTC/NAT trials.
 
 ## Model and verification
 
@@ -84,10 +90,10 @@ The second command requires the pinned SDK environment. It must run real LexLean
 
 ### Retain source evidence
 
-After the actual pinned verification succeeds, set `VERIFIED_DIR` to the exact current run's directory under `app/.lexlean/verified/`, then retain its original records:
+After actual pinned verification succeeds, use its original success log to select the exact attestation and the build manifest it binds:
 
 ```sh
-node scripts/retain-source-evidence.mjs "$VERIFIED_DIR/attestation.json" "$VERIFIED_DIR/build-manifest.json"
+node scripts/retain-authoring-evidence.mjs verification-output/lexlean-verify.stdout.log
 node scripts/check-source-evidence.mjs
 ```
 

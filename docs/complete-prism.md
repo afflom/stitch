@@ -36,6 +36,39 @@ Prism artifact acceptance, measured usability, a complete security assessment,
 whole-browser correctness, network availability or deployment readiness.
 Unmeasured quality and external-service assumptions remain explicit open work.
 
+## Verified source checkpoint
+
+[Source authoring run 43451144439](https://github.com/afflom/stitch/actions/runs/43451144439)
+started from `6c393bf736e316a9f58db38a3cc498948bd226fe` and used the unchanged
+SDK and standards pins. Its real authoring command generated the source lock
+for the official `prism.arch`, `prism.qual` and `prism.sec` closure, formatted
+zero modules and passed the actual `prismpm --project app check`.
+
+Unmodified LexLean/Lean/leanchecker verification accepted all 38 modules and
+1,910 declaration audits, with 124 successful processes (83 Lean and 41
+leanchecker). The exact reported attestation is
+`f29ee1259ab249c9ee90c9820aeb1a29988317cb82a9cf3759d57d468d52469a`.
+The [source summary](../product/source-verification.json),
+[original attestation](../product/source-attestation.json) and
+[original build manifest](../product/source-build-manifest.json) retain that
+result. The strict retention check binds them to 100 current source inputs
+and the immutable SDK's proof-tool identities.
+
+The [original authoring artifact](https://github.com/afflom/stitch/actions/runs/43451144439/artifacts/14052920216)
+is 4,072,450 bytes with SHA-256
+`168d84c92d72bd787efde97ca1b0594c903d48d23b08d95581c9cf0efb5c1b1a`.
+The imported source lock and proof records came from those original bytes;
+no generated formal source, axiom policy, SDK pin or proof gate was changed.
+With its generated lock and retained evidence, the authoring run passed all
+419 JavaScript tests and all five strata. Independently,
+[the exact-input Chromium job](https://github.com/afflom/stitch/actions/runs/43451144395/job/131973315941)
+passed 14 browser scenarios on `6c393bf`.
+
+These are source and scoped runtime/browser results. Native Prism artifact
+acceptance remains pending; the separate old-SDK `PP5007` issue is not cleared
+by this checkpoint. Physical network/NAT trials, other browsers and whole-host
+refinement remain outside this evidence.
+
 ## Local generation and checks
 
 With the lock-pinned Node dependencies installed:
@@ -55,7 +88,7 @@ npm run test:browser
 `product:write` refreshes source-derived facets first and then records the final
 resource bytes. It neither invokes the formal toolchain nor changes retained
 verification records. A normal `npm test` includes strict source-evidence tests;
-it must fail while the expanded source lacks matching genuine proof output.
+it must fail whenever current source lacks matching genuine proof output.
 Do not remove, skip or relax those tests to make an authoring branch appear green.
 
 The facet renderer must match the pinned compiler's canonical formatting and

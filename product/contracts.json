@@ -2089,7 +2089,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "e525ee70afb2e71086bb7989aa9937bd4cb197ab623916df2c74768bce6593d6"
+      "sha256": "eee856a847a299265aac59aa11e2d068ef21a0c98625acddf220c0452c8040ca"
     },
     {
       "path": "app/lake-manifest.json",
@@ -2325,7 +2325,7 @@
     },
     {
       "path": "app/lexlean.lock",
-      "sha256": "763e9a06d5f133043718ac99ab81e8b170542f265edf8900e24ae8ded5221f4f"
+      "sha256": "2c610e16cb4e42b8fa58a2ccc35b2a51ee1b6aefb2711f2614ccdb4b407e53d1"
     },
     {
       "path": "app/lexlean.toml",
@@ -2521,7 +2521,7 @@
     },
     {
       "path": "docs/complete-prism.md",
-      "sha256": "9df27b79101647ccaa1a8981f4d082d8b868aa21fd54534a1b40536f52ca5a67"
+      "sha256": "438ef79a0daa808d708b33316353d4ef1caa47906a151b7c605757ed750fbcb4"
     },
     {
       "path": "docs/dns-client.md",
@@ -2841,15 +2841,15 @@
     },
     {
       "path": "product/source-attestation.json",
-      "sha256": "cf5469e565e352f3152e631df86645feb3741bb1866f5e495fbbca5bfcf845e9"
+      "sha256": "12db5820201186082ec9cac4b51c8261e45c1dad3fe151e650cc954bd022b8e4"
     },
     {
       "path": "product/source-build-manifest.json",
-      "sha256": "ea91e398a0bcdadbb74c8a34ba9da7cdf88731f624363bac98d83536466d76c3"
+      "sha256": "2850464d3db4740aa1089aeda829fd8edcdbc190fdc5760c6cc5b26a6b8dd140"
     },
     {
       "path": "product/source-verification.json",
-      "sha256": "6e94ffd38ed803d4edf0b3b9e677ed2566760491d3a3dccbe7e91c52463d86b1"
+      "sha256": "dcacb04311f1315b27442e91badaeb775aee518aee17c8a47dcfdc83dcd93fbb"
     },
     {
       "path": "scripts/author-source.sh",
@@ -3108,5 +3108,5 @@
       "sha256": "02263c2d4bf1a1913a673466554c19593b5a6c39b22a2da32ce4375675868347"
     }
   ],
-  "sourceDigest": "sha256:692e040267964dd16119c4c4a8eb50eb99129e4c9a070e15462aa305e0e0b4ea"
+  "sourceDigest": "sha256:52c265629db33b199d2429d12c93e0bce11d6d7ff04bd82258d16bd992aecfb6"
 }
