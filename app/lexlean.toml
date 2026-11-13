@@ -19,6 +19,16 @@ kind = "path"
 path = "language/prism.arch"
 
 [[lexicon_source]]
+package = "prism.qual"
+kind = "path"
+path = "language/prism.qual"
+
+[[lexicon_source]]
+package = "prism.sec"
+kind = "path"
+path = "language/prism.sec"
+
+[[lexicon_source]]
 package = "stitch.domain"
 kind = "path"
 path = "language/stitch.domain"

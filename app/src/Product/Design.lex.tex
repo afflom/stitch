@@ -23,7 +23,7 @@ definition{
   name: sources,
   parameters: [],
   result: (List Source),
-  body: (cons (record Source {record := "Product.Design", path := "app/src/Product/Architecture.lex.tex", firstLine := 0, lastLine := 0, sha256 := "11fbfff4c0db249ddc97970018f3ec9218147e961f1b1b5ea5a6d1389af02085"}) (cons (record Source {record := "Product.Design", path := "app/src/Product/Model.lex.tex", firstLine := 0, lastLine := 0, sha256 := "6081a53375794cab60ddad0199956db978be3d4b91e102f1890dd0e3bc2697c8"}) (cons (record Source {record := "Product.Design", path := "app/src/Stitch/Effects.lex.tex", firstLine := 0, lastLine := 0, sha256 := "7ccc2c30cca7df663541ceece0c85226f921160f56f4ec681703a8d5b589263b"}) (cons (record Source {record := "Product.Design", path := "docs/lifecycle-effects.md", firstLine := 0, lastLine := 0, sha256 := "7205e561aaf22ce66cb06af54a8d82a11c85c0ad6b55bc0821a91004d0750a80"}) (cons (record Source {record := "Product.Design", path := "docs/prism-model.md", firstLine := 0, lastLine := 0, sha256 := "ece338421a27de9e0f588e66badf477eebe3012d194103f14a722db02cec24c7"}) (nil Source))))))
+  body: (cons (record Source {record := "Product.Design", path := "app/src/Product/Architecture.lex.tex", firstLine := 0, lastLine := 0, sha256 := "11fbfff4c0db249ddc97970018f3ec9218147e961f1b1b5ea5a6d1389af02085"}) (cons (record Source {record := "Product.Design", path := "app/src/Product/Model.lex.tex", firstLine := 0, lastLine := 0, sha256 := "6081a53375794cab60ddad0199956db978be3d4b91e102f1890dd0e3bc2697c8"}) (cons (record Source {record := "Product.Design", path := "app/src/Stitch/Effects.lex.tex", firstLine := 0, lastLine := 0, sha256 := "7ccc2c30cca7df663541ceece0c85226f921160f56f4ec681703a8d5b589263b"}) (cons (record Source {record := "Product.Design", path := "docs/lifecycle-effects.md", firstLine := 0, lastLine := 0, sha256 := "7205e561aaf22ce66cb06af54a8d82a11c85c0ad6b55bc0821a91004d0750a80"}) (cons (record Source {record := "Product.Design", path := "docs/prism-model.md", firstLine := 0, lastLine := 0, sha256 := "ece338421a27de9e0f588e66badf477eebe3012d194103f14a722db02cec24c7"}) (cons (record Source {record := "Product.Design", path := "src/layer1-uor/pointer.js", firstLine := 0, lastLine := 0, sha256 := "99cce36bc7a981536e1c6df22956b5c34db9689ccc377b0e808b09502d5f09fc"}) (cons (record Source {record := "Product.Design", path := "src/layer2-schedulers/policy.js", firstLine := 0, lastLine := 0, sha256 := "8f2074f8fe07a7b1fda51896d78f11a797564afb64accebc7291261e5c00639f"}) (cons (record Source {record := "Product.Design", path := "src/layer3-storage/index.js", firstLine := 0, lastLine := 0, sha256 := "905067fe5ebac2f6a6cb2cdda29e37265409f3e7a5e4b786e9e18e21bc4af676"}) (nil Source)))))))))
 }
 
 definition{
@@ -398,10 +398,10 @@ definition{
 }
 
 definition{
-  name: processAdmit,
+  name: processAdmitObject,
   parameters: [],
   result: Foundation.Arch::SystemProcess,
-  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::admission"})
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::storage"})
 }
 
 definition{
@@ -468,10 +468,38 @@ definition{
 }
 
 definition{
+  name: processAuthorizePointer,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::pointerAuthority"})
+}
+
+definition{
+  name: processDispatchDnsWrite,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::runtimeHost"})
+}
+
+definition{
+  name: processObserveDnsRecord,
+  parameters: [],
+  result: Foundation.Arch::SystemProcess,
+  body: (record Foundation.Arch::SystemProcess {owner := "Product.Architecture::runtimeHost"})
+}
+
+definition{
   name: objectIdentity,
   parameters: [],
   result: Foundation.Arch::OpmThing,
   body: (record Foundation.Arch::OpmThing {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmThingKind.object), subject := "Product.Architecture::identity"})
+}
+
+definition{
+  name: objectAdmission,
+  parameters: [],
+  result: Foundation.Arch::OpmThing,
+  body: (record Foundation.Arch::OpmThing {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmThingKind.object), subject := "Product.Architecture::admission"})
 }
 
 definition{
@@ -489,10 +517,10 @@ definition{
 }
 
 definition{
-  name: opmAdmit,
+  name: opmAdmitObject,
   parameters: [],
   result: Foundation.Arch::OpmThing,
-  body: (record Foundation.Arch::OpmThing {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Product.Design::processAdmit"})
+  body: (record Foundation.Arch::OpmThing {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmThingKind.process), subject := "Product.Design::processAdmitObject"})
 }
 
 definition{
@@ -527,46 +555,53 @@ definition{
   name: opmLink0,
   parameters: [],
   result: Foundation.Arch::OpmLink,
-  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Product.Architecture::identity", target := "Product.Design::processAdmit"})
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Product.Architecture::identity", target := "Product.Design::processAdmitObject"})
 }
 
 definition{
   name: opmLink1,
   parameters: [],
   result: Foundation.Arch::OpmLink,
-  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Product.Design::processAdmit", target := "Product.Design::processCommitLocal"})
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Product.Architecture::admission", target := "Product.Design::processAdmitObject"})
 }
 
 definition{
   name: opmLink2,
   parameters: [],
   result: Foundation.Arch::OpmLink,
-  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.effect), source := "Product.Architecture::storage", target := "Product.Design::processCommitLocal"})
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Product.Design::processAdmitObject", target := "Product.Design::processCommitLocal"})
 }
 
 definition{
   name: opmLink3,
   parameters: [],
   result: Foundation.Arch::OpmLink,
-  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Product.Design::processCommitLocal", target := "Product.Design::processRequestPlacement"})
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.effect), source := "Product.Architecture::storage", target := "Product.Design::processCommitLocal"})
 }
 
 definition{
   name: opmLink4,
   parameters: [],
   result: Foundation.Arch::OpmLink,
-  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Product.Architecture::peers", target := "Product.Design::processCheckReceipt"})
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Product.Design::processCommitLocal", target := "Product.Design::processRequestPlacement"})
 }
 
 definition{
   name: opmLink5,
   parameters: [],
   result: Foundation.Arch::OpmLink,
-  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Product.Design::processCheckReceipt", target := "Product.Design::processRecover"})
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.instrument), source := "Product.Architecture::peers", target := "Product.Design::processCheckReceipt"})
 }
 
 definition{
   name: opmLink6,
+  parameters: [],
+  result: Foundation.Arch::OpmLink,
+  body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.invocation), source := "Product.Design::processCheckReceipt", target := "Product.Design::processRecover"})
+}
+
+definition{
+  name: opmLink7,
   parameters: [],
   result: Foundation.Arch::OpmLink,
   body: (record Foundation.Arch::OpmLink {view := "Product.Design::viewObjectProcess", kind := (ctor Foundation.Arch::OpmLinkKind.effect), source := "Product.Architecture::storage", target := "Product.Design::processRecover"})
@@ -611,42 +646,56 @@ definition{
   name: message1,
   parameters: [],
   result: Foundation.Arch::UmlMessage,
-  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.synchronous), order := 1, source := "Product.Architecture::discovery", target := "Product.Architecture::pointerAuthority", process := "Product.Design::processAdmit"})
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.synchronous), order := 1, source := "Product.Architecture::discovery", target := "Product.Architecture::pointerAuthority", process := "Product.Design::processAuthorizePointer"})
 }
 
 definition{
   name: message2,
   parameters: [],
   result: Foundation.Arch::UmlMessage,
-  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.asynchronous), order := 2, source := "Product.Architecture::discovery", target := "Product.Architecture::runtimeHost", process := "Product.Design::processBeginWrite"})
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.asynchronous), order := 2, source := "Product.Architecture::discovery", target := "Product.Architecture::runtimeHost", process := "Product.Design::processDispatchDnsWrite"})
 }
 
 definition{
   name: message3,
   parameters: [],
   result: Foundation.Arch::UmlMessage,
-  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.reply), order := 3, source := "Product.Architecture::runtimeHost", target := "Product.Architecture::discovery", process := "Product.Design::processRetainUnknown"})
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.reply), order := 3, source := "Product.Architecture::runtimeHost", target := "Product.Architecture::discovery", process := "Product.Design::processDispatchDnsWrite"})
 }
 
 definition{
   name: message4,
   parameters: [],
   result: Foundation.Arch::UmlMessage,
-  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.synchronous), order := 4, source := "Product.Architecture::browser", target := "Product.Architecture::discovery", process := "Product.Design::processReconcile"})
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.synchronous), order := 4, source := "Product.Architecture::discovery", target := "Product.Architecture::discovery", process := "Product.Design::processRetainUnknown"})
 }
 
 definition{
   name: message5,
   parameters: [],
   result: Foundation.Arch::UmlMessage,
-  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.asynchronous), order := 5, source := "Product.Architecture::discovery", target := "Product.Architecture::runtimeHost", process := "Product.Design::processReconcile"})
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.synchronous), order := 5, source := "Product.Architecture::browser", target := "Product.Architecture::discovery", process := "Product.Design::processReconcile"})
 }
 
 definition{
   name: message6,
   parameters: [],
   result: Foundation.Arch::UmlMessage,
-  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.reply), order := 6, source := "Product.Architecture::runtimeHost", target := "Product.Architecture::discovery", process := "Product.Design::processConfirm"})
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.asynchronous), order := 6, source := "Product.Architecture::discovery", target := "Product.Architecture::runtimeHost", process := "Product.Design::processObserveDnsRecord"})
+}
+
+definition{
+  name: message7,
+  parameters: [],
+  result: Foundation.Arch::UmlMessage,
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.reply), order := 7, source := "Product.Architecture::runtimeHost", target := "Product.Architecture::discovery", process := "Product.Design::processObserveDnsRecord"})
+}
+
+definition{
+  name: message8,
+  parameters: [],
+  result: Foundation.Arch::UmlMessage,
+  body: (record Foundation.Arch::UmlMessage {view := "Product.Design::viewPublicationSequence", kind := (ctor Foundation.Arch::UmlMessageKind.synchronous), order := 8, source := "Product.Architecture::discovery", target := "Product.Architecture::discovery", process := "Product.Design::processConfirm"})
 }
 
 definition{
@@ -758,7 +807,7 @@ definition{
   name: boundary,
   parameters: [],
   result: String,
-  body: "Design relationships are views of existing contracts. Transition edges remain conditional on Stitch.Effects predicates and exact host observations. They neither execute effects nor prove the host implements every transition."
+  body: "Design relationships are views of existing contracts. AdmitObject is storage-owned orchestration using identity and admission, not an admission-led storage write. DNS host calls and replies name host-owned processes; local retention and confirmation remain discovery-owned conditional decisions. Transition edges remain conditional on Stitch.Effects predicates and exact host observations. They neither execute effects nor prove the host implements every transition."
 }
 \end{semanticmodule}
 \end{lexlean}

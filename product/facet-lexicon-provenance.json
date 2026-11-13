@@ -1,0 +1,79 @@
+{
+  "format": "stitch/facet-lexicon-provenance/1",
+  "repository": "https://github.com/UOR-Foundation/PrismPM",
+  "revision": "f657782e5f0936f73b983f2f21758b63620dfffc",
+  "license": "MIT; exact upstream notice retained in product/PRISMPM-LICENSE-MIT.txt.",
+  "method": "Official prism.qual@1.0.0 and prism.sec@1.0.0 lexicons copied verbatim; no dependency, SDK, standards, type, or proof changes.",
+  "files": [
+    {
+      "path": "app/language/prism.qual/entries/qual-characteristic.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.qual/entries/qual-characteristic.toml",
+      "sha256": "88c99bf5804a200ea5d42c4937567ffc9469f0a500967d7db077ebc31b1c60ca"
+    },
+    {
+      "path": "app/language/prism.qual/entries/qual-measure.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.qual/entries/qual-measure.toml",
+      "sha256": "304e8b84739e034eee5635801b02044d16522e82e53a54e4af173c0dcf929d09"
+    },
+    {
+      "path": "app/language/prism.qual/entries/qual-requirement.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.qual/entries/qual-requirement.toml",
+      "sha256": "85a2d7dec43320aa24ee3e0e3706035d94bcdf38613c0c56d44f46c194e29fa6"
+    },
+    {
+      "path": "app/language/prism.qual/entries/qual-subcharacteristic.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.qual/entries/qual-subcharacteristic.toml",
+      "sha256": "3e7ae6099226785e401b3bcba2c2a508b705b17cb7c33673e8f6c6be8b4aec9f"
+    },
+    {
+      "path": "app/language/prism.qual/lexicon.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.qual/lexicon.toml",
+      "sha256": "a79fae9a81e748c01f19a48dd066b0dedd356c05b791bd8bc8e7ce20d44cb335"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-activity.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.sec/entries/sec-activity.toml",
+      "sha256": "a9d8f0369b33d332d58fc5155bf26fe73573d94dae627624d1c02922028fe6c5"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-asset.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.sec/entries/sec-asset.toml",
+      "sha256": "11ad482bdceffcb5413351d40566221e6ae06bd08731a27d04ad66cb8038fafb"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-control.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.sec/entries/sec-control.toml",
+      "sha256": "2079014db65e604290d9b5b09cd9fbd63da084a4cd082e39dd4c2836ac9e9192"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-impact.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.sec/entries/sec-impact.toml",
+      "sha256": "2dcf1b527613d7d4c11f477c23f5f10fd7181a7f315dfb87c8585d1b3c28827b"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-likelihood.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.sec/entries/sec-likelihood.toml",
+      "sha256": "36ffd259c2d5598cd18dab6e1d023910712c7fe86f1e0b7fcebae106084954cb"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-measurement.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.sec/entries/sec-measurement.toml",
+      "sha256": "2e5ff2c76971922d6321ae4ae6eeb29330d14cab2efb363ab0d10ebc5c95e400"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-risk.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.sec/entries/sec-risk.toml",
+      "sha256": "f2a6d3dbee6dab80f208394fcdfb50eccb1185ae46ad9e2a31eb057b33a36b72"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-threat.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.sec/entries/sec-threat.toml",
+      "sha256": "a9b2201976bb336399d5ba4456a32c60263101b9accbbdbf8d9361e3c3175c21"
+    },
+    {
+      "path": "app/language/prism.sec/lexicon.toml",
+      "source": "https://github.com/UOR-Foundation/PrismPM/blob/f657782e5f0936f73b983f2f21758b63620dfffc/language/prism.sec/lexicon.toml",
+      "sha256": "d9b9663715d38c6d181becc8d433e3c3636b55d7ef97bd1f3d39688222925f7c"
+    }
+  ]
+}

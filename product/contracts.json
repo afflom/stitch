@@ -1095,7 +1095,7 @@
       "licenseStatus": "Project declares MIT; audit applies",
       "redistributionCleared": true,
       "bytes": 3226,
-      "sha256": "753d62887d9ece7c74a3e3d29bbc1ace04049c36a2f68a0a48a7ef6c2a12cc36"
+      "sha256": "e85ca1314c6bbcb5c7a820015a4aca62cfdfe0d2753160f1fa0359125f5430ae"
     },
     {
       "declaration": "assetSiteStyle",
@@ -1182,8 +1182,8 @@
       "origin": "Project-owned source checkout",
       "licenseStatus": "Project declares MIT; audit applies",
       "redistributionCleared": true,
-      "bytes": 1232836,
-      "sha256": "9feda37912952d7920a462139af36b4d7595da7287ef50c4ed4f9230c143dd5a"
+      "bytes": 1235097,
+      "sha256": "5e5bb461836fbba9a74e91b8b2c685ed3c525e266599d0667e85d25e281100f2"
     },
     {
       "declaration": "assetFile4",
@@ -2184,6 +2184,62 @@
       "sha256": "14c95df8b512edacacdb1788b58ae90cf573b4e3f1dca0e41074bfde5a380c9f"
     },
     {
+      "path": "app/language/prism.qual/entries/qual-characteristic.toml",
+      "sha256": "88c99bf5804a200ea5d42c4937567ffc9469f0a500967d7db077ebc31b1c60ca"
+    },
+    {
+      "path": "app/language/prism.qual/entries/qual-measure.toml",
+      "sha256": "304e8b84739e034eee5635801b02044d16522e82e53a54e4af173c0dcf929d09"
+    },
+    {
+      "path": "app/language/prism.qual/entries/qual-requirement.toml",
+      "sha256": "85a2d7dec43320aa24ee3e0e3706035d94bcdf38613c0c56d44f46c194e29fa6"
+    },
+    {
+      "path": "app/language/prism.qual/entries/qual-subcharacteristic.toml",
+      "sha256": "3e7ae6099226785e401b3bcba2c2a508b705b17cb7c33673e8f6c6be8b4aec9f"
+    },
+    {
+      "path": "app/language/prism.qual/lexicon.toml",
+      "sha256": "a79fae9a81e748c01f19a48dd066b0dedd356c05b791bd8bc8e7ce20d44cb335"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-activity.toml",
+      "sha256": "a9d8f0369b33d332d58fc5155bf26fe73573d94dae627624d1c02922028fe6c5"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-asset.toml",
+      "sha256": "11ad482bdceffcb5413351d40566221e6ae06bd08731a27d04ad66cb8038fafb"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-control.toml",
+      "sha256": "2079014db65e604290d9b5b09cd9fbd63da084a4cd082e39dd4c2836ac9e9192"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-impact.toml",
+      "sha256": "2dcf1b527613d7d4c11f477c23f5f10fd7181a7f315dfb87c8585d1b3c28827b"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-likelihood.toml",
+      "sha256": "36ffd259c2d5598cd18dab6e1d023910712c7fe86f1e0b7fcebae106084954cb"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-measurement.toml",
+      "sha256": "2e5ff2c76971922d6321ae4ae6eeb29330d14cab2efb363ab0d10ebc5c95e400"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-risk.toml",
+      "sha256": "f2a6d3dbee6dab80f208394fcdfb50eccb1185ae46ad9e2a31eb057b33a36b72"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-threat.toml",
+      "sha256": "a9b2201976bb336399d5ba4456a32c60263101b9accbbdbf8d9361e3c3175c21"
+    },
+    {
+      "path": "app/language/prism.sec/lexicon.toml",
+      "sha256": "d9b9663715d38c6d181becc8d433e3c3636b55d7ef97bd1f3d39688222925f7c"
+    },
+    {
       "path": "app/language/stitch.domain/entries/stitch-budget.toml",
       "sha256": "0bba5b43f718ceefbe562a5f08ad29c8724071ccf4464c4bf91860288428d8f9"
     },
@@ -2273,7 +2329,7 @@
     },
     {
       "path": "app/lexlean.toml",
-      "sha256": "a74ba0af0e7a4a294f5cca3ca8736ac38de9bcff977b7c14366aed469abf59e4"
+      "sha256": "9c5d6522695344cdaf3172bf6b7c780753ede8c1fd6e09b1508de5674b0945a7"
     },
     {
       "path": "app/prism.toml",
@@ -2317,11 +2373,11 @@
     },
     {
       "path": "app/src/Product/Compliance.lex.tex",
-      "sha256": "96b13c61adfcfcf477b4784635343967da72fa6e29c9445f1be05ea50747bf10"
+      "sha256": "56389b03b9773242daa57302e3305804b9d08e609521e89172ab6411ccb7d919"
     },
     {
       "path": "app/src/Product/Design.lex.tex",
-      "sha256": "2c6d1e0a3429c58d47caa549462526760cb92090ff6303c1ceda4c13d32ee5e3"
+      "sha256": "5f2d1e064af4c487c222601cba5d76bb466397a2272a855f2c691e9a87a6f074"
     },
     {
       "path": "app/src/Product/Experience.lex.tex",
@@ -2329,7 +2385,7 @@
     },
     {
       "path": "app/src/Product/Features.lex.tex",
-      "sha256": "0c10cd85a8fd472bc2b3e3748f01105bc56d0eb8ff2bd9bb5108426916b1b5fe"
+      "sha256": "f243975538f688ad397e20f050a17fceea944ff11b10b06cd4f006ef76e425d5"
     },
     {
       "path": "app/src/Product/Host.lex.tex",
@@ -2345,7 +2401,7 @@
     },
     {
       "path": "app/src/Product/Quality.lex.tex",
-      "sha256": "41a99ff01cc8d25a74ef10f1fa6d93cd3b6d472849af57bea4a4c29b0928377f"
+      "sha256": "bce652237815ee8b3e8dcf02f06887d102eaaa4063268a7bf2b90dafd0bb4ea0"
     },
     {
       "path": "app/src/Product/Release.lex.tex",
@@ -2353,7 +2409,7 @@
     },
     {
       "path": "app/src/Product/Security.lex.tex",
-      "sha256": "b84a3b68cc5d44b871a75046f7016368430c49d7e80ff44d2ba8d54703b00224"
+      "sha256": "58065b9e1ab7dbfcab8986b3dffe142032b7292b47409d2eba08013b27f2fe50"
     },
     {
       "path": "app/src/Product/Users.lex.tex",
@@ -2772,12 +2828,16 @@
       "sha256": "b65b82603a4875244eaecc241d1666217ae7d9f8bf4ad3e7b1ac88d8888126ee"
     },
     {
+      "path": "product/facet-lexicon-provenance.json",
+      "sha256": "20091b50de617c8404ccb364cfde20643057483726f0be9d31986f37e3503703"
+    },
+    {
       "path": "product/facet-type-provenance.json",
       "sha256": "762d96e1eee560017b209db19e97bb9b858773713687a33d86213df93ccc075b"
     },
     {
       "path": "product/facets.json",
-      "sha256": "73d4714c1f13ce3fc5ca789db8122378271583876966a739ed508bb3aa5c044c"
+      "sha256": "0d023924a37294d61cb037588f200a4f56b56dcd542f6e7684401d498dc2e3f0"
     },
     {
       "path": "product/source-attestation.json",
@@ -2797,7 +2857,7 @@
     },
     {
       "path": "scripts/check-facets.mjs",
-      "sha256": "cda1b5fab8fc905e5631f9bfa1498fb24cb18c1580ddc84b06c0411c140c7dea"
+      "sha256": "1de27c3b5627779d6a54a7baaecbcf023ba1f0195c742418e63defb275ecf237"
     },
     {
       "path": "scripts/check-model-sdk.sh",
@@ -2824,6 +2884,10 @@
       "sha256": "788819519d3e728ccc1d1b8c779b61f7990eef219a6c1b01a743c73d1c907c7b"
     },
     {
+      "path": "scripts/facet-projection.mjs",
+      "sha256": "d593102403e1c48a1a3a03cbffc2f73c401b7bf328c7c3e77d790af57c715634"
+    },
+    {
       "path": "scripts/retain-authoring-evidence.mjs",
       "sha256": "01e1c9441ed61830a59e1fcbc5fb19cd46d570d9b2489c08145dc13057affa54"
     },
@@ -2837,7 +2901,7 @@
     },
     {
       "path": "site/facets.json",
-      "sha256": "753d62887d9ece7c74a3e3d29bbc1ace04049c36a2f68a0a48a7ef6c2a12cc36"
+      "sha256": "e85ca1314c6bbcb5c7a820015a4aca62cfdfe0d2753160f1fa0359125f5430ae"
     },
     {
       "path": "standards.lock",
@@ -2981,7 +3045,7 @@
     },
     {
       "path": "tests/product-facets.test.js",
-      "sha256": "f297e31dbeb6384f78449981e4a68e798c4f86089a8dbd78869e6cf408a8a811"
+      "sha256": "8906173f344bf11d566486002a64b655913645d6d915ce0e6810e47c5c7f18f4"
     },
     {
       "path": "tests/product-inventory.test.js",
@@ -3044,5 +3108,5 @@
       "sha256": "02263c2d4bf1a1913a673466554c19593b5a6c39b22a2da32ce4375675868347"
     }
   ],
-  "sourceDigest": "sha256:53edc1b36b4b511255ad7a72a70551d2cd860bd3b1e15c871177158dfcd9bc46"
+  "sourceDigest": "sha256:692e040267964dd16119c4c4a8eb50eb99129e4c9a070e15462aa305e0e0b4ea"
 }

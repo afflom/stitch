@@ -5,6 +5,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { literalRows, readProduct } from './check-product.mjs';
+import { validateFacetProjection } from './facet-projection.mjs';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const hash = x => createHash('sha256').update(x).digest('hex');
 const sourceKappa = (path, bytes) => {
@@ -51,19 +52,21 @@ export function validateFacetReferences(moduleTexts) {
   const declarations=new Map();
   for(const [module,text]of moduleTexts)for(const m of text.matchAll(/(?:definition|structure|inductive|theorem)\{\s*name: (\w+)/g))declarations.set(module+'::'+m[1],true);
   for(const [module,text]of moduleTexts)for(const m of text.matchAll(/"(Product\.[A-Za-z]+::[A-Za-z0-9_]+)"/g))if(!declarations.has(m[1]))fail(`dangling reference ${module} -> ${m[1]}`);
-  const design=moduleTexts.get('Product.Design');
-  if(design){
-    const types=new Set([A+'OpmThing',A+'OpmLink',A+'UmlComponent',A+'UmlConnector',A+'UmlLifeline',A+'UmlMessage',A+'UmlState',A+'UmlTransition']);
-    const rows=literalRows(design,types),subjects=new Map();
-    for(const r of rows.filter(x=>x.type===A+'OpmThing'))subjects.set(r.subject,r.kind.constructor.split('.').at(-1));
-    for(const r of rows.filter(x=>x.type===A+'OpmLink')){
-      const kind=r.kind.constructor.split('.').at(-1),source=subjects.get(r.source),target=subjects.get(r.target);
-      if(!source||!target)fail(`OPM endpoint not in view ${r.declaration}`);
-      if(['agent','instrument','consumption','effect'].includes(kind)&&(source!=='object'||target!=='process'))fail(`OPM direction ${r.declaration}`);
-      if(kind==='result'&&(source!=='process'||target!=='object'))fail(`OPM result direction ${r.declaration}`);
-      if(kind==='invocation'&&(source!=='process'||target!=='process'))fail(`OPM invocation direction ${r.declaration}`);
-    }
+  return validateFacetProjection(moduleTexts);
+}
+export function validateFacetLexicons(read,moduleTexts) {
+  // Application facet projection is all-or-nothing in the real SDK. Declared
+  // record types alone do not put their lexicon packages in the source closure.
+  const config=read('app/lexlean.toml');
+  const packages=new Set([...moduleTexts.values()].flatMap(text=>[...text.matchAll(/\\useglossary\{(prism\.(?:arch|qual|sec))@1\.0\.0\}/g)].map(m=>m[1])));
+  for(const packageName of ['prism.arch','prism.qual','prism.sec']){
+    const expected=`[[lexicon_source]]\npackage = "${packageName}"\nkind = "path"\npath = "language/${packageName}"`;
+    if(!packages.has(packageName)||!config.includes(expected))fail(`missing application facet lexicon closure ${packageName}`);
   }
+  const provenance=JSON.parse(read('product/facet-lexicon-provenance.json'));
+  if(provenance.format!=='stitch/facet-lexicon-provenance/1'||provenance.files.length!==14)fail('incomplete facet lexicon provenance');
+  for(const entry of provenance.files)if(hash(read(entry.path))!==entry.sha256)fail(`modified official facet lexicon ${entry.path}`);
+  read('product/PRISMPM-LICENSE-MIT.txt');
   return true;
 }
 export function generateFacets(base=root) {
@@ -87,8 +90,9 @@ export function generateFacets(base=root) {
     paths=[...new Set(paths)].sort();paths.forEach(read);
     const sourceRows=paths.map((path,i)=>record('Source',{record:`Product.${name}`,path,firstLine:0,lastLine:0,sha256:sources.get(path)}));
     const provenance=structure('Source',{record:'String',path:'String',firstLine:'Nat',lastLine:'Nat',sha256:'String'})+'\n'+def('sources','(List Source)',list('Source',sourceRows.map(raw)));
+    const glossaries=imports.flatMap(i=>i==='Foundation.Sec'?['prism.sec']:i==='Foundation.Qual'?['prism.qual']:[]);
     const module='Product.'+name, path=`app/src/Product/${name}.lex.tex`;
-    const text=`\\begin{lexlean}{${module}}\n\\useglossary{lexlean.std.bool@1.2.0}\n\\useglossary{lexlean.std.nat@1.2.0}\n\\useglossary{stitch.domain@1.0.0}\n${imports.map(i=>`\\importmodule{${i}}\n`).join('')}\\title{Stitch ${title}}\n\\begin{semanticmodule}\n${provenance}\n${body.join('\n')}\\end{semanticmodule}\n\\end{lexlean}\n`;
+    const text=`\\begin{lexlean}{${module}}\n\\useglossary{lexlean.std.bool@1.2.0}\n\\useglossary{lexlean.std.nat@1.2.0}\n\\useglossary{stitch.domain@1.0.0}\n${glossaries.map(g=>`\\useglossary{${g}@1.0.0}\n`).join('')}${imports.map(i=>`\\importmodule{${i}}\n`).join('')}\\title{Stitch ${title}}\n\\begin{semanticmodule}\n${provenance}\n${body.join('\n')}\\end{semanticmodule}\n\\end{lexlean}\n`;
     outputs.set(path,text);modulePaths.push(path);modules.push({module,path,records,sourcePaths:paths});
     const id='stitch-product-'+name.toLowerCase();
     outputs.set(`app/language/stitch.domain/entries/${id}.toml`,`spec = "lexlean/entry/1"\nid = "${id}"\ncategory = "label-word"\nsurface_arity = 0\nframe = "atom"\n\n[denotation]\nkind = "document"\nmodule = "${module}"\ncomponent = "sources"\n\n[[form]]\nid = "${id}"\nchannel = "text"\nsurface = ${q('Stitch '+title)}\ncanonical_source = true\nfeatures = ["sentence-case", "singular"]\n`);
@@ -153,14 +157,14 @@ export function generateFacets(base=root) {
   for(const [id,title,kind] of views)body.push(row(id,A+'DesignView',{title,viewpoint:'Product.Architecture::productViewpoint',diagram:ctor(A+'DesignDiagram.'+kind)}));
   for(const c of components)body.push(row('component'+cap(c.name),A+'UmlComponent',{view:D+'viewComponents',component:arch(c.name)}));
   for(const e of edges)body.push(row('connector'+cap(e.declaration),A+'UmlConnector',{view:D+'viewComponents',edge:'Product.Architecture::'+e.declaration}));
-  const processes=[['Admit','admission'],['CommitLocal','storage'],['RequestPlacement','transport'],['CheckReceipt','storage'],['Recover','storage'],['BeginWrite','discovery'],['Reconcile','discovery'],['Confirm','discovery'],['Refuse','discovery'],['RetainUnknown','discovery']];
+  const processes=[['AdmitObject','storage'],['CommitLocal','storage'],['RequestPlacement','transport'],['CheckReceipt','storage'],['Recover','storage'],['BeginWrite','discovery'],['Reconcile','discovery'],['Confirm','discovery'],['Refuse','discovery'],['RetainUnknown','discovery'],['AuthorizePointer','pointerAuthority'],['DispatchDnsWrite','runtimeHost'],['ObserveDnsRecord','runtimeHost']];
   for(const [name,owner]of processes)body.push(row('process'+name,A+'SystemProcess',{owner:arch(owner)}));
-  for(const id of ['identity','storage','peers'])body.push(row('object'+cap(id),A+'OpmThing',{view:D+'viewObjectProcess',kind:ctor(A+'OpmThingKind.object'),subject:arch(id)}));
+  for(const id of ['identity','admission','storage','peers'])body.push(row('object'+cap(id),A+'OpmThing',{view:D+'viewObjectProcess',kind:ctor(A+'OpmThingKind.object'),subject:arch(id)}));
   for(const [name]of processes.slice(0,5))body.push(row('opm'+name,A+'OpmThing',{view:D+'viewObjectProcess',kind:ctor(A+'OpmThingKind.process'),subject:D+'process'+name}));
-  const opmLinks=[['instrument','objectIdentity','opmAdmit'],['invocation','opmAdmit','opmCommitLocal'],['effect','objectStorage','opmCommitLocal'],['invocation','opmCommitLocal','opmRequestPlacement'],['instrument','objectPeers','opmCheckReceipt'],['invocation','opmCheckReceipt','opmRecover'],['effect','objectStorage','opmRecover']];
+  const opmLinks=[['instrument','objectIdentity','opmAdmitObject'],['instrument','objectAdmission','opmAdmitObject'],['invocation','opmAdmitObject','opmCommitLocal'],['effect','objectStorage','opmCommitLocal'],['invocation','opmCommitLocal','opmRequestPlacement'],['instrument','objectPeers','opmCheckReceipt'],['invocation','opmCheckReceipt','opmRecover'],['effect','objectStorage','opmRecover']];
   opmLinks.forEach(([kind,source,target],i)=>body.push(row('opmLink'+i,A+'OpmLink',{view:D+'viewObjectProcess',kind:ctor(A+'OpmLinkKind.'+kind),source:source.startsWith('object')?arch(source.slice(6).replace(/^./,c=>c.toLowerCase())):D+'process'+source.slice(3),target:target.startsWith('object')?arch(target.slice(6).replace(/^./,c=>c.toLowerCase())):D+'process'+target.slice(3)})));
   ['browser','discovery','pointerAuthority','runtimeHost'].forEach((id,i)=>body.push(row('lifeline'+cap(id),A+'UmlLifeline',{view:D+'viewPublicationSequence',component:arch(id),order:i})));
-  const messages=[['browser','discovery','BeginWrite','synchronous'],['discovery','pointerAuthority','Admit','synchronous'],['discovery','runtimeHost','BeginWrite','asynchronous'],['runtimeHost','discovery','RetainUnknown','reply'],['browser','discovery','Reconcile','synchronous'],['discovery','runtimeHost','Reconcile','asynchronous'],['runtimeHost','discovery','Confirm','reply']];
+  const messages=[['browser','discovery','BeginWrite','synchronous'],['discovery','pointerAuthority','AuthorizePointer','synchronous'],['discovery','runtimeHost','DispatchDnsWrite','asynchronous'],['runtimeHost','discovery','DispatchDnsWrite','reply'],['discovery','discovery','RetainUnknown','synchronous'],['browser','discovery','Reconcile','synchronous'],['discovery','runtimeHost','ObserveDnsRecord','asynchronous'],['runtimeHost','discovery','ObserveDnsRecord','reply'],['discovery','discovery','Confirm','synchronous']];
   messages.forEach(([source,target,process,kind],i)=>body.push(row('message'+i,A+'UmlMessage',{view:D+'viewPublicationSequence',kind:ctor(A+'UmlMessageKind.'+kind),order:i,source:arch(source),target:arch(target),process:D+'process'+process})));
   const effects=read('app/src/Stitch/Effects.lex.tex');
   const phaseText=/name: DnsPhase,[\s\S]*?constructors: \[([\s\S]*?)\n  \]/.exec(effects)?.[1]??fail('missing DnsPhase');
@@ -168,9 +172,9 @@ export function generateFacets(base=root) {
   for(const state of states){body.push(row('state'+state,A+'SystemState',{owner:arch('discovery')}));body.push(row('uml'+state,A+'UmlState',{view:D+'viewPublicationState',state:D+'state'+state,initial:state==='Idle'}));}
   const transitions=[['Idle','Unknown','BeginWrite'],['Published','Unknown','BeginWrite'],['Refused','Unknown','BeginWrite'],['Unknown','Published','Confirm'],['Unknown','Published','Reconcile'],['Unknown','Refused','Refuse'],['Unknown','Unknown','RetainUnknown']];
   transitions.forEach(([source,target,trigger],i)=>{if(!states.includes(source)||!states.includes(target))fail('unknown DNS state');body.push(row('transition'+i,A+'UmlTransition',{view:D+'viewPublicationState',order:i,source:D+'state'+source,target:D+'state'+target,trigger:D+'process'+trigger}));});
-  body.push(def('boundary','String',q('Design relationships are views of existing contracts. Transition edges remain conditional on Stitch.Effects predicates and exact host observations. They neither execute effects nor prove the host implements every transition.')));
+  body.push(def('boundary','String',q('Design relationships are views of existing contracts. AdmitObject is storage-owned orchestration using identity and admission, not an admission-led storage write. DNS host calls and replies name host-owned processes; local retention and confirmation remain discovery-owned conditional decisions. Transition edges remain conditional on Stitch.Effects predicates and exact host observations. They neither execute effects nor prove the host implements every transition.')));
   const design={components:components.length,connectors:edges.length,views:views.map(([id,title,diagram])=>({id,title,diagram})),states,transitions};
-  emit('Design','protocol design views',['Foundation.Arch','Product.Architecture'],body,['app/src/Product/Architecture.lex.tex','app/src/Product/Model.lex.tex','app/src/Stitch/Effects.lex.tex','docs/prism-model.md','docs/lifecycle-effects.md'],components.length+edges.length+views.length+states.length+transitions.length+messages.length+opmLinks.length+processes.length);
+  emit('Design','protocol design views',['Foundation.Arch','Product.Architecture'],body,['app/src/Product/Architecture.lex.tex','app/src/Product/Model.lex.tex','app/src/Stitch/Effects.lex.tex','docs/prism-model.md','docs/lifecycle-effects.md','src/layer3-storage/index.js','src/layer1-uor/pointer.js','src/layer2-schedulers/policy.js'],components.length+edges.length+views.length+states.length+transitions.length+messages.length+opmLinks.length+processes.length);
   // Security assesses attack opportunity and consequence qualitatively. These
   // categories are design assessments, never frequencies or measured scores.
   const threatRows=[
@@ -348,11 +352,13 @@ export function generateFacets(base=root) {
   const moduleTexts=new Map(modules.map(m=>[m.module,outputs.get(m.path)]));
   moduleTexts.set('Product.Architecture',read('app/src/Product/Architecture.lex.tex'));
   moduleTexts.set('Product.Experience',experience);
+  moduleTexts.set('Foundation.Arch',read('app/src/Foundation/Arch.lex.tex'));
+  validateFacetLexicons(read,moduleTexts);
   validateFacetReferences(moduleTexts);
   for(const s of stakeholders)if(!goals.some(g=>g.user===s.index))fail(`stakeholder has no typed goal ${s.declaration}`);
   const provenance=JSON.parse(read('product/facet-type-provenance.json'));
   for(const item of provenance.types)if(hash(read(item.path))!==item.derivedSha256)fail(`modified reference type ${item.path}`);
-  read('product/UORUST-LICENSE-MIT.txt');read('scripts/check-facets.mjs');
+  read('product/UORUST-LICENSE-MIT.txt');read('scripts/check-facets.mjs');read('scripts/facet-projection.mjs');
   const catalog={format:'stitch/product-facets/1',assurance:'Source-derived product inventory and obligations, not a verification receipt or whole-product certificate.',sourceConvention:'Source firstLine=0,lastLine=0 means SHA-256 of the complete UTF-8 file bytes, not a precise source span.',references:[REF+'scripts/self-model/facets.py','https://github.com/afflom/prism-devrel/blob/7b6c54bb6e34f3b970f70d50127ab520367b84ac/scripts/experience/experience.py'],sources:[...sources].sort(([a],[b])=>a.localeCompare(b,'en')).map(([path,sha256])=>({path,sha256})),modules,operatorActionCount:actions.length,features,journeys:journeyRows,design,security,quality,brand,users,persistence,release,compliance};
   outputs.set('product/facets.json',JSON.stringify(catalog,null,2)+'\n');
   const summaries={Features:'Every live operator action and its guarded journey, linked to executable evidence.',Design:'The five-layer component graph, object process, publication sequence and unknown-write state machine.',Security:'Assets, STRIDE threats, qualitative risk assessments and traceable controls without false pass claims.',Quality:'Source-derived coverage, configured resource limits, zero-defect requirements and open observations.',Brand:'Stitch own palette, typography and scoped text-contrast measurements.',Users:'Real user groups, goals, tasks and environments; usability studies remain open.',Persistence:'What restores automatically, what remains volatile, and which trust decisions and effect outcomes require explicit handling.',Release:'Complete dependency/deployment inventory and separate source, native, runtime and browser qualification.',Compliance:'Named standards obligations, evidence procedures and explicit certification boundaries.'};

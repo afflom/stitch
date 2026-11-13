@@ -43159,12 +43159,12 @@ const types = {
     ]
   }
 };
-export const modelSourceDigest = "sha256:1a058f0a51f63312261f10832a978d91e21a9f8a286397e81e996db7c9f8aa7b";
+export const modelSourceDigest = "sha256:94e62a2124e47ff7f93b110e419c6dc7789d7cf0c033afc8a66b239ddede1bab";
 export const modelExecutionDigest = "sha256:d79f1371e5ea16d16d5b9f56fbcce57cb8044df145dae91a63b9a4cbcb5c50de";
 export const MODEL_SOURCE = Object.freeze({
   "schema": "stitch/source-bindings/1",
   "verification": "source-derived, not kernel-checked",
-  "sourceDigest": "sha256:1a058f0a51f63312261f10832a978d91e21a9f8a286397e81e996db7c9f8aa7b",
+  "sourceDigest": "sha256:94e62a2124e47ff7f93b110e419c6dc7789d7cf0c033afc8a66b239ddede1bab",
   "executionDigest": "sha256:d79f1371e5ea16d16d5b9f56fbcce57cb8044df145dae91a63b9a4cbcb5c50de",
   "executionIdentity": {
     "adapterSources": [
@@ -46794,11 +46794,11 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Compliance.lex.tex",
-      "sha256": "96b13c61adfcfcf477b4784635343967da72fa6e29c9445f1be05ea50747bf10"
+      "sha256": "56389b03b9773242daa57302e3305804b9d08e609521e89172ab6411ccb7d919"
     },
     {
       "path": "app/src/Product/Design.lex.tex",
-      "sha256": "2c6d1e0a3429c58d47caa549462526760cb92090ff6303c1ceda4c13d32ee5e3"
+      "sha256": "5f2d1e064af4c487c222601cba5d76bb466397a2272a855f2c691e9a87a6f074"
     },
     {
       "path": "app/src/Product/Experience.lex.tex",
@@ -46806,7 +46806,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Features.lex.tex",
-      "sha256": "0c10cd85a8fd472bc2b3e3748f01105bc56d0eb8ff2bd9bb5108426916b1b5fe"
+      "sha256": "f243975538f688ad397e20f050a17fceea944ff11b10b06cd4f006ef76e425d5"
     },
     {
       "path": "app/src/Product/Host.lex.tex",
@@ -46822,7 +46822,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Quality.lex.tex",
-      "sha256": "41a99ff01cc8d25a74ef10f1fa6d93cd3b6d472849af57bea4a4c29b0928377f"
+      "sha256": "bce652237815ee8b3e8dcf02f06887d102eaaa4063268a7bf2b90dafd0bb4ea0"
     },
     {
       "path": "app/src/Product/Release.lex.tex",
@@ -46830,7 +46830,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Security.lex.tex",
-      "sha256": "b84a3b68cc5d44b871a75046f7016368430c49d7e80ff44d2ba8d54703b00224"
+      "sha256": "58065b9e1ab7dbfcab8986b3dffe142032b7292b47409d2eba08013b27f2fe50"
     },
     {
       "path": "app/src/Product/Users.lex.tex",
@@ -46995,6 +46995,62 @@ export const MODEL_SOURCE = Object.freeze({
     {
       "path": "app/language/prism.arch/lexicon.toml",
       "sha256": "14c95df8b512edacacdb1788b58ae90cf573b4e3f1dca0e41074bfde5a380c9f"
+    },
+    {
+      "path": "app/language/prism.qual/entries/qual-characteristic.toml",
+      "sha256": "88c99bf5804a200ea5d42c4937567ffc9469f0a500967d7db077ebc31b1c60ca"
+    },
+    {
+      "path": "app/language/prism.qual/entries/qual-measure.toml",
+      "sha256": "304e8b84739e034eee5635801b02044d16522e82e53a54e4af173c0dcf929d09"
+    },
+    {
+      "path": "app/language/prism.qual/entries/qual-requirement.toml",
+      "sha256": "85a2d7dec43320aa24ee3e0e3706035d94bcdf38613c0c56d44f46c194e29fa6"
+    },
+    {
+      "path": "app/language/prism.qual/entries/qual-subcharacteristic.toml",
+      "sha256": "3e7ae6099226785e401b3bcba2c2a508b705b17cb7c33673e8f6c6be8b4aec9f"
+    },
+    {
+      "path": "app/language/prism.qual/lexicon.toml",
+      "sha256": "a79fae9a81e748c01f19a48dd066b0dedd356c05b791bd8bc8e7ce20d44cb335"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-activity.toml",
+      "sha256": "a9d8f0369b33d332d58fc5155bf26fe73573d94dae627624d1c02922028fe6c5"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-asset.toml",
+      "sha256": "11ad482bdceffcb5413351d40566221e6ae06bd08731a27d04ad66cb8038fafb"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-control.toml",
+      "sha256": "2079014db65e604290d9b5b09cd9fbd63da084a4cd082e39dd4c2836ac9e9192"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-impact.toml",
+      "sha256": "2dcf1b527613d7d4c11f477c23f5f10fd7181a7f315dfb87c8585d1b3c28827b"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-likelihood.toml",
+      "sha256": "36ffd259c2d5598cd18dab6e1d023910712c7fe86f1e0b7fcebae106084954cb"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-measurement.toml",
+      "sha256": "2e5ff2c76971922d6321ae4ae6eeb29330d14cab2efb363ab0d10ebc5c95e400"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-risk.toml",
+      "sha256": "f2a6d3dbee6dab80f208394fcdfb50eccb1185ae46ad9e2a31eb057b33a36b72"
+    },
+    {
+      "path": "app/language/prism.sec/entries/sec-threat.toml",
+      "sha256": "a9b2201976bb336399d5ba4456a32c60263101b9accbbdbf8d9361e3c3175c21"
+    },
+    {
+      "path": "app/language/prism.sec/lexicon.toml",
+      "sha256": "d9b9663715d38c6d181becc8d433e3c3636b55d7ef97bd1f3d39688222925f7c"
     },
     {
       "path": "app/language/stitch.domain/entries/stitch-budget.toml",
