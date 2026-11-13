@@ -281,7 +281,7 @@ export function generateFacets(base=root) {
   body.push(theorem('everyGoalNamesAUser',`(goalsHaveUsers (goals) ${stakeholders.length})`));
   body.push(theorem('everyTaskNamesAGoal',`(tasksHaveGoals (tasks) ${goals.length})`));
   body.push(theorem('everyTaskNamesAcceptanceEvidence','(tasksHaveAcceptance (tasks))'));
-  emit('Users','context of use and usability',['Foundation.Experience.V1.Model','Product.Architecture','Product.Features'],body,['app/src/Product/Architecture.lex.tex',EXPERIENCE,'docs/operator-experience.md'],stakeholders.length+goals.length+tasks.length+measures.length+4);
+  emit('Users','context of use and usability',['Foundation.Arch','Foundation.Experience.V1.Model','Product.Architecture','Product.Features'],body,['app/src/Product/Architecture.lex.tex',EXPERIENCE,'docs/operator-experience.md'],stakeholders.length+goals.length+tasks.length+measures.length+4);
   // Persistence inventory exposes what automation can restore without creating
   // trust, dropping unknown writes, or pretending volatile bytes are durable.
   const persistence=[

@@ -117,7 +117,7 @@
     },
     {
       "path": "scripts/check-facets.mjs",
-      "sha256": "676e6d4022fca1766b76385beba79da518b8d8350273ac864aaf06194ed0623f"
+      "sha256": "3a884fb0eac201f85fd8a19bbb085df87f938af20b31a142d6cc64f8a82120eb"
     },
     {
       "path": "scripts/check-product.mjs",
@@ -245,7 +245,7 @@
     },
     {
       "path": "tests/product-facets.test.js",
-      "sha256": "7d04460c3ba5b10caf9479bc58a6793a876d4eac33b6d64e862d2fe009b179bd"
+      "sha256": "13c34c5ff45b036db93ca8c0a647552a9df33a7c0689ad33aecab5cb064e6a87"
     },
     {
       "path": "tests/product-model.test.js",
@@ -327,7 +327,7 @@
         "tests/vm-lifecycle.test.js"
       ],
       "declarations": 148,
-      "sha256": "55ef7334d5f2a983f308efa0f854472e397e806ca8aed667231689926b100d84"
+      "sha256": "3420da99aa7df9a2722569f145fbaf5530ec6c772a38a41185cfb7067e0dc28e"
     },
     {
       "module": "Product.Design",
@@ -395,7 +395,7 @@
         "tests/runtime-admission.test.js"
       ],
       "declarations": 48,
-      "sha256": "f579f472f0cbe605f8b2a062ad94288449b0c6a7c7ef4699b633ac8c7d0d2353"
+      "sha256": "a2df33acd23b3e2928d6b78f0c8e223d0e68f9c0c58a0c718873e04af6df0fc1"
     },
     {
       "module": "Product.Brand",
@@ -419,7 +419,7 @@
         "docs/operator-experience.md"
       ],
       "declarations": 16,
-      "sha256": "f83be58b12bcfbe7cb8453629b8c51dea23bc6e00e4cef24642c2e2d633ad3fa"
+      "sha256": "a823d74d26f6718d0de606241e9912487c275eccb92dbdb5234599def914c7dc"
     },
     {
       "module": "Product.Persistence",
@@ -482,7 +482,7 @@
         "tests/product-facets.test.js"
       ],
       "declarations": 17,
-      "sha256": "1a03a88f5d5b860eb9eaff0aa15e3f14cce92ed70bdcf599bd42d66c5e597f1e"
+      "sha256": "61fdd56345a7a97c46073bed7e1199c6b89197c15a8e745b7ddadba803e829ea"
     }
   ],
   "operatorActionCount": 31,

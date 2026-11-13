@@ -1183,7 +1183,7 @@
       "licenseStatus": "Project declares MIT; audit applies",
       "redistributionCleared": true,
       "bytes": 1232836,
-      "sha256": "e21ae52888774f0e39c439628c086b5a589112a6fa776e775ca6c06e1edb24cc"
+      "sha256": "147f70db329ba9bfd69142f692ae1ae9ab0a6d55c404609a50cbbab0914fe171"
     },
     {
       "declaration": "assetFile4",
@@ -2269,7 +2269,7 @@
     },
     {
       "path": "app/lexlean.lock",
-      "sha256": "b4ad976755fbf8fecba998843d238c57da3bf291bbb142f3cf86f9e125acc3fb"
+      "sha256": "763e9a06d5f133043718ac99ab81e8b170542f265edf8900e24ae8ded5221f4f"
     },
     {
       "path": "app/lexlean.toml",
@@ -2317,7 +2317,7 @@
     },
     {
       "path": "app/src/Product/Compliance.lex.tex",
-      "sha256": "1a03a88f5d5b860eb9eaff0aa15e3f14cce92ed70bdcf599bd42d66c5e597f1e"
+      "sha256": "61fdd56345a7a97c46073bed7e1199c6b89197c15a8e745b7ddadba803e829ea"
     },
     {
       "path": "app/src/Product/Design.lex.tex",
@@ -2329,7 +2329,7 @@
     },
     {
       "path": "app/src/Product/Features.lex.tex",
-      "sha256": "55ef7334d5f2a983f308efa0f854472e397e806ca8aed667231689926b100d84"
+      "sha256": "3420da99aa7df9a2722569f145fbaf5530ec6c772a38a41185cfb7067e0dc28e"
     },
     {
       "path": "app/src/Product/Host.lex.tex",
@@ -2345,7 +2345,7 @@
     },
     {
       "path": "app/src/Product/Quality.lex.tex",
-      "sha256": "f579f472f0cbe605f8b2a062ad94288449b0c6a7c7ef4699b633ac8c7d0d2353"
+      "sha256": "a2df33acd23b3e2928d6b78f0c8e223d0e68f9c0c58a0c718873e04af6df0fc1"
     },
     {
       "path": "app/src/Product/Release.lex.tex",
@@ -2357,7 +2357,7 @@
     },
     {
       "path": "app/src/Product/Users.lex.tex",
-      "sha256": "f83be58b12bcfbe7cb8453629b8c51dea23bc6e00e4cef24642c2e2d633ad3fa"
+      "sha256": "a823d74d26f6718d0de606241e9912487c275eccb92dbdb5234599def914c7dc"
     },
     {
       "path": "app/src/Production/ThreatModel.lex.tex",
@@ -2769,7 +2769,7 @@
     },
     {
       "path": "product/facets.json",
-      "sha256": "c6354389211f274cb9991ff02d56aba5ee7575cd6c8c5becf3d2fdc6052b9e1d"
+      "sha256": "08007fa20195e6c24ed80207b5a3b03c962ffdf86046975991e88a7c7e46520b"
     },
     {
       "path": "product/source-attestation.json",
@@ -2789,7 +2789,7 @@
     },
     {
       "path": "scripts/check-facets.mjs",
-      "sha256": "676e6d4022fca1766b76385beba79da518b8d8350273ac864aaf06194ed0623f"
+      "sha256": "3a884fb0eac201f85fd8a19bbb085df87f938af20b31a142d6cc64f8a82120eb"
     },
     {
       "path": "scripts/check-model-sdk.sh",
@@ -2973,7 +2973,7 @@
     },
     {
       "path": "tests/product-facets.test.js",
-      "sha256": "7d04460c3ba5b10caf9479bc58a6793a876d4eac33b6d64e862d2fe009b179bd"
+      "sha256": "13c34c5ff45b036db93ca8c0a647552a9df33a7c0689ad33aecab5cb064e6a87"
     },
     {
       "path": "tests/product-inventory.test.js",
@@ -3036,5 +3036,5 @@
       "sha256": "02263c2d4bf1a1913a673466554c19593b5a6c39b22a2da32ce4375675868347"
     }
   ],
-  "sourceDigest": "sha256:5490b374f484317daa8b3c03f9a805da9dacda27e6b75e999cd36afaacb96caa"
+  "sourceDigest": "sha256:515e51ec60365f662ac42342f2ae86a5dd5a19886839f854034091f4d2bbbb71"
 }

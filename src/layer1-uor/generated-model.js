@@ -43159,12 +43159,12 @@ const types = {
     ]
   }
 };
-export const modelSourceDigest = "sha256:301bff719772f1292fc58a96f1b7134302ffe88c839199bbb7af5733f9256ed0";
+export const modelSourceDigest = "sha256:707df906d1e31d1be26f3e3645b5a8c545d468ed3cb5f9cba45fbc84fbfd40d2";
 export const modelExecutionDigest = "sha256:d79f1371e5ea16d16d5b9f56fbcce57cb8044df145dae91a63b9a4cbcb5c50de";
 export const MODEL_SOURCE = Object.freeze({
   "schema": "stitch/source-bindings/1",
   "verification": "source-derived, not kernel-checked",
-  "sourceDigest": "sha256:301bff719772f1292fc58a96f1b7134302ffe88c839199bbb7af5733f9256ed0",
+  "sourceDigest": "sha256:707df906d1e31d1be26f3e3645b5a8c545d468ed3cb5f9cba45fbc84fbfd40d2",
   "executionDigest": "sha256:d79f1371e5ea16d16d5b9f56fbcce57cb8044df145dae91a63b9a4cbcb5c50de",
   "executionIdentity": {
     "adapterSources": [
@@ -46794,7 +46794,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Compliance.lex.tex",
-      "sha256": "1a03a88f5d5b860eb9eaff0aa15e3f14cce92ed70bdcf599bd42d66c5e597f1e"
+      "sha256": "61fdd56345a7a97c46073bed7e1199c6b89197c15a8e745b7ddadba803e829ea"
     },
     {
       "path": "app/src/Product/Design.lex.tex",
@@ -46806,7 +46806,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Features.lex.tex",
-      "sha256": "55ef7334d5f2a983f308efa0f854472e397e806ca8aed667231689926b100d84"
+      "sha256": "3420da99aa7df9a2722569f145fbaf5530ec6c772a38a41185cfb7067e0dc28e"
     },
     {
       "path": "app/src/Product/Host.lex.tex",
@@ -46822,7 +46822,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Quality.lex.tex",
-      "sha256": "f579f472f0cbe605f8b2a062ad94288449b0c6a7c7ef4699b633ac8c7d0d2353"
+      "sha256": "a2df33acd23b3e2928d6b78f0c8e223d0e68f9c0c58a0c718873e04af6df0fc1"
     },
     {
       "path": "app/src/Product/Release.lex.tex",
@@ -46834,7 +46834,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Users.lex.tex",
-      "sha256": "f83be58b12bcfbe7cb8453629b8c51dea23bc6e00e4cef24642c2e2d633ad3fa"
+      "sha256": "a823d74d26f6718d0de606241e9912487c275eccb92dbdb5234599def914c7dc"
     },
     {
       "path": "app/src/Production/ThreatModel.lex.tex",

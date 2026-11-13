@@ -1,7 +1,7 @@
 spec = "lexlean/lock/2"
 language = "1.2"
 compiler_semantics = "5262e5b4c8b5668ae7066ad686757a6bb7f80c941d515fb9d586894fbc7de69a"
-project_config_sha256 = "48c90de5fb9896bb45b03cc11692ccd1c26c99fadcc0ec4d7c6c2f481da6f56f"
+project_config_sha256 = "a74ba0af0e7a4a294f5cca3ca8736ac38de9bcff977b7c14366aed469abf59e4"
 lean_toolchain = "leanprover/lean4:v4.32.1"
 
 [[workspace_file]]
@@ -62,6 +62,6 @@ version = "1.0.0"
 kind = "path"
 source = "language/stitch.domain"
 revision = "none"
-tree_sha256 = "ab5577ce01864b402913437b961ba451f72c4183cc27a601a5b1fc5c066a126f"
+tree_sha256 = "6dde6933233ce88c4aa0aa768bde3b50b3733345b183efca9aaa9d3a1244667e"
 manifest_sha256 = "6b9d7544b96a6c0bbeacb5dd9972377ffa4f9ef23dffc92eb191bd90e39cc98d"
 imports = ["lexlean.core@1.2.0", "lexlean.std.bool@1.2.0", "lexlean.std.nat@1.2.0"]

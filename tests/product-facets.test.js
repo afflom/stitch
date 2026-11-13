@@ -60,3 +60,15 @@ test('dangling facet references and reversed OPM edges are rejected',()=>{
   const opm=new Map(texts);opm.set('Product.Design',opm.get('Product.Design').replace('kind := (ctor Foundation.Arch::OpmLinkKind.effect), source := \"Product.Architecture::storage\", target := \"Product.Design::processCommitLocal\"','kind := (ctor Foundation.Arch::OpmLinkKind.effect), source := \"Product.Design::processCommitLocal\", target := \"Product.Architecture::storage\"'));
   assert.throws(()=>validateFacetReferences(opm),/OPM direction/);
 });
+
+// Actual pinned SDK authoring run 43444521371 stopped with LLT4001 here:
+// Task.feature resolves through Experience, but the nested .acceptance projection
+// also needs the Feature owner in Users' direct import environment.
+test('nested Feature acceptance projection directly imports its owner without weakening the obligation',()=>{
+  const {outputs}=generateFacets(root);
+  const users=outputs.get('app/src/Product/Users.lex.tex');
+  assert.match(users,/\\importmodule\{Foundation\.Arch\}/);
+  assert.match(users,/\\importmodule\{Foundation\.Experience\.V1\.Model\}/);
+  assert.match(users,/\(project \(project head feature\) acceptance\)/);
+  assert.match(users,/name: everyTaskNamesAcceptanceEvidence,[\s\S]*?statement: \(\(tasksHaveAcceptance \(tasks\)\) = true\),[\s\S]*?proof: decide\{\}/);
+});
