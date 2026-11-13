@@ -69,3 +69,12 @@ test('a code made before a rotation still opens what was sealed after it', async
   assert.deepEqual(await openPrivate(joined, later.sealed), { note: 'sealed under the new key' });
   await assert.rejects(recoverOnto(other.code, other.escrow, await createDevice(), { now: NOW, log: rotated.log }), refused('unauthorized'));
 });
+
+test('a copied genesis with another signature cannot make the log unresolvable', async () => {
+  const session = await createPrism();
+  const [genesis] = session.log.values();
+  const forged = { ...genesis, signature: genesis.signature.slice(0, -4) + 'AAAA' };
+  const log = new Map([...session.log, ['forged', forged]]);
+  assert.deepEqual((await resolvePrism(session.prism, log)).active, [session.device.id]);
+  await assert.rejects(resolvePrism(session.prism, new Map([['forged', forged]])), refused('genesis'));
+});

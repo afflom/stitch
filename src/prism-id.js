@@ -232,11 +232,15 @@ function bindShape(body) {
  */
 export async function resolvePrism(prism, log) {
   const entries = [...log.entries()].sort(byKey);
-  const geneses = [];
-  for (const [, e] of entries) if (e?.body?.kind === KIND.genesis && await kappa(e.body) === prism) geneses.push(e);
-  if (geneses.length !== 1) refuse('genesis', 'the log does not hold exactly one genesis for this prism');
-  const genesis = geneses[0];
-  if (!await signatureValid(genesis, genesis.body.device)) refuse('genesis', 'genesis signature does not verify');
+  // Every genesis of this prism has the same body (its kappa is the prism);
+  // envelopes differ only by signature encoding (ECDSA signatures are
+  // malleable), so any one that verifies is the genesis. A copy with a bad
+  // signature cannot make the log unresolvable.
+  let genesis = null;
+  for (const [, e] of entries) {
+    if (e?.body?.kind === KIND.genesis && await kappa(e.body) === prism && await signatureValid(e, e.body.device)) { genesis = e; break; }
+  }
+  if (!genesis) refuse('genesis', 'the log holds no genesis of this prism that verifies');
 
   const devices = new Map([[genesis.signer, genesis.body.device]]);
   const binds = [], revokes = [];
