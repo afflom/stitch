@@ -79,56 +79,63 @@ definition{
   name: publicRelay,
   parameters: [],
   result: Foundation.Arch::Component,
-  body: (record Foundation.Arch::Component {index := 10, kind := (ctor Foundation.Arch::ComponentKind.externalSystem), name := "publicRelay", text := "Optional public ntfy warm cache. Host or external boundary; semantics require independent evidence."})
+  body: (record Foundation.Arch::Component {index := 11, kind := (ctor Foundation.Arch::ComponentKind.externalSystem), name := "publicRelay", text := "Optional public ntfy warm cache. Host or external boundary; semantics require independent evidence."})
 }
 
 definition{
   name: runtimeHost,
   parameters: [],
   result: Foundation.Arch::Component,
-  body: (record Foundation.Arch::Component {index := 11, kind := (ctor Foundation.Arch::ComponentKind.externalSystem), name := "runtimeHost", text := "Browser, OS, clocks, RAM, networking and permissions. Host or external boundary; semantics require independent evidence."})
+  body: (record Foundation.Arch::Component {index := 12, kind := (ctor Foundation.Arch::ComponentKind.externalSystem), name := "runtimeHost", text := "Browser, OS, clocks, RAM, networking and permissions. Host or external boundary; semantics require independent evidence."})
 }
 
 definition{
   name: scheduler,
   parameters: [],
   result: Foundation.Arch::Component,
-  body: (record Foundation.Arch::Component {index := 12, kind := (ctor Foundation.Arch::ComponentKind.service), name := "scheduler", text := "Experimental proposals under enforced admission. Implementation: src/layer2-schedulers/index.js. Domain contracts: Stitch.Budget, Stitch.Observation."})
+  body: (record Foundation.Arch::Component {index := 13, kind := (ctor Foundation.Arch::ComponentKind.service), name := "scheduler", text := "Experimental proposals under enforced admission. Implementation: src/layer2-schedulers/index.js. Domain contracts: Stitch.Budget, Stitch.Observation."})
 }
 
 definition{
   name: signaling,
   parameters: [],
   result: Foundation.Arch::Component,
-  body: (record Foundation.Arch::Component {index := 13, kind := (ctor Foundation.Arch::ComponentKind.externalSystem), name := "signaling", text := "Public ntfy SDP/ICE signaling; BroadcastChannel on same origin. Host or external boundary; semantics require independent evidence."})
+  body: (record Foundation.Arch::Component {index := 14, kind := (ctor Foundation.Arch::ComponentKind.externalSystem), name := "signaling", text := "Public ntfy SDP/ICE signaling; BroadcastChannel on same origin. Host or external boundary; semantics require independent evidence."})
 }
 
 definition{
   name: staticHost,
   parameters: [],
   result: Foundation.Arch::Component,
-  body: (record Foundation.Arch::Component {index := 14, kind := (ctor Foundation.Arch::ComponentKind.externalSystem), name := "staticHost", text := "Same-origin publication of application and VM assets. Host or external boundary; semantics require independent evidence."})
+  body: (record Foundation.Arch::Component {index := 15, kind := (ctor Foundation.Arch::ComponentKind.externalSystem), name := "staticHost", text := "Same-origin publication of application and VM assets. Host or external boundary; semantics require independent evidence."})
 }
 
 definition{
   name: storage,
   parameters: [],
   result: Foundation.Arch::Component,
-  body: (record Foundation.Arch::Component {index := 15, kind := (ctor Foundation.Arch::ComponentKind.service), name := "storage", text := "Ephemeral local cache and conditional peer custody. Implementation: src/layer3-storage/custody.js, src/layer3-storage/index.js. Domain contracts: Stitch.Custody, Stitch.System."})
+  body: (record Foundation.Arch::Component {index := 16, kind := (ctor Foundation.Arch::ComponentKind.service), name := "storage", text := "Ephemeral local cache and conditional peer custody. Implementation: src/layer3-storage/custody.js, src/layer3-storage/index.js. Domain contracts: Stitch.Custody, Stitch.System."})
 }
 
 definition{
   name: transport,
   parameters: [],
   result: Foundation.Arch::Component,
-  body: (record Foundation.Arch::Component {index := 16, kind := (ctor Foundation.Arch::ComponentKind.service), name := "transport", text := "WebRTC channels, bounded messages and VM Ethernet bridge. Implementation: src/layer5-transport/index.js. Host or external boundary; semantics require independent evidence."})
+  body: (record Foundation.Arch::Component {index := 17, kind := (ctor Foundation.Arch::ComponentKind.service), name := "transport", text := "WebRTC channels, bounded messages and VM Ethernet bridge. Implementation: src/layer5-transport/index.js. Host or external boundary; semantics require independent evidence."})
 }
 
 definition{
   name: vm,
   parameters: [],
   result: Foundation.Arch::Component,
-  body: (record Foundation.Arch::Component {index := 17, kind := (ctor Foundation.Arch::ComponentKind.service), name := "vm", text := "v86 x86 Linux guest and 9p filesystem bridge. Implementation: src/layer4-compute/index.js, v86/libv86.js, v86/v86.wasm, v86/seabios.bin, v86/vgabios.bin, images/buildroot-bzimage.bin. Host or external boundary; semantics require independent evidence."})
+  body: (record Foundation.Arch::Component {index := 18, kind := (ctor Foundation.Arch::ComponentKind.service), name := "vm", text := "v86 x86 Linux guest and 9p filesystem bridge. Implementation: src/layer4-compute/index.js, v86/libv86.js, v86/v86.wasm, v86/seabios.bin, v86/vgabios.bin, images/buildroot-bzimage.bin. Host or external boundary; semantics require independent evidence."})
+}
+
+definition{
+  name: prismId,
+  parameters: [],
+  result: Foundation.Arch::Component,
+  body: (record Foundation.Arch::Component {index := 10, kind := (ctor Foundation.Arch::ComponentKind.service), name := "prismId", text := "Login-free prism identity: devices linked out of band, private boundary, substrate sync. Implementation: src/prism-id.js. Host or external boundary; semantics require independent evidence."})
 }
 
 definition{
@@ -156,196 +163,217 @@ definition{
   name: browserScheduler,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 3, fromIndex := 1, toIndex := 12, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 4, fromIndex := 1, toIndex := 13, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: browserStorage,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 4, fromIndex := 1, toIndex := 15, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 5, fromIndex := 1, toIndex := 16, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: browserTransport,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 5, fromIndex := 1, toIndex := 16, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 6, fromIndex := 1, toIndex := 17, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: browserVm,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 6, fromIndex := 1, toIndex := 17, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 7, fromIndex := 1, toIndex := 18, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: computeAdmission,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 7, fromIndex := 2, toIndex := 0, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 8, fromIndex := 2, toIndex := 0, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: computeIdentity,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 8, fromIndex := 2, toIndex := 5, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 9, fromIndex := 2, toIndex := 5, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: computeStorage,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 9, fromIndex := 2, toIndex := 15, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 10, fromIndex := 2, toIndex := 16, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: computeTransport,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 10, fromIndex := 2, toIndex := 16, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 11, fromIndex := 2, toIndex := 17, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: discoveryAdmission,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 11, fromIndex := 4, toIndex := 0, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 12, fromIndex := 4, toIndex := 0, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: discoveryAuthority,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 12, fromIndex := 4, toIndex := 9, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 13, fromIndex := 4, toIndex := 9, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: discoveryHost,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 13, fromIndex := 4, toIndex := 11, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 14, fromIndex := 4, toIndex := 12, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: identityCryptography,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 14, fromIndex := 5, toIndex := 3, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 15, fromIndex := 5, toIndex := 3, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: relayTransport,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 15, fromIndex := 10, toIndex := 16, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 18, fromIndex := 11, toIndex := 17, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: schedulerAdmission,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 16, fromIndex := 12, toIndex := 0, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 19, fromIndex := 13, toIndex := 0, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: schedulerTransport,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 17, fromIndex := 12, toIndex := 16, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 20, fromIndex := 13, toIndex := 17, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: signalingTransport,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 18, fromIndex := 13, toIndex := 16, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 21, fromIndex := 14, toIndex := 17, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: staticBrowser,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 19, fromIndex := 14, toIndex := 1, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 22, fromIndex := 15, toIndex := 1, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: staticVm,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 20, fromIndex := 14, toIndex := 17, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 23, fromIndex := 15, toIndex := 18, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: storageAdmission,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 21, fromIndex := 15, toIndex := 0, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 24, fromIndex := 16, toIndex := 0, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: storageIdentity,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 22, fromIndex := 15, toIndex := 5, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 25, fromIndex := 16, toIndex := 5, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: storagePeers,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 23, fromIndex := 15, toIndex := 8, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 26, fromIndex := 16, toIndex := 8, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: storageTransport,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 24, fromIndex := 15, toIndex := 16, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 27, fromIndex := 16, toIndex := 17, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: transportAdmission,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 25, fromIndex := 16, toIndex := 0, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 28, fromIndex := 17, toIndex := 0, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: transportPeers,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 26, fromIndex := 16, toIndex := 8, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 29, fromIndex := 17, toIndex := 8, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: transportSignaling,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 27, fromIndex := 16, toIndex := 13, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 30, fromIndex := 17, toIndex := 14, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: transportVm,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 28, fromIndex := 16, toIndex := 17, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 31, fromIndex := 17, toIndex := 18, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: vmStorage,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 29, fromIndex := 17, toIndex := 15, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 32, fromIndex := 18, toIndex := 16, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{
   name: vmTransport,
   parameters: [],
   result: Foundation.Arch::Edge,
-  body: (record Foundation.Arch::Edge {index := 30, fromIndex := 17, toIndex := 16, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+  body: (record Foundation.Arch::Edge {index := 33, fromIndex := 18, toIndex := 17, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+}
+
+definition{
+  name: browserPrismId,
+  parameters: [],
+  result: Foundation.Arch::Edge,
+  body: (record Foundation.Arch::Edge {index := 3, fromIndex := 1, toIndex := 10, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+}
+
+definition{
+  name: prismIdCryptography,
+  parameters: [],
+  result: Foundation.Arch::Edge,
+  body: (record Foundation.Arch::Edge {index := 16, fromIndex := 10, toIndex := 3, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
+}
+
+definition{
+  name: prismIdTransport,
+  parameters: [],
+  result: Foundation.Arch::Edge,
+  body: (record Foundation.Arch::Edge {index := 17, fromIndex := 10, toIndex := 17, kind := (ctor Foundation.Arch::EdgeKind.dataFlow)})
 }
 
 definition{

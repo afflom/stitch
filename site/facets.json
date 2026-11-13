@@ -13,7 +13,7 @@
       "name": "Product.Design",
       "source": "app/src/Product/Design.lex.tex",
       "summary": "The five-layer component graph, object process, publication sequence and unknown-write state machine.",
-      "count": 114,
+      "count": 118,
       "evidenceStatus": "Source-derived inventory; exact-revision SDK and browser qualification required"
     },
     {
@@ -55,7 +55,7 @@
       "name": "Product.Release",
       "source": "app/src/Product/Release.lex.tex",
       "summary": "Complete dependency/deployment inventory and separate source, native, runtime and browser qualification.",
-      "count": 45,
+      "count": 46,
       "evidenceStatus": "Source-derived inventory; exact-revision SDK and browser qualification required"
     },
     {

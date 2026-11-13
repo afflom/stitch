@@ -21,7 +21,7 @@ definition{
   name: sources,
   parameters: [],
   result: (List Source),
-  body: (cons (record Source {record := "Product.Release", path := ".github/workflows/prism.yml", firstLine := 0, lastLine := 0, sha256 := "4fe595efda75eabd6d81db25b87a44d0d3fa186deb37b1c50b040095f488d093"}) (cons (record Source {record := "Product.Release", path := "app/src/Product/Model.lex.tex", firstLine := 0, lastLine := 0, sha256 := "6081a53375794cab60ddad0199956db978be3d4b91e102f1890dd0e3bc2697c8"}) (cons (record Source {record := "Product.Release", path := "docs/product-projection.md", firstLine := 0, lastLine := 0, sha256 := "446c2fcefd1519aa8a60f78115fb3f594ac3329018da3ef432381ea428c2faa1"}) (cons (record Source {record := "Product.Release", path := "docs/vendor-provenance.md", firstLine := 0, lastLine := 0, sha256 := "fe73438c181889157487931d6d2501175bf9becdbad5f6977b2edc6751fb986b"}) (cons (record Source {record := "Product.Release", path := "package.json", firstLine := 0, lastLine := 0, sha256 := "4cca578575a541919497c9ed1c517e970b7d820d464c7d594b8f0cb7bd23a3f4"}) (cons (record Source {record := "Product.Release", path := "vendor/distribution.json", firstLine := 0, lastLine := 0, sha256 := "02263c2d4bf1a1913a673466554c19593b5a6c39b22a2da32ce4375675868347"}) (nil Source)))))))
+  body: (cons (record Source {record := "Product.Release", path := ".github/workflows/prism.yml", firstLine := 0, lastLine := 0, sha256 := "4fe595efda75eabd6d81db25b87a44d0d3fa186deb37b1c50b040095f488d093"}) (cons (record Source {record := "Product.Release", path := "app/src/Product/Model.lex.tex", firstLine := 0, lastLine := 0, sha256 := "3017e652d02156eca68bc00cbb3cdfb54cebcfe290a3b9463493d9326da399f8"}) (cons (record Source {record := "Product.Release", path := "docs/product-projection.md", firstLine := 0, lastLine := 0, sha256 := "446c2fcefd1519aa8a60f78115fb3f594ac3329018da3ef432381ea428c2faa1"}) (cons (record Source {record := "Product.Release", path := "docs/vendor-provenance.md", firstLine := 0, lastLine := 0, sha256 := "fe73438c181889157487931d6d2501175bf9becdbad5f6977b2edc6751fb986b"}) (cons (record Source {record := "Product.Release", path := "package.json", firstLine := 0, lastLine := 0, sha256 := "4cca578575a541919497c9ed1c517e970b7d820d464c7d594b8f0cb7bd23a3f4"}) (cons (record Source {record := "Product.Release", path := "vendor/distribution.json", firstLine := 0, lastLine := 0, sha256 := "02263c2d4bf1a1913a673466554c19593b5a6c39b22a2da32ce4375675868347"}) (nil Source)))))))
 }
 
 structure{
@@ -178,116 +178,123 @@ definition{
   name: artifact018,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "v86/vgabios.bin", licenseStatus := "LGPLv3 source, config, build instructions and licenses supplied in vendor/seabios; include accompanying materials in distribution", materialsRecorded := true})
+  body: (record Artifact {path := "src/prism-id.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact019,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "images/buildroot-bzimage.bin", licenseStatus := "Corresponding source, configs, patches and licenses published at immutable commit fd59fae669e9a40271fb584ca071270d8ed0b8f8; preserve vendor/guest/SOURCE-NOTICE.md and equivalent source access with image", materialsRecorded := true})
+  body: (record Artifact {path := "v86/vgabios.bin", licenseStatus := "LGPLv3 source, config, build instructions and licenses supplied in vendor/seabios; include accompanying materials in distribution", materialsRecorded := true})
 }
 
 definition{
   name: artifact020,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "src/lib.rs", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "images/buildroot-bzimage.bin", licenseStatus := "Corresponding source, configs, patches and licenses published at immutable commit fd59fae669e9a40271fb584ca071270d8ed0b8f8; preserve vendor/guest/SOURCE-NOTICE.md and equivalent source access with image", materialsRecorded := true})
 }
 
 definition{
   name: artifact021,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "src/layer1-uor/browser-authority.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "src/lib.rs", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact022,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "src/authority-ui.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "src/layer1-uor/browser-authority.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact023,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "src/layer5-transport/dns-wire.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "src/authority-ui.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact024,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "src/layer5-transport/relay-framing.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "src/layer5-transport/dns-wire.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact025,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "src/recovery.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "src/layer5-transport/relay-framing.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact026,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "src/recovery-ui.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "src/recovery.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact027,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "src/layer5-transport/signaling.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "src/recovery-ui.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact028,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "src/layer5-transport/channel-flow.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "src/layer5-transport/signaling.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact029,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "src/layer4-compute/vm-administration.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "src/layer5-transport/channel-flow.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact030,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "site/site.css", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "src/layer4-compute/vm-administration.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact031,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "site/explorer.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "site/site.css", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact032,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "site/stitch-fabric.svg", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "site/explorer.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact033,
   parameters: [],
   result: Artifact,
-  body: (record Artifact {path := "site/facets.json", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+  body: (record Artifact {path := "site/stitch-fabric.svg", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
 }
 
 definition{
   name: artifact034,
+  parameters: [],
+  result: Artifact,
+  body: (record Artifact {path := "site/facets.json", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})
+}
+
+definition{
+  name: artifact035,
   parameters: [],
   result: Artifact,
   body: (record Artifact {path := "site/catalog.js", licenseStatus := "Project declares MIT; audit applies", materialsRecorded := true})

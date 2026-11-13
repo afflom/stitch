@@ -1,0 +1,107 @@
+\begin{lexlean}{Stitch.PrismId}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{stitch.domain@1.0.0}
+\title{Stitch recoverable service model}
+\begin{semanticmodule}
+definition{
+  name: deviceMaySign,
+  parameters: [linked : Bool, revoked : Bool],
+  result: Bool,
+  body: (linked && (not revoked))
+}
+
+definition{
+  name: bindAllowed,
+  parameters: [signerLinked : Bool, signerRevoked : Bool, signatureValid : Bool, samePrism : Bool],
+  result: Bool,
+  body: ((deviceMaySign signerLinked signerRevoked) && (signatureValid && samePrism))
+}
+
+definition{
+  name: linkOfferAccepted,
+  parameters: [secretMatches : Bool, alreadyUsed : Bool, expires : Nat, now : Nat],
+  result: Bool,
+  body: ((not alreadyUsed) && (secretMatches && (now <? expires)))
+}
+
+definition{
+  name: boundaryShared,
+  parameters: [identities : Nat],
+  result: Bool,
+  body: (2 <=? identities)
+}
+
+definition{
+  name: boundaryVisibleTo,
+  parameters: [member : Bool, published : Bool],
+  result: Bool,
+  body: (published || member)
+}
+
+theorem{
+  name: unlinkedDeviceCannotSign,
+  parameters: [revoked : Bool],
+  statement: ((deviceMaySign false revoked) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: revokedDeviceCannotSign,
+  parameters: [],
+  statement: (forall (linked : Bool), ((deviceMaySign linked true) = false)),
+  proof: decide{}
+}
+
+theorem{
+  name: unlinkedSignerCannotBind,
+  parameters: [signerRevoked : Bool, signatureValid : Bool, samePrism : Bool],
+  statement: ((bindAllowed false signerRevoked signatureValid samePrism) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: invalidBindSignatureRefused,
+  parameters: [],
+  statement: (forall (signerLinked : Bool), (forall (signerRevoked : Bool), (forall (samePrism : Bool), ((bindAllowed signerLinked signerRevoked false samePrism) = false)))),
+  proof: decide{}
+}
+
+theorem{
+  name: usedOfferRefused,
+  parameters: [secretMatches : Bool, expires : Nat, now : Nat],
+  statement: ((linkOfferAccepted secretMatches true expires now) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: expiredOfferRefused,
+  parameters: [secretMatches : Bool, alreadyUsed : Bool, expires : Nat, now : Nat],
+  statement: ((expires <= now) -> ((linkOfferAccepted secretMatches alreadyUsed expires now) = false)),
+  proof: linear_arithmetic{definitions: [linkOfferAccepted]},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: singleIdentityBoundaryPrivate,
+  parameters: [],
+  statement: ((boundaryShared 1) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: twoIdentitiesMakeBoundaryShared,
+  parameters: [identities : Nat],
+  statement: ((2 <= identities) -> ((boundaryShared identities) = true)),
+  proof: linear_arithmetic{definitions: [boundaryShared]},
+  axioms: [propext]
+}
+
+theorem{
+  name: nonMemberSeesOnlyPublished,
+  parameters: [],
+  statement: ((boundaryVisibleTo false false) = false),
+  proof: reflexivity{}
+}
+\end{semanticmodule}
+\end{lexlean}
