@@ -2,14 +2,14 @@
   "format": "Stitch exact-source verification summary",
   "version": 1,
   "assurance": "Summary of actual pinned LexLean/Lean/leanchecker/axiom verification; not a native Prism artifact certificate or whole-host guarantee",
-  "attestation_id": "9502eee09c25296baa31a439eecf1d0ccfac429182ccc4129ce330f13ff242e9",
-  "attestation_sha256": "59c792a09010cd64e9d9c7041252618acce87561dceb9da069c2bb7cafd6469d",
-  "source_id": "776ca9b8da750f702aec12504f2bc9b5a784b9d31c43879bb981727171d9fe72",
-  "semantic_id": "ce5ac5b50fe7469c1e22a7efe24236b751b0c92d73300b4bf4b51f0a01b97299",
-  "build_id": "326c3029bc5407fa41ba3e2fd7edc025097eed6600e2badf48ed3f3a88413307",
+  "attestation_id": "e9772d251305bc8fb44f85f44faaab36216e4e25c46255d2589639090a589103",
+  "attestation_sha256": "238c8fd40cac1c6d432ed4b6b5224d03a4078fed46df97102a98c15459955b66",
+  "source_id": "555c2a67a9b00983b477d97ef9f9b52071726b6675094a54f4128a6b69161ab5",
+  "semantic_id": "cfc8a4832bb60713082895ad6871868d123e8889619efca1971517b99c3d6de5",
+  "build_id": "fce3c6e64a0e7222f14d395617ac48f0f32e4a7d8f04b31070cf393b388d4427",
   "status": "verified",
   "module_count": 39,
-  "declaration_audits": 1935,
+  "declaration_audits": 2070,
   "successful_processes": 127,
   "processes_by_tool": {
     "lean": 85,
@@ -298,7 +298,7 @@
     },
     {
       "path": "app/src/Product/Compliance.lex.tex",
-      "sha256": "0bf3f5c6ac0151ac5a9ea3a651e47446acb7a0a7e50f1ad473ac07fdd3c4ecd2"
+      "sha256": "ee7c61fa879b551694a16964981d165c20a1a8e5527f38d3cfeeed07579f65c3"
     },
     {
       "path": "app/src/Product/Design.lex.tex",
@@ -326,7 +326,7 @@
     },
     {
       "path": "app/src/Product/Quality.lex.tex",
-      "sha256": "3405bd15f2919fed6f3ca3a434e675301a5f54492f53eded8246ca2256caa734"
+      "sha256": "e14c0f7c1d0dd08c7e00ab03cdfe1cb8a57f71e5b12789d023c8ebffe9951824"
     },
     {
       "path": "app/src/Product/Release.lex.tex",
@@ -334,7 +334,7 @@
     },
     {
       "path": "app/src/Product/Security.lex.tex",
-      "sha256": "1568b71e364d640f3d731d8626a3c76e3f0143d5a93bf8341f04e6f0e1b8bf41"
+      "sha256": "0c966ac65159a71607e3b874bb7da47a583096d325c4049b2c946286f69047da"
     },
     {
       "path": "app/src/Product/Users.lex.tex",
@@ -394,7 +394,7 @@
     },
     {
       "path": "app/src/Stitch/PrismId.lex.tex",
-      "sha256": "00eb8d69662c54e0ef82133b485208fdda3c904aaf845e3732260775a331bc55"
+      "sha256": "93e1982170071c1b7fba2fdf789e3ad57edb0240cdd5a34c0b716be4e448e429"
     },
     {
       "path": "app/src/Stitch/Recovery.lex.tex",
