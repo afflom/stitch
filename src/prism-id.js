@@ -451,3 +451,172 @@ export function createMemoryBus() {
     }
   };
 }
+
+// ---------------------------------------------------------------- recovery
+
+/**
+ * Recovery: a prism outlives every device it was made on.
+ *
+ * A recovery device is an ordinary prism device (prism/device/1), linked
+ * through the same out-of-band link flow as any other device, whose private
+ * keys are kept outside every browser: sealed in an escrow object under a
+ * key derived from a short recovery code the owner writes down. With the code
+ * and its escrow, any new device links itself to the prism, receives the
+ * private boundary, and carries on. Every authorization decision is still
+ * taken by Stitch.PrismId (bindAllowed, linkOfferAccepted, deviceMaySign)
+ * above; recovery adds no rule of its own.
+ *
+ * The code is the escrow key's 32-byte seed and three check bytes (the start
+ * of its SHA-256), in Crockford base32: 56 characters, written in groups of
+ * four. Readers ignore spaces, hyphens and case, read I and L as 1 and O as 0,
+ * and refuse a code whose check bytes differ.
+ *
+ * The escrow is public-safe: AES-GCM ciphertext bound to its locator. It can
+ * sit in any content-addressed store (its kappa is its address) and be found
+ * by its locator, which is derived from the seed and reveals nothing about it.
+ * It carries the log as it stood when the code was made, so recovery needs no
+ * other service; later records arrive by sync.
+ */
+export const RECOVERY_KIND = Object.freeze({
+  escrow: 'prism/recovery-escrow/1',
+  sealed: 'prism/recovery/1',
+  locator: 'prism/recovery-locator/1'
+});
+
+
+// ---------------------------------------------------------------- the code
+
+const CROCKFORD = '0123456789ABCDEFGHJKMNPQRSTVWXYZ';
+
+export async function encodeCode(seed) {
+  if (!(seed instanceof Uint8Array) || seed.length !== 32) refuse('code', 'a recovery seed is 32 bytes');
+  const bytes = [...seed, ...new Uint8Array(await subtle.digest('SHA-256', seed)).slice(0, 3)];
+  const bits = bytes.map(b => b.toString(2).padStart(8, '0')).join('');
+  const chars = bits.match(/.{5}/g).map(five => CROCKFORD[parseInt(five, 2)]).join('');
+  return chars.match(/.{4}/g).join(' ');
+}
+
+export async function decodeCode(text) {
+  const clean = String(text).toUpperCase().replace(/[\s-]/g, '').replace(/[IL]/g, '1').replace(/O/g, '0');
+  if (!/^[0-9A-HJKMNP-TV-Z]{56}$/.test(clean)) refuse('code', 'a recovery code is 56 letters and digits');
+  const bits = [...clean].map(c => CROCKFORD.indexOf(c).toString(2).padStart(5, '0')).join('');
+  const bytes = Uint8Array.from(bits.match(/.{8}/g), byte => parseInt(byte, 2));
+  const seed = bytes.slice(0, 32);
+  const check = new Uint8Array(await subtle.digest('SHA-256', seed)).slice(0, 3);
+  if (check.some((b, i) => b !== bytes[32 + i])) refuse('code', 'the recovery code has a typo');
+  return seed;
+}
+
+// ---------------------------------------------------------------- keys from the seed
+
+async function derive(seed, info, length) {
+  const material = await subtle.importKey('raw', seed, 'HKDF', false, ['deriveBits']);
+  return new Uint8Array(await subtle.deriveBits({ name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32), info: encoder.encode(info) }, material, length * 8));
+}
+
+async function escrowKey(seed) {
+  return subtle.importKey('raw', await derive(seed, 'prism/recovery/key/1', 32), { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']);
+}
+
+/** Where the escrow is kept: derived from the seed, revealing nothing about it. */
+export async function recoveryLocator(seed) {
+  return kappa({ kind: RECOVERY_KIND.locator, locator: toBase64Url(await derive(seed, 'prism/recovery/locator/1', 32)) });
+}
+
+// ---------------------------------------------------------------- making a code
+
+/** A device whose private keys can be sealed into an escrow. Used only for recovery. */
+async function createEscrowedDevice() {
+  const signing = await subtle.generateKey(SIGN, true, ['sign', 'verify']);
+  const agreement = await subtle.generateKey(AGREE, true, ['deriveBits']);
+  const record = {
+    kind: KIND.device,
+    sign: publicJwk(await subtle.exportKey('jwk', signing.publicKey)),
+    agree: publicJwk(await subtle.exportKey('jwk', agreement.publicKey))
+  };
+  return { id: await kappa(record), record, signingKey: signing.privateKey, agreementKey: agreement.privateKey };
+}
+
+/** Link `device` to the prism of `session`, entirely on this page: the ordinary link flow. */
+async function linkLocally(session, device, now) {
+  const { uri, pending } = await createLinkOffer(session, { now });
+  const offer = parseLinkUri(uri);
+  const request = await requestLink(device, offer);
+  const accepted = await acceptLinkRequest(session, pending, request, { now });
+  const joined = await completeLink(device, offer, accepted.response);
+  return { session: accepted.session, joined };
+}
+
+/**
+ * Make a recovery code for the prism of `session` (an active device). Links a
+ * new recovery device, then seals its private keys, the private boundary and
+ * the log in an escrow. Returns the code (show it once, store it nowhere),
+ * the escrow (keep it anywhere; its locator finds it) and the session with
+ * the recovery device's bind in its log.
+ */
+export async function createRecovery(session, { now }) {
+  const recoveryDevice = await createEscrowedDevice();
+  const { session: next, joined } = await linkLocally(session, recoveryDevice, now);
+  const seed = random(32);
+  const sealed = {
+    kind: RECOVERY_KIND.sealed,
+    prism: next.prism,
+    device: recoveryDevice.record,
+    sign: toBase64Url(await subtle.exportKey('pkcs8', recoveryDevice.signingKey)),
+    agree: toBase64Url(await subtle.exportKey('pkcs8', recoveryDevice.agreementKey)),
+    boundary: toBase64Url(await subtle.exportKey('raw', joined.boundaryKey)),
+    records: [...joined.log.values()]
+  };
+  const locator = await recoveryLocator(seed);
+  const iv = random(12);
+  const ciphertext = await subtle.encrypt({ name: 'AES-GCM', iv, additionalData: encoder.encode(locator) }, await escrowKey(seed), canonicalBytes(sealed));
+  const escrow = { kind: RECOVERY_KIND.escrow, locator, iv: toBase64Url(iv), ciphertext: toBase64Url(ciphertext) };
+  const code = await encodeCode(seed);
+  seed.fill(0);
+  return { code, escrow, device: recoveryDevice.id, session: next };
+}
+
+// ---------------------------------------------------------------- using a code
+
+/** Open an escrow with its code: the recovery device's session. */
+export async function openRecovery(code, escrow) {
+  const seed = await decodeCode(code);
+  const locator = await recoveryLocator(seed);
+  if (escrow?.kind !== RECOVERY_KIND.escrow || escrow.locator !== locator) refuse('escrow', 'the escrow is not this code\'s');
+  let sealed;
+  try {
+    const bytes = await subtle.decrypt({ name: 'AES-GCM', iv: fromBase64Url(escrow.iv), additionalData: encoder.encode(locator) }, await escrowKey(seed), fromBase64Url(escrow.ciphertext));
+    sealed = JSON.parse(decoder.decode(bytes));
+  } catch (error) {
+    if (error instanceof PrismIdError) throw error;
+    refuse('escrow', 'the escrow does not open with this code');
+  } finally {
+    seed.fill(0);
+  }
+  if (sealed?.kind !== RECOVERY_KIND.sealed) refuse('escrow', 'the escrow does not hold a recovery device');
+  const device = {
+    id: await kappa(sealed.device),
+    record: sealed.device,
+    signingKey: await subtle.importKey('pkcs8', fromBase64Url(sealed.sign), SIGN, false, ['sign']),
+    agreementKey: await subtle.importKey('pkcs8', fromBase64Url(sealed.agree), AGREE, false, ['deriveBits'])
+  };
+  const boundaryKey = await subtle.importKey('raw', fromBase64Url(sealed.boundary), { name: 'AES-GCM' }, true, ['encrypt', 'decrypt']);
+  const log = await logFromRecords(sealed.records);
+  await resolvePrism(sealed.prism, log);
+  return { prism: sealed.prism, device, boundaryKey, log };
+}
+
+/**
+ * Link `device` (this browser's own, non-extractable) to the prism with a
+ * recovery code. `log` may add records newer than the escrow's, from sync or
+ * any store; a recovery device revoked there cannot link anything. Returns the
+ * new device's session.
+ */
+export async function recoverOnto(code, escrow, device, { now, log } = {}) {
+  const recovery = await openRecovery(code, escrow);
+  if (log) {
+    for (const [k, v] of log) recovery.log.set(k, v);
+  }
+  const { joined } = await linkLocally(recovery, device, now);
+  return joined;
+}

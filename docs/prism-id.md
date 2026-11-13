@@ -34,7 +34,7 @@ merging two logs is set union: commutative, associative and idempotent.
 Revocation wins over a concurrent bind: a bind made by a revoked device counts
 only if the revocation lists it in `keep`. Rotating away from the genesis device
 keeps every device that was already linked. Two devices that revoke each other
-are both revoked; recovery (a later milestone) is the way out.
+are both revoked; a recovery code (below) is the way out.
 
 ## Linking a device out of band
 
@@ -64,3 +64,21 @@ they can find it. Each message is the log sealed in the private boundary, bound
 to the prism id. The bus contract is `publish(topic, bytes)` and
 `subscribe(topic, fn)`. `createMemoryBus` implements it for tests; the stitch
 substrate implements it across peers and federation nodes.
+
+## Recovery
+
+Recovery lives in `src/prism-id.js`. A recovery device is an ordinary `prism/device/1`,
+linked by the ordinary link flow, whose private keys live outside every
+browser: sealed (AES-GCM) in a `prism/recovery-escrow/1` object under a key
+derived (HKDF) from a 32-byte seed. The owner keeps the seed as a recovery
+code: 56 Crockford base32 characters, the seed and three check bytes. The
+escrow carries the recovery device's keys, the private boundary key and the
+log as it stood, so it alone restores the prism. It is public-safe ciphertext,
+kept in any content-addressed store and found by its locator, the kappa of a
+value derived from the seed.
+
+With the code, `recoverOnto` opens the escrow and links the new browser's own
+non-extractable device to the prism, again through `createLinkOffer`,
+`acceptLinkRequest` and `completeLink`, so `Stitch.PrismId` decides it like any
+link. A recovery device revoked in a newer log links nothing. The new device
+can then revoke the lost one. No rule is added to the model.
