@@ -15,7 +15,7 @@ test('product facets are deterministic and exactly current, with complete action
 });
 test('product facets retain honest evidence and persistence boundaries',()=>{
   const {catalog:c}=generateFacets(root);
-  assert.equal(c.design.components,18);assert.equal(c.design.connectors,31);
+  assert.equal(c.design.components,19);assert.equal(c.design.connectors,34);
   assert.ok(c.security.every(t=>t.evidence.length>=2&&t.assessment.includes('qualitative')));
   assert.ok(c.users.measures.every(m=>m.observed===null));
   assert.ok(c.quality.every(m=>['derived','configured','requirement'].includes(m.kind)));

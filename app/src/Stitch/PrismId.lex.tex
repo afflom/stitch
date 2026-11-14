@@ -1,0 +1,428 @@
+\begin{lexlean}{Stitch.PrismId}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{stitch.domain@1.0.0}
+\title{Stitch recoverable service model}
+\begin{semanticmodule}
+definition{
+  name: deviceMaySign,
+  parameters: [linked : Bool, revoked : Bool],
+  result: Bool,
+  body: (linked && (not revoked))
+}
+
+definition{
+  name: mayAdminister,
+  parameters: [linked : Bool, revoked : Bool, delegate : Bool],
+  result: Bool,
+  body: ((deviceMaySign linked revoked) && (not delegate))
+}
+
+definition{
+  name: bindAllowed,
+  parameters: [
+    signerLinked : Bool,
+    signerRevoked : Bool,
+    signerDelegate : Bool,
+    signatureValid : Bool,
+    samePrism : Bool
+  ],
+  result: Bool,
+  body: ((mayAdminister signerLinked signerRevoked signerDelegate) && (signatureValid && samePrism))
+}
+
+definition{
+  name: linkGate,
+  parameters: [userConfirmed : Bool, alreadyUsed : Bool, secretMatches : Bool, fresh : Bool],
+  result: Bool,
+  body: (userConfirmed && ((not alreadyUsed) && (secretMatches && fresh)))
+}
+
+definition{
+  name: linkOfferAccepted,
+  parameters: [
+    userConfirmed : Bool,
+    alreadyUsed : Bool,
+    secretMatches : Bool,
+    expires : Nat,
+    now : Nat
+  ],
+  result: Bool,
+  body: (linkGate userConfirmed alreadyUsed secretMatches (now <? expires))
+}
+
+definition{
+  name: receivesPrivateBoundary,
+  parameters: [delegate : Bool],
+  result: Bool,
+  body: (not delegate)
+}
+
+definition{
+  name: scopeAdmits,
+  parameters: [delegate : Bool, inScope : Bool],
+  result: Bool,
+  body: ((not delegate) || inScope)
+}
+
+definition{
+  name: actionAllowed,
+  parameters: [linked : Bool, revoked : Bool, delegate : Bool, inScope : Bool],
+  result: Bool,
+  body: ((deviceMaySign linked revoked) && (scopeAdmits delegate inScope))
+}
+
+definition{
+  name: actionGate,
+  parameters: [audienceMatches : Bool, unseen : Bool, inWindow : Bool],
+  result: Bool,
+  body: (audienceMatches && (unseen && inWindow))
+}
+
+definition{
+  name: actionFresh,
+  parameters: [audienceMatches : Bool, unseen : Bool, issued : Nat, now : Nat, window : Nat],
+  result: Bool,
+  body: (actionGate audienceMatches unseen ((now <=? (issued + window)) && (issued <=? (now + window))))
+}
+
+definition{
+  name: hostAdmitsDevice,
+  parameters: [requiresHardwareKey : Bool, attestedHardwareKey : Bool],
+  result: Bool,
+  body: ((not requiresHardwareKey) || attestedHardwareKey)
+}
+
+definition{
+  name: boundaryKeyAdmitted,
+  parameters: [keyEpoch : Nat, requiredEpoch : Nat],
+  result: Bool,
+  body: (requiredEpoch <=? keyEpoch)
+}
+
+definition{
+  name: revocationCounts,
+  parameters: [signerRecovery : Bool, signerRevokedByRecovery : Bool, targetRecovery : Bool],
+  result: Bool,
+  body: ((not signerRevokedByRecovery) && ((not targetRecovery) || signerRecovery))
+}
+
+definition{
+  name: recoveryBindAllowed,
+  parameters: [signerRecovery : Bool, recoveryExists : Bool],
+  result: Bool,
+  body: (signerRecovery || (not recoveryExists))
+}
+
+definition{
+  name: thresholdMet,
+  parameters: [threshold : Nat, collected : Nat],
+  result: Bool,
+  body: ((1 <=? threshold) && (threshold <=? collected))
+}
+
+definition{name: mayShareBoundary, parameters: [shareable : Bool], result: Bool, body: shareable}
+
+definition{
+  name: hybridWrapRequired,
+  parameters: [recipientHasKem : Bool, wrapHasKem : Bool],
+  result: Bool,
+  body: ((not recipientHasKem) || wrapHasKem)
+}
+
+definition{
+  name: attestationBinds,
+  parameters: [verifiedHardware : Bool, keyMatches : Bool],
+  result: Bool,
+  body: (verifiedHardware && keyMatches)
+}
+
+definition{
+  name: boundaryShared,
+  parameters: [identities : Nat],
+  result: Bool,
+  body: (2 <=? identities)
+}
+
+definition{
+  name: boundaryVisibleTo,
+  parameters: [member : Bool, published : Bool],
+  result: Bool,
+  body: (published || member)
+}
+
+definition{
+  name: hybridSignatureAccepted,
+  parameters: [classicalValid : Bool, pqAdvertised : Bool, verifierHasPq : Bool, pqValid : Bool],
+  result: Bool,
+  body: (classicalValid && ((not (pqAdvertised && verifierHasPq)) || pqValid))
+}
+
+definition{
+  name: presenceSatisfied,
+  parameters: [
+    required : Bool,
+    userPresent : Bool,
+    userVerified : Bool,
+    challengeMatches : Bool,
+    assertionValid : Bool
+  ],
+  result: Bool,
+  body: ((not required) || (userPresent && (userVerified && (challengeMatches && assertionValid))))
+}
+
+theorem{
+  name: unlinkedDeviceCannotSign,
+  parameters: [revoked : Bool],
+  statement: ((deviceMaySign false revoked) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: revokedDeviceCannotSign,
+  parameters: [],
+  statement: (forall (linked : Bool), ((deviceMaySign linked true) = false)),
+  proof: decide{}
+}
+
+theorem{
+  name: unlinkedSignerCannotBind,
+  parameters: [
+    signerRevoked : Bool,
+    signerDelegate : Bool,
+    signatureValid : Bool,
+    samePrism : Bool
+  ],
+  statement: ((bindAllowed false signerRevoked signerDelegate signatureValid samePrism) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: delegateCannotBind,
+  parameters: [],
+  statement: (forall (signerLinked : Bool), (forall (signerRevoked : Bool), (forall (signatureValid : Bool), (forall (samePrism : Bool), ((bindAllowed signerLinked signerRevoked true signatureValid samePrism) = false))))),
+  proof: decide{}
+}
+
+theorem{
+  name: invalidBindSignatureRefused,
+  parameters: [],
+  statement: (forall (signerLinked : Bool), (forall (signerRevoked : Bool), (forall (signerDelegate : Bool), (forall (samePrism : Bool), ((bindAllowed signerLinked signerRevoked signerDelegate false samePrism) = false))))),
+  proof: decide{}
+}
+
+theorem{
+  name: foreignPrismBindRefused,
+  parameters: [],
+  statement: (forall (signerLinked : Bool), (forall (signerRevoked : Bool), (forall (signerDelegate : Bool), (forall (signatureValid : Bool), ((bindAllowed signerLinked signerRevoked signerDelegate signatureValid false) = false))))),
+  proof: decide{}
+}
+
+theorem{
+  name: unconfirmedLinkRefused,
+  parameters: [alreadyUsed : Bool, secretMatches : Bool, fresh : Bool],
+  statement: ((linkGate false alreadyUsed secretMatches fresh) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: usedOfferRefused,
+  parameters: [],
+  statement: (forall (userConfirmed : Bool), (forall (secretMatches : Bool), (forall (fresh : Bool), ((linkGate userConfirmed true secretMatches fresh) = false)))),
+  proof: decide{}
+}
+
+theorem{
+  name: wrongSecretRefused,
+  parameters: [],
+  statement: (forall (userConfirmed : Bool), (forall (alreadyUsed : Bool), (forall (fresh : Bool), ((linkGate userConfirmed alreadyUsed false fresh) = false)))),
+  proof: decide{}
+}
+
+theorem{
+  name: expiredOfferRefused,
+  parameters: [
+    userConfirmed : Bool,
+    alreadyUsed : Bool,
+    secretMatches : Bool,
+    expires : Nat,
+    now : Nat
+  ],
+  statement: ((expires <= now) -> ((linkOfferAccepted userConfirmed alreadyUsed secretMatches expires now) = false)),
+  proof: linear_arithmetic{definitions: [linkGate, linkOfferAccepted]},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: delegateNeverReceivesPrivateBoundary,
+  parameters: [],
+  statement: ((receivesPrivateBoundary true) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: delegateOutsideScopeRefused,
+  parameters: [],
+  statement: (forall (linked : Bool), (forall (revoked : Bool), ((actionAllowed linked revoked true false) = false))),
+  proof: decide{}
+}
+
+theorem{
+  name: revokedDeviceActionRefused,
+  parameters: [],
+  statement: (forall (linked : Bool), (forall (delegate : Bool), (forall (inScope : Bool), ((actionAllowed linked true delegate inScope) = false)))),
+  proof: decide{}
+}
+
+theorem{
+  name: replayedActionRefused,
+  parameters: [],
+  statement: (forall (audienceMatches : Bool), (forall (inWindow : Bool), ((actionGate audienceMatches false inWindow) = false))),
+  proof: decide{}
+}
+
+theorem{
+  name: wrongAudienceActionRefused,
+  parameters: [unseen : Bool, inWindow : Bool],
+  statement: ((actionGate false unseen inWindow) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: staleActionRefused,
+  parameters: [audienceMatches : Bool, unseen : Bool, issued : Nat, now : Nat, window : Nat],
+  statement: (((issued + window) < now) -> ((actionFresh audienceMatches unseen issued now window) = false)),
+  proof: linear_arithmetic{definitions: [actionFresh, actionGate]},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: unattestedDeviceRefusedWhenRequired,
+  parameters: [],
+  statement: ((hostAdmitsDevice true false) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: staleBoundaryKeyRefused,
+  parameters: [keyEpoch : Nat, requiredEpoch : Nat],
+  statement: ((keyEpoch < requiredEpoch) -> ((boundaryKeyAdmitted keyEpoch requiredEpoch) = false)),
+  proof: linear_arithmetic{definitions: [boundaryKeyAdmitted]},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: memberCannotRevokeRecovery,
+  parameters: [],
+  statement: (forall (signerRevokedByRecovery : Bool), ((revocationCounts false signerRevokedByRecovery true) = false)),
+  proof: decide{}
+}
+
+theorem{
+  name: revokedByRecoveryCannotRevoke,
+  parameters: [],
+  statement: (forall (signerRecovery : Bool), (forall (targetRecovery : Bool), ((revocationCounts signerRecovery true targetRecovery) = false))),
+  proof: decide{}
+}
+
+theorem{
+  name: memberCannotReplaceRecovery,
+  parameters: [],
+  statement: ((recoveryBindAllowed false true) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: belowThresholdRefused,
+  parameters: [threshold : Nat, collected : Nat],
+  statement: ((collected < threshold) -> ((thresholdMet threshold collected) = false)),
+  proof: linear_arithmetic{definitions: [thresholdMet]},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: zeroThresholdRefused,
+  parameters: [collected : Nat],
+  statement: ((thresholdMet 0 collected) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: hardenedDeviceCannotShare,
+  parameters: [],
+  statement: ((mayShareBoundary false) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: postQuantumDowngradeRefused,
+  parameters: [],
+  statement: ((hybridWrapRequired true false) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: attestationForOtherKeyRefused,
+  parameters: [],
+  statement: (forall (verifiedHardware : Bool), ((attestationBinds verifiedHardware false) = false)),
+  proof: decide{}
+}
+
+theorem{
+  name: singleIdentityBoundaryPrivate,
+  parameters: [],
+  statement: ((boundaryShared 1) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: twoIdentitiesMakeBoundaryShared,
+  parameters: [identities : Nat],
+  statement: ((2 <= identities) -> ((boundaryShared identities) = true)),
+  proof: linear_arithmetic{definitions: [boundaryShared]},
+  axioms: [propext]
+}
+
+theorem{
+  name: nonMemberSeesOnlyPublished,
+  parameters: [],
+  statement: ((boundaryVisibleTo false false) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: classicalSignatureAlwaysRequired,
+  parameters: [pqAdvertised : Bool, verifierHasPq : Bool, pqValid : Bool],
+  statement: ((hybridSignatureAccepted false pqAdvertised verifierHasPq pqValid) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: postQuantumSignatureStripRefused,
+  parameters: [],
+  statement: (forall (classicalValid : Bool), ((hybridSignatureAccepted classicalValid true true false) = false)),
+  proof: decide{}
+}
+
+theorem{
+  name: unverifiedApprovalRefused,
+  parameters: [],
+  statement: (forall (userPresent : Bool), (forall (challengeMatches : Bool), (forall (assertionValid : Bool), ((presenceSatisfied true userPresent false challengeMatches assertionValid) = false)))),
+  proof: decide{}
+}
+
+theorem{
+  name: approvalOfOtherActionRefused,
+  parameters: [],
+  statement: (forall (userPresent : Bool), (forall (userVerified : Bool), (forall (assertionValid : Bool), ((presenceSatisfied true userPresent userVerified false assertionValid) = false)))),
+  proof: decide{}
+}
+
+theorem{
+  name: forgedApprovalRefused,
+  parameters: [],
+  statement: (forall (userPresent : Bool), (forall (userVerified : Bool), (forall (challengeMatches : Bool), ((presenceSatisfied true userPresent userVerified challengeMatches false) = false)))),
+  proof: decide{}
+}
+\end{semanticmodule}
+\end{lexlean}

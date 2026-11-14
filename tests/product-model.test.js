@@ -10,7 +10,7 @@ const changed=fn=>{const p=structuredClone(source());fn(p);return p;};
 test('complete product register is bound to current source and exact local assets',()=>{
   const expected=productRegister(root);
   assert.deepEqual(JSON.parse(readFileSync(resolve(root,'product/contracts.json'),'utf8')),expected);
-  assert.equal(expected.components.length,18);
+  assert.equal(expected.components.length,19);
   assert.equal(expected.capabilities.length,expected.hostCapabilities.length);
   assert.deepEqual(expected.releaseBlockers, []);
   const guest=expected.assets.find(a=>a.path==='images/buildroot-bzimage.bin');

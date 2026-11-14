@@ -2,18 +2,18 @@
   "format": "Stitch exact-source verification summary",
   "version": 1,
   "assurance": "Summary of actual pinned LexLean/Lean/leanchecker/axiom verification; not a native Prism artifact certificate or whole-host guarantee",
-  "attestation_id": "f29ee1259ab249c9ee90c9820aeb1a29988317cb82a9cf3759d57d468d52469a",
-  "attestation_sha256": "12db5820201186082ec9cac4b51c8261e45c1dad3fe151e650cc954bd022b8e4",
-  "source_id": "cf20bffeec805ef6d905d6af714060a42b005a8865d9b769ac86f664e93cbfd8",
-  "semantic_id": "88c9c72d9f735e5b2e16f9ce905151a37ea2d55995e4c56c40c622f5ad68d0dd",
-  "build_id": "e1c40acc1672687de5d69457ab81432c1fc34ea350169ce922fe6ff798af7570",
+  "attestation_id": "904f11a911a38818a4126cd11c5af64c67cc560560ec0da7b22cc32ad902274a",
+  "attestation_sha256": "727ce4b68f1f7e2578795943687cd20fdb70cdbcefc5e4fd907cd95f711438b5",
+  "source_id": "0f4aa6cb23123d72e6e030ffebd0d2d36da20879ed887d416fd49f6e9b607e93",
+  "semantic_id": "f8e732898667afd4927eb16ffab20fe2ab3ac738cccb1919e091edc67a96cf14",
+  "build_id": "bdcf8bfe587b8188d03aee9d87e79bec09b42818d548f80fbf124ac7f3f83046",
   "status": "verified",
-  "module_count": 38,
-  "declaration_audits": 1910,
-  "successful_processes": 124,
+  "module_count": 39,
+  "declaration_audits": 2133,
+  "successful_processes": 127,
   "processes_by_tool": {
-    "lean": 83,
-    "leanchecker": 41
+    "lean": 85,
+    "leanchecker": 42
   },
   "sources": [
     {
@@ -250,11 +250,11 @@
     },
     {
       "path": "app/lexlean.lock",
-      "sha256": "2c610e16cb4e42b8fa58a2ccc35b2a51ee1b6aefb2711f2614ccdb4b407e53d1"
+      "sha256": "49b1b7b79ca4f74e69f8bfb775e4a12de98c6bb13364288a61e413a6289fd21c"
     },
     {
       "path": "app/lexlean.toml",
-      "sha256": "9c5d6522695344cdaf3172bf6b7c780753ede8c1fd6e09b1508de5674b0945a7"
+      "sha256": "db033709d967898d0bf4430ea2e9283f174a8532342e4e8e8d356ba2b5a9404f"
     },
     {
       "path": "app/prism.toml",
@@ -290,7 +290,7 @@
     },
     {
       "path": "app/src/Product/Architecture.lex.tex",
-      "sha256": "11fbfff4c0db249ddc97970018f3ec9218147e961f1b1b5ea5a6d1389af02085"
+      "sha256": "198c55dae057fff7e5530027fd2449f86260cc58056ba4fc00c7b99734ececdc"
     },
     {
       "path": "app/src/Product/Brand.lex.tex",
@@ -298,11 +298,11 @@
     },
     {
       "path": "app/src/Product/Compliance.lex.tex",
-      "sha256": "56389b03b9773242daa57302e3305804b9d08e609521e89172ab6411ccb7d919"
+      "sha256": "ee1cf13e35d64e467075ef7bff835dca1d7d5370bde59e19f82a2daf487f40e6"
     },
     {
       "path": "app/src/Product/Design.lex.tex",
-      "sha256": "5f2d1e064af4c487c222601cba5d76bb466397a2272a855f2c691e9a87a6f074"
+      "sha256": "38da1916ac695cda70170df7d99734e59386e6626d67e08a7c2d795ac95b34cc"
     },
     {
       "path": "app/src/Product/Experience.lex.tex",
@@ -310,7 +310,7 @@
     },
     {
       "path": "app/src/Product/Features.lex.tex",
-      "sha256": "f243975538f688ad397e20f050a17fceea944ff11b10b06cd4f006ef76e425d5"
+      "sha256": "d5b7bdf070d493f617f8ce48de3757ff6bcddc17e8c115ea52c0dc44197e5726"
     },
     {
       "path": "app/src/Product/Host.lex.tex",
@@ -318,7 +318,7 @@
     },
     {
       "path": "app/src/Product/Model.lex.tex",
-      "sha256": "6081a53375794cab60ddad0199956db978be3d4b91e102f1890dd0e3bc2697c8"
+      "sha256": "3017e652d02156eca68bc00cbb3cdfb54cebcfe290a3b9463493d9326da399f8"
     },
     {
       "path": "app/src/Product/Persistence.lex.tex",
@@ -326,19 +326,19 @@
     },
     {
       "path": "app/src/Product/Quality.lex.tex",
-      "sha256": "bce652237815ee8b3e8dcf02f06887d102eaaa4063268a7bf2b90dafd0bb4ea0"
+      "sha256": "568af2bafa27a50917dfffac0de44c9b83f05069c2ef8f961ff70071d0f07785"
     },
     {
       "path": "app/src/Product/Release.lex.tex",
-      "sha256": "3804712856cdb777195d7166a64fabece3bf682ed4dadf70842a01ba494cc67b"
+      "sha256": "7aaaf03ef70e259f7af42eb52e87f6828d0ae5ba249e94b59d510db45f4a92e9"
     },
     {
       "path": "app/src/Product/Security.lex.tex",
-      "sha256": "58065b9e1ab7dbfcab8986b3dffe142032b7292b47409d2eba08013b27f2fe50"
+      "sha256": "4eb9b799086128e191af7c5dbe44da2d4ffd95938e61591cc43fb47a95dfc0fc"
     },
     {
       "path": "app/src/Product/Users.lex.tex",
-      "sha256": "9bc83fc400a5f0f6402e0e75118c7aacf653fa9a4b0103390145b4509c600d37"
+      "sha256": "7baf71e758f17479e3a1459b7892fa4bcaacc07887f426f86ce05167c169c1d6"
     },
     {
       "path": "app/src/Production/ThreatModel.lex.tex",
@@ -391,6 +391,10 @@
     {
       "path": "app/src/Stitch/Pointer.lex.tex",
       "sha256": "10239748c402cdadfc36b150a7a103dfe5124d81fa27bb276575810470c89c46"
+    },
+    {
+      "path": "app/src/Stitch/PrismId.lex.tex",
+      "sha256": "1d3d73a831097b3cc6897b94e191d38b52902496b18951e2c188055e0897f935"
     },
     {
       "path": "app/src/Stitch/Recovery.lex.tex",
