@@ -7,7 +7,7 @@ account, password, email, OAuth provider or server is involved.
 - Model: `app/src/Stitch/PrismId.lex.tex` (`Stitch.PrismId`). Every
   authorization decision in the runtime calls its generated binding.
 - Runtime: `src/prism-id.js`.
-- Tests: `tests/prism-id.test.js`.
+- Tests: `tests/prism-id.test.js`; the substrate bus, `tests/prism-bus.test.js`.
 
 ## Kappa
 
@@ -21,11 +21,13 @@ LexLean's `kappa` package and PrismPM ADR-017. It differs from the older
 
 | Kind | Signed by | Meaning |
 | --- | --- | --- |
-| `prism/device/1` | none (public record) | A device's class (`browser`, `native`, `mobile`, `embedded`, `recovery`), its claimed key protection (`software`, `platform`, `secure-element`), and its P-256 signing and agreement public keys. Its kappa is the device id. Private keys are non-extractable. |
+| `prism/device/1` | none (public record) | A device's class (`browser`, `native`, `mobile`, `embedded`, `recovery`), its claimed key protection (`software`, `platform`, `secure-element`, `threshold-shares`), its P-256 signing and agreement public keys, and an optional ML-KEM-768 public key (`kem`). Its kappa is the device id. Private keys are non-extractable. |
 | `prism/genesis/1` | the first device | Creates the prism. prism id = kappa of this body. The first device is a member. |
-| `prism/bind/1` | an active member | Links a device as a `member` (no scope) or a `delegate` (a non-empty list of actions). |
+| `prism/bind/1` | an active member | Links a device as a `member` (no scope), a `delegate` (a non-empty list of actions), or the `recovery` device. Once a recovery device exists, only it may bind a new one. |
 | `prism/revoke/1` | a linked member | Removes a device. `keep` lists the binds the revoked device made that stay valid. `epoch` and `wraps` carry a new private boundary key wrapped to each remaining member. |
-| `prism/action/1` | an active device | An action for a host: `action`, `audience`, `payload`, `at`, `nonce`. |
+| `prism/action/1` | an active device | An action for a host: `action`, `audience`, `payload`, `at`, `nonce`. A recovery device never signs one. |
+| `prism/persona/1` | an active member | Names the persona prism for one host, and carries its recovery key wrapped to the main recovery device. Main log only. |
+| `prism/persona-key/1` | an active device | Asks for this device's persona key for one host to be bound in that persona. Main log only. |
 
 The prism log is a set of signed records keyed by the kappa of each envelope, so
 merging two logs is set union: commutative, associative and idempotent.
@@ -34,8 +36,10 @@ merging two logs is set union: commutative, associative and idempotent.
 
 Revocation wins over a concurrent bind: a bind made by a revoked device counts
 only if the revocation lists it in `keep`. Rotating away from the genesis device
-keeps every device that was already linked. Two devices that revoke each other
-are both revoked; recovery (a later milestone) is the way out.
+keeps every device that was already linked. Two members that revoke each other
+are both revoked. The recovery device's revocations take precedence: a device it
+revoked has no revocations that count (`Stitch.PrismId.revocationCounts`), and a
+member can neither revoke it nor replace it (`recoveryBindAllowed`).
 
 ## Device classes and roles
 
@@ -43,7 +47,9 @@ Every device, whether a browser tab, a native install, a mobile app or an embedd
 
 A **member** holds the private boundary and can link and revoke devices. A **delegate** is scoped: it may sign only the actions in its scope, never receives the private boundary, and cannot link or revoke (`Stitch.PrismId.mayAdminister`, `receivesPrivateBoundary`, `actionAllowed`). Embedded devices join as delegates.
 
-The `protection` field is the device's own claim. A host that requires hardware-held keys admits a device only with an attestation that the host verified itself (`Stitch.PrismId.hostAdmitsDevice`).
+The `protection` field is the device's own claim. A host that requires hardware-held keys admits a device only through `admitDevice(policy, record, evidence, verifiers)`: a verifier the host pinned for the evidence format must confirm hardware protection of exactly this device's signing key (`Stitch.PrismId.attestationBinds`, `hostAdmitsDevice`). Platform verifiers (App Attest, Android key attestation, TPM) plug in as host code.
+
+A **hardened** device (`hardenSession`) keeps only non-extractable seal and topic keys derived from each boundary key, never the raw bytes. Script in its origin can use them while it runs but cannot copy them out. A hardened device can sync, seal, link delegates and revoke; it cannot link members or set up recovery (`Stitch.PrismId.mayShareBoundary`). Hardening every browser and keeping one native or mobile member as the sharing device is the recommended layout.
 
 A native implementation checks itself against `tests/fixtures/prism-id-vectors.json`. `scripts/verify-prism-id-vectors.py` is an independent implementation of the canonical form that does exactly that.
 
@@ -59,8 +65,9 @@ A native implementation checks itself against `tests/fixtures/prism-id-vectors.j
    photographed the QR code and answered first gets a different code.
 4. The offering device accepts only if `Stitch.PrismId.linkOfferAccepted`
    holds (code confirmed, secret matches, not yet used, not expired). It signs
-   a bind. For a member, it wraps the boundary keyring with ECDH + HKDF
-   (salt = secret) + AES-GCM. A delegate gets no wrap.
+   a bind. For a member, it wraps the boundary keyring to the new device's
+   keys: ephemeral ECDH, plus ML-KEM-768 when the device advertises it, into
+   HKDF (salt = secret) and AES-GCM. A delegate gets no wrap.
 5. The new device checks that the prism lists it with the offered role,
    unwraps the keyring if it is a member, and holds the full log.
 
@@ -78,13 +85,55 @@ rotation, publish once under the previous key so that devices still listening
 there take up the new key. Content sealed under earlier keys stays readable to
 the devices that hold them.
 
+## Post-quantum wraps
+
+Every key wrap (linking, rotation, recovery shares, persona recovery) is
+hybrid when the recipient's device record carries `kem`: both the ECDH and the
+ML-KEM-768 shared secrets feed HKDF, so the wrap holds if either does. A wrap to
+such a device without the KEM part is refused, and so is a sender that cannot
+encapsulate (`Stitch.PrismId.hybridWrapRequired`). Devices advertise `kem` when
+their WebCrypto has ML-KEM (Node 24 does). Signatures stay P-256 ECDSA.
+
+## Recovery
+
+`createRecovery(session, { threshold, guardians })` binds a recovery device
+whose private keys, together with a snapshot of the boundary keyring, exist only
+as Shamir shares over GF(256). Each share is wrapped to one guardian: a device
+of another prism the person trusts, a spare device of their own, or
+`{ paper: true }` for a share to print. Every later rotation also wraps the new
+boundary key to the recovery device.
+
+After losing every device, the person creates a new device. Each guardian
+confirms the person out of band, compares `recoveryCode(prism, record)` on both
+screens, and calls `releaseShare`, which re-wraps the share to the new device.
+`recoverPrism` refuses below the threshold (`Stitch.PrismId.thresholdMet`),
+binds the new device as a member, revokes every other device ever linked
+(including a thief's, whose revocations then stop counting), carries personas
+over, and with `rotateRecovery` replaces the recovery device with fresh shares
+so the recovered secret is retired. The prism log it takes is a copy obtained
+from the substrate, where the recovery keyring can open it, or from any holder.
+
+## Personas: one id per host
+
+A host never sees the main prism. `ensurePersona(session, audience)` creates a
+persona for that host: a prism of its own, with a non-extractable persona key on
+each device. Two hosts see unrelated prism ids and keys, so they cannot link the
+person. The persona-to-host map lives only in the main log, which travels sealed
+between members. Members keep personas in step on sync: they bind persona keys
+requested by active devices with the same role and scope, and revoke persona
+keys of devices the main prism revoked. A persona's recovery key is wrapped to
+the main recovery device, so recovery restores every persona whose log the host
+supplies. `personaFor` returns what a host needs, and `signPersonaAction` signs
+under the persona.
+
 ## Actions at a host
 
 A device signs an action for one `audience` (a host), with a nonce and a time.
 The host verifies it against the prism log: it must be fresh, unseen and for
 this audience (`Stitch.PrismId.actionFresh`), and it must come from an active
 device inside its scope (`Stitch.PrismId.actionAllowed`). This is how foundry
-grants a stakeholder the permissions of their prism context.
+grants a stakeholder the permissions of their prism context. Hosts are given
+the persona for their audience, not the main prism.
 
 ## Boundaries
 
@@ -94,34 +143,20 @@ to its members (`Stitch.PrismId.boundaryShared`). A published boundary is public
 to all. `sealPrivate` and `openPrivate` keep content in the private boundary;
 the sealed object's kappa is its address.
 
-## Recovery
-
-Recovery lives in `src/prism-id.js`. A recovery device is an ordinary `prism/device/1` of class `recovery`,
-linked by the ordinary link flow, whose private keys live outside every
-browser: sealed (AES-GCM) in a `prism/recovery-escrow/1` object under a key
-derived (HKDF) from a 32-byte seed. The owner keeps the seed as a recovery
-code: 56 Crockford base32 characters, the seed and three check bytes. The
-escrow carries the recovery device's keys, every private boundary key it holds
-and the log as it stood, so it alone restores the prism. It is public-safe ciphertext,
-kept in any content-addressed store and found by its locator, the kappa of a
-value derived from the seed.
-
-With the code, `recoverOnto` opens the escrow and links the new browser's own
-non-extractable device to the prism, again through `createLinkOffer`,
-`acceptLinkRequest` and `completeLink`, so `Stitch.PrismId` decides it like any
-link (the page itself supplies the six-digit confirmation, since both ends are
-its own). As a member, the recovery device receives the wrap of every later
-rotation, so a code made before a revocation still opens what is sealed
-after it. A recovery device revoked in a newer log links nothing. The new device
-can then revoke the lost one. No rule is added to the model.
-
 ## Sync over the substrate
 
 Linked devices sync on a topic derived from the private boundary key, so only
-they can find it. Each message is the log sealed in the private boundary, bound
-to the prism id. Messages over 4 MiB and logs over 4096 records are refused
+they can find it. Each message is the log and the persona logs, sealed in the
+private boundary, bound to the prism id, and padded (ISO 7816-4) to a
+power-of-two bucket of at least 1 KiB so relays learn only the bucket. Messages over 4 MiB and logs over 4096 records are refused
 before any parsing or signature work. The bus contract is `publish(topic, bytes)` and
-`subscribe(topic, fn)`. `createMemoryBus` implements it for tests; the stitch
-substrate implements it across peers and federation nodes.
+`subscribe(topic, fn)`. `createMemoryBus` implements it for tests.
+`createRelayBus` implements it on stitch's substrate:
+stitch's warm relay with its relay framing across devices and origins, and
+BroadcastChannel within one origin. The relay sees a name hashed from the
+prism topic and the sealed or HMAC-bound bytes; it holds a message for the
+warm lifetime (30 minutes) and promises no retention, so a device that was
+away longer catches up from the next message another member publishes. Link
+offers use the same bus on their `prism-rendezvous:` topic.
 
 The threat and security model is in `docs/prism-id-threat-model.md`.

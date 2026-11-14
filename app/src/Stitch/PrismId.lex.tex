@@ -101,6 +101,43 @@ definition{
 }
 
 definition{
+  name: revocationCounts,
+  parameters: [signerRecovery : Bool, signerRevokedByRecovery : Bool, targetRecovery : Bool],
+  result: Bool,
+  body: ((not signerRevokedByRecovery) && ((not targetRecovery) || signerRecovery))
+}
+
+definition{
+  name: recoveryBindAllowed,
+  parameters: [signerRecovery : Bool, recoveryExists : Bool],
+  result: Bool,
+  body: (signerRecovery || (not recoveryExists))
+}
+
+definition{
+  name: thresholdMet,
+  parameters: [threshold : Nat, collected : Nat],
+  result: Bool,
+  body: ((1 <=? threshold) && (threshold <=? collected))
+}
+
+definition{name: mayShareBoundary, parameters: [shareable : Bool], result: Bool, body: shareable}
+
+definition{
+  name: hybridWrapRequired,
+  parameters: [recipientHasKem : Bool, wrapHasKem : Bool],
+  result: Bool,
+  body: ((not recipientHasKem) || wrapHasKem)
+}
+
+definition{
+  name: attestationBinds,
+  parameters: [verifiedHardware : Bool, keyMatches : Bool],
+  result: Bool,
+  body: (verifiedHardware && keyMatches)
+}
+
+definition{
   name: boundaryShared,
   parameters: [identities : Nat],
   result: Bool,
@@ -252,6 +289,63 @@ theorem{
   statement: ((keyEpoch < requiredEpoch) -> ((boundaryKeyAdmitted keyEpoch requiredEpoch) = false)),
   proof: linear_arithmetic{definitions: [boundaryKeyAdmitted]},
   axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: memberCannotRevokeRecovery,
+  parameters: [],
+  statement: (forall (signerRevokedByRecovery : Bool), ((revocationCounts false signerRevokedByRecovery true) = false)),
+  proof: decide{}
+}
+
+theorem{
+  name: revokedByRecoveryCannotRevoke,
+  parameters: [],
+  statement: (forall (signerRecovery : Bool), (forall (targetRecovery : Bool), ((revocationCounts signerRecovery true targetRecovery) = false))),
+  proof: decide{}
+}
+
+theorem{
+  name: memberCannotReplaceRecovery,
+  parameters: [],
+  statement: ((recoveryBindAllowed false true) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: belowThresholdRefused,
+  parameters: [threshold : Nat, collected : Nat],
+  statement: ((collected < threshold) -> ((thresholdMet threshold collected) = false)),
+  proof: linear_arithmetic{definitions: [thresholdMet]},
+  axioms: [Quot.sound, propext]
+}
+
+theorem{
+  name: zeroThresholdRefused,
+  parameters: [collected : Nat],
+  statement: ((thresholdMet 0 collected) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: hardenedDeviceCannotShare,
+  parameters: [],
+  statement: ((mayShareBoundary false) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: postQuantumDowngradeRefused,
+  parameters: [],
+  statement: ((hybridWrapRequired true false) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: attestationForOtherKeyRefused,
+  parameters: [],
+  statement: (forall (verifiedHardware : Bool), ((attestationBinds verifiedHardware false) = false)),
+  proof: decide{}
 }
 
 theorem{

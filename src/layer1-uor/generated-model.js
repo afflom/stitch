@@ -29127,6 +29127,232 @@ const definitions = {
       }
     }
   },
+  "Stitch.PrismId.revocationCounts": {
+    "module": "Stitch.PrismId",
+    "name": "revocationCounts",
+    "params": [
+      {
+        "name": "signerRecovery",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "signerRevokedByRecovery",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "targetRecovery",
+        "type": {
+          "kind": "Bool"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "binary",
+      "op": "&&",
+      "left": {
+        "k": "not",
+        "value": {
+          "k": "var",
+          "name": "signerRevokedByRecovery"
+        }
+      },
+      "right": {
+        "k": "binary",
+        "op": "||",
+        "left": {
+          "k": "not",
+          "value": {
+            "k": "var",
+            "name": "targetRecovery"
+          }
+        },
+        "right": {
+          "k": "var",
+          "name": "signerRecovery"
+        }
+      }
+    }
+  },
+  "Stitch.PrismId.recoveryBindAllowed": {
+    "module": "Stitch.PrismId",
+    "name": "recoveryBindAllowed",
+    "params": [
+      {
+        "name": "signerRecovery",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "recoveryExists",
+        "type": {
+          "kind": "Bool"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "binary",
+      "op": "||",
+      "left": {
+        "k": "var",
+        "name": "signerRecovery"
+      },
+      "right": {
+        "k": "not",
+        "value": {
+          "k": "var",
+          "name": "recoveryExists"
+        }
+      }
+    }
+  },
+  "Stitch.PrismId.thresholdMet": {
+    "module": "Stitch.PrismId",
+    "name": "thresholdMet",
+    "params": [
+      {
+        "name": "threshold",
+        "type": {
+          "kind": "Nat"
+        }
+      },
+      {
+        "name": "collected",
+        "type": {
+          "kind": "Nat"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "binary",
+      "op": "&&",
+      "left": {
+        "k": "binary",
+        "op": "<=?",
+        "left": {
+          "k": "nat",
+          "value": "1"
+        },
+        "right": {
+          "k": "var",
+          "name": "threshold"
+        }
+      },
+      "right": {
+        "k": "binary",
+        "op": "<=?",
+        "left": {
+          "k": "var",
+          "name": "threshold"
+        },
+        "right": {
+          "k": "var",
+          "name": "collected"
+        }
+      }
+    }
+  },
+  "Stitch.PrismId.mayShareBoundary": {
+    "module": "Stitch.PrismId",
+    "name": "mayShareBoundary",
+    "params": [
+      {
+        "name": "shareable",
+        "type": {
+          "kind": "Bool"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "var",
+      "name": "shareable"
+    }
+  },
+  "Stitch.PrismId.hybridWrapRequired": {
+    "module": "Stitch.PrismId",
+    "name": "hybridWrapRequired",
+    "params": [
+      {
+        "name": "recipientHasKem",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "wrapHasKem",
+        "type": {
+          "kind": "Bool"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "binary",
+      "op": "||",
+      "left": {
+        "k": "not",
+        "value": {
+          "k": "var",
+          "name": "recipientHasKem"
+        }
+      },
+      "right": {
+        "k": "var",
+        "name": "wrapHasKem"
+      }
+    }
+  },
+  "Stitch.PrismId.attestationBinds": {
+    "module": "Stitch.PrismId",
+    "name": "attestationBinds",
+    "params": [
+      {
+        "name": "verifiedHardware",
+        "type": {
+          "kind": "Bool"
+        }
+      },
+      {
+        "name": "keyMatches",
+        "type": {
+          "kind": "Bool"
+        }
+      }
+    ],
+    "result": {
+      "kind": "Bool"
+    },
+    "body": {
+      "k": "binary",
+      "op": "&&",
+      "left": {
+        "k": "var",
+        "name": "verifiedHardware"
+      },
+      "right": {
+        "k": "var",
+        "name": "keyMatches"
+      }
+    }
+  },
   "Stitch.PrismId.boundaryShared": {
     "module": "Stitch.PrismId",
     "name": "boundaryShared",
@@ -43849,12 +44075,12 @@ const types = {
     ]
   }
 };
-export const modelSourceDigest = "sha256:c829b8bda7b99710db72f55fa9a2cb1bd82afc53214c8bd3a5993746f3b44154";
+export const modelSourceDigest = "sha256:7d6237c31b3750ed76e362816e3cff621501fdcd480db2a7574c55729809bf61";
 export const modelExecutionDigest = "sha256:d79f1371e5ea16d16d5b9f56fbcce57cb8044df145dae91a63b9a4cbcb5c50de";
 export const MODEL_SOURCE = Object.freeze({
   "schema": "stitch/source-bindings/1",
   "verification": "source-derived, not kernel-checked",
-  "sourceDigest": "sha256:c829b8bda7b99710db72f55fa9a2cb1bd82afc53214c8bd3a5993746f3b44154",
+  "sourceDigest": "sha256:7d6237c31b3750ed76e362816e3cff621501fdcd480db2a7574c55729809bf61",
   "executionDigest": "sha256:d79f1371e5ea16d16d5b9f56fbcce57cb8044df145dae91a63b9a4cbcb5c50de",
   "executionIdentity": {
     "adapterSources": [
@@ -47484,7 +47710,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Compliance.lex.tex",
-      "sha256": "ee7c61fa879b551694a16964981d165c20a1a8e5527f38d3cfeeed07579f65c3"
+      "sha256": "2c7f6fffde822ce16d591f67d80f5c4bc032e3c3cd04592b448e13a0c63522a9"
     },
     {
       "path": "app/src/Product/Design.lex.tex",
@@ -47512,7 +47738,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Quality.lex.tex",
-      "sha256": "e14c0f7c1d0dd08c7e00ab03cdfe1cb8a57f71e5b12789d023c8ebffe9951824"
+      "sha256": "25aa9f459fbf2640161d506b72e1b35dc54c7e949a3fd954e59bcf5adc3149c9"
     },
     {
       "path": "app/src/Product/Release.lex.tex",
@@ -47520,7 +47746,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Product/Security.lex.tex",
-      "sha256": "0c966ac65159a71607e3b874bb7da47a583096d325c4049b2c946286f69047da"
+      "sha256": "7723ba9b8e98ad3610eb2138a541a0a7bde6263de726ae111177de39b3407da8"
     },
     {
       "path": "app/src/Product/Users.lex.tex",
@@ -47580,7 +47806,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Stitch/PrismId.lex.tex",
-      "sha256": "93e1982170071c1b7fba2fdf789e3ad57edb0240cdd5a34c0b716be4e448e429"
+      "sha256": "22749c7ee5a6c0ff130ba9ac8325cabce5000a8114d272d5eef0658d5c4a752f"
     },
     {
       "path": "app/src/Stitch/Recovery.lex.tex",
@@ -47878,7 +48104,7 @@ export const MODEL_SOURCE = Object.freeze({
     },
     {
       "path": "app/src/Stitch/PrismId.lex.tex",
-      "sha256": "93e1982170071c1b7fba2fdf789e3ad57edb0240cdd5a34c0b716be4e448e429"
+      "sha256": "22749c7ee5a6c0ff130ba9ac8325cabce5000a8114d272d5eef0658d5c4a752f"
     },
     {
       "path": "app/src/Stitch/Recovery.lex.tex",
@@ -49269,6 +49495,54 @@ export const MODEL_SOURCE = Object.freeze({
       "status": "source-obligation-not-kernel-checked"
     },
     {
+      "id": "Stitch.PrismId.memberCannotRevokeRecovery",
+      "proof": "decide",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.revokedByRecoveryCannotRevoke",
+      "proof": "decide",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.memberCannotReplaceRecovery",
+      "proof": "reflexivity",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.belowThresholdRefused",
+      "proof": "linear_arithmetic",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.zeroThresholdRefused",
+      "proof": "reflexivity",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.hardenedDeviceCannotShare",
+      "proof": "reflexivity",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.postQuantumDowngradeRefused",
+      "proof": "reflexivity",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
+      "id": "Stitch.PrismId.attestationForOtherKeyRefused",
+      "proof": "decide",
+      "source": "app/src/Stitch/PrismId.lex.tex",
+      "status": "source-obligation-not-kernel-checked"
+    },
+    {
       "id": "Stitch.PrismId.singleIdentityBoundaryPrivate",
       "proof": "reflexivity",
       "source": "app/src/Stitch/PrismId.lex.tex",
@@ -49947,17 +50221,23 @@ export const MODEL_SOURCE = Object.freeze({
     "Stitch.PrismId.actionAllowed",
     "Stitch.PrismId.actionFresh",
     "Stitch.PrismId.actionGate",
+    "Stitch.PrismId.attestationBinds",
     "Stitch.PrismId.bindAllowed",
     "Stitch.PrismId.boundaryKeyAdmitted",
     "Stitch.PrismId.boundaryShared",
     "Stitch.PrismId.boundaryVisibleTo",
     "Stitch.PrismId.deviceMaySign",
     "Stitch.PrismId.hostAdmitsDevice",
+    "Stitch.PrismId.hybridWrapRequired",
     "Stitch.PrismId.linkGate",
     "Stitch.PrismId.linkOfferAccepted",
     "Stitch.PrismId.mayAdminister",
+    "Stitch.PrismId.mayShareBoundary",
     "Stitch.PrismId.receivesPrivateBoundary",
+    "Stitch.PrismId.recoveryBindAllowed",
+    "Stitch.PrismId.revocationCounts",
     "Stitch.PrismId.scopeAdmits",
+    "Stitch.PrismId.thresholdMet",
     "Stitch.Recovery.admitted",
     "Stitch.Recovery.anchorAllowed",
     "Stitch.Recovery.commit",

@@ -18,7 +18,7 @@ Likelihood and impact are conservative engineering judgements, not measured prob
 | O6 | Every runtime computes the same κ and the same authorization result from the same records. |
 | O7 | Observers learn as little as the protocol allows. What they can still learn is stated (section 8). |
 
-**Out of scope for this milestone:** recovery after every member device is lost (M4), the substrate transport (M2), foundry frame integration (M3), and post-quantum cryptography (section 10).
+**Out of scope for this milestone:** the substrate transport (M2) and foundry frame integration (M3). Recovery after every member device is lost, per-host personas, hardened devices, padding, hybrid post-quantum wraps and attestation admission are in scope since the "close the gaps" change (section 10).
 
 ## 2. System decomposition
 
@@ -26,6 +26,10 @@ Likelihood and impact are conservative engineering judgements, not measured prob
 | --- | --- | --- | --- |
 | Member device | Process: browser tab, native app, mobile app | Non-extractable signing and agreement keys; boundary keyring; prism log | Trusted while linked and not revoked |
 | Delegate device | Process, typically embedded | Non-extractable keys, scoped role; no boundary key | Trusted only inside its scope |
+| Hardened member | Process, typically a browser | Non-extractable keys; non-extractable derived boundary keys only | Trusted while linked; cannot link members or set up recovery |
+| Recovery device | Virtual: exists only as threshold shares | Its private keys and a boundary keyring snapshot, split k-of-n | Can link and revoke; never acts at a host; its revocations take precedence |
+| Guardian | Device of another prism, a spare device, or paper | One share, sealed to the guardian device | Trusted not to collude above the threshold |
+| Persona | A prism of its own, one per host | Per-device persona keys; persona recovery key wrapped to the main recovery device | What a host sees instead of the main prism |
 | Prism log | Data store, replicated | Signed genesis, bind and revoke records | Integrity from signatures and κ; any holder may relay it |
 | Link offer | Data flow over an out-of-band channel | Prism id, role, scope, one-time secret, ephemeral ECDH key, expiry | Confidential until used; integrity from the channel |
 | Rendezvous and sync topics | Data flow over the substrate bus | Link request and response; sealed sync messages | Untrusted transport |
@@ -39,6 +43,8 @@ Likelihood and impact are conservative engineering judgements, not measured prob
 - **TB3 Substrate bus.** Everything that crosses it is either public (signed records) or sealed (AES-GCM).
 - **TB4 Host boundary.** A host sees signed actions and the prism log, never boundary keys.
 - **TB5 Private boundary.** The set of member devices holding the current boundary key, the "real object" (RO) in OOO terms. Delegates sit outside it.
+- **TB6 Guardian boundary.** Shares cross into other prisms or onto paper. Below the threshold they carry no information about the recovery secret (Shamir over GF(256)).
+- **TB7 Persona boundary.** Each host sees one persona prism. The main prism log and the persona-to-host map travel only sealed between members.
 
 ## 3. Adversaries
 
@@ -52,6 +58,8 @@ Likelihood and impact are conservative engineering judgements, not measured prob
 | A6 | Malicious host | Receives actions and logs; may collude with other hosts | Breaking signatures |
 | A7 | Malicious member prism | A different prism sharing a boundary with this one | Membership in this prism's private boundary |
 | A8 | Divergent implementation | A runtime with a canonicalization or validation bug | n/a |
+| A9 | Guardian | Holds one share; may be deceived by an impostor or collude with other guardians | More than threshold minus one guardians colluding |
+| A10 | Harvest-now quantum adversary | Records wraps today, runs a quantum computer later | Breaking ML-KEM-768 or AES-256 |
 
 ## 4. Assets
 
@@ -59,7 +67,9 @@ Likelihood and impact are conservative engineering judgements, not measured prob
 | --- | --- | --- | --- | --- |
 | Device signing key | n/a | Critical | High | Non-extractable. Use equals authority. |
 | Device agreement key | High | High | Medium | Unwraps boundary keys during linking and rotation. |
-| Boundary keyring | Critical | High | High | Extractable so it can be wrapped for the next member; this is a residual (section 7). |
+| Boundary keyring | Critical | High | High | Raw bytes kept only on sharing devices, which wrap it for the next member. A hardened device keeps only non-extractable derived seal and topic keys. |
+| Recovery secret | Critical | Critical | High | Recovery device keys plus a keyring snapshot. Exists whole only during setup and recovery; otherwise as shares. |
+| Persona map | High | High | Medium | Which persona belongs to which host. Inside the private boundary only. |
 | Prism log | Low | Critical | High | Public by design. Its integrity is authority. |
 | Link secret | High until used | High | Low | Single use, expires in 5 minutes by default. |
 | Sealed private content | Critical | High | High | Addressed by κ, bound to the prism id. |
@@ -77,16 +87,21 @@ Every row below is a Security facet row. The tests are in `tests/prism-id.test.j
 | PrismStolenDevice | Information disclosure | A3 | Revocation carries a new boundary key, wrapped only to the remaining members, and the sync topic moves. A device without the current key refuses to seal. | revokedDeviceCannotSign, revokedDeviceActionRefused, staleBoundaryKeyRefused |
 | PrismActionReplay | Spoofing | A1, A6 | An action names its audience and carries a nonce and a time. The host refuses another audience, a seen nonce, or a time outside its window. | replayedActionRefused, wrongAudienceActionRefused, staleActionRefused |
 | PrismDelegateOverreach | Elevation | A4 | Scope is checked on every action. A delegate never receives the private boundary and cannot bind or revoke. | delegateOutsideScopeRefused, delegateNeverReceivesPrivateBoundary, delegateCannotBind |
-| PrismKeyClaimForgery | Spoofing | A4, A8 | The `protection` field is a claim. A host that requires hardware keys admits a device only with an attestation the host verified itself. | unattestedDeviceRefusedWhenRequired |
+| PrismKeyClaimForgery | Spoofing | A4, A8 | The `protection` field is a claim. `admitDevice` admits a hardware-requiring device only when a host-pinned verifier attests hardware protection of exactly that device's signing key. | unattestedDeviceRefusedWhenRequired, attestationForOtherKeyRefused |
 | PrismLogTampering | Tampering | A1 | Each record is signed and keyed by the κ of its envelope. Merge is an order-independent set union. Invalid and foreign records are ignored. | invalidBindSignatureRefused, unlinkedSignerCannotBind |
 | PrismLogFlooding | Denial of service | A1 | At most 4 MiB per sync message and 4096 records per log, checked before parsing and before any signature work. | (bound in code, test) |
-| PrismMutualRevocation | Denial of service | A3 | Any linked member's revocation counts, so in a race the thief is revoked too. Threshold recovery is the planned way back (M4). | revokedDeviceCannotSign |
+| PrismMutualRevocation | Denial of service | A3 | Recovery revocations take precedence: a device the recovery device revoked has no revocations that count. Members cannot revoke or replace the recovery device. Recovery binds a new device and revokes every other device ever linked. | revokedByRecoveryCannotRevoke, memberCannotRevokeRecovery, memberCannotReplaceRecovery |
 | PrismRekeyWithholding | Denial of service | A1 | A device without the current key refuses to seal rather than sealing to the old key. A publish under the previous key delivers the rotation. | staleBoundaryKeyRefused |
-| PrismSyncObservation | Information disclosure | A1 | The sync topic is an HMAC under the boundary key, and messages are sealed with AES-GCM bound to the prism id. | (crypto, test) |
-| PrismLinkability | Information disclosure (LINDDUN: linkability) | A6 | Only published boundaries are visible to non-members. Pairwise per-host identifiers are an open M3 obligation. | nonMemberSeesOnlyPublished, singleIdentityBoundaryPrivate |
-| PrismOriginScript | Elevation | A5 | Device keys are non-extractable, which limits abuse to online use while the script runs. Source and asset inventory. Native or hardware members are preferred for long-lived identity. | n/a (residual) |
+| PrismSyncObservation | Information disclosure | A1 | The sync topic is an HMAC under a derived boundary key. Messages are sealed with AES-GCM bound to the prism id and padded (ISO 7816-4) to a power-of-two bucket of at least 1 KiB. Timing and network addresses remain observable. | (crypto, test) |
+| PrismLinkability | Information disclosure (LINDDUN: linkability) | A6 | Each host sees only its own persona: a separate prism with per-device persona keys. The main prism log travels sealed between members and is never given to a host. | nonMemberSeesOnlyPublished, singleIdentityBoundaryPrivate |
+| PrismOriginScript | Elevation | A5 | Device keys are non-extractable. A hardened device (`hardenSession`) keeps only non-extractable derived boundary keys and cannot link members or set up recovery, so script can use keys only while it runs and can copy none out. | hardenedDeviceCannotShare |
 | PrismCanonicalDivergence | Tampering | A8 | uor-addr canonical form with explicit refusals, published vectors (`tests/fixtures/prism-id-vectors.json`), and an independent Python implementation (`scripts/verify-prism-id-vectors.py`). | (vectors, test) |
 | PrismRepudiation | Repudiation | n/a | Every action and administrative record is signed by a device bound in the log. | (signature, test) |
+| PrismRecoveryLoss | Denial of service | loss | Threshold recovery: the recovery key exists only as shares sealed to guardians. Recovery binds a new device, revokes the rest, carries personas over, and rotates itself. | belowThresholdRefused, memberCannotRevokeRecovery |
+| PrismGuardianCollusion | Elevation | A9 | Shares combine only at the threshold (at least 1). Guardians are prisms or devices the person chose. A recovery is visible to every remaining device as revocations. | belowThresholdRefused, zeroThresholdRefused |
+| PrismGuardianDeception | Spoofing | A9 | A guardian releases a share only re-wrapped to the requesting device, after confirming the person out of band and comparing a code bound to that device. One deceived guardian is below the threshold. | belowThresholdRefused |
+| PrismPersonaHijack | Elevation | A3 | Revoking a device revokes its persona keys at every host on the next sync. Persona recovery keys are wrapped to the main recovery device, and no member keeps them. | revokedDeviceActionRefused, revokedDeviceCannotSign |
+| PrismQuantumHarvest | Information disclosure | A10 | Every wrap to a device that advertises ML-KEM-768 is hybrid ECDH plus ML-KEM (both secrets feed HKDF). A classical wrap to such a device is refused. Content keys are AES-256. | postQuantumDowngradeRefused |
 
 ## 6. Attack trees
 
@@ -95,7 +110,7 @@ Every row below is a Security facet row. The tests are in `tests/prism-id.test.j
 1. **Forge a device signature.** Requires breaking P-256 (assumption C1).
 2. **Use a linked device's key.**
    - 2a. Steal an unlocked device (A3). Bounded by revocation and the host time window; residual until revocation propagates.
-   - 2b. Origin script (A5). Residual on browser members (section 7).
+   - 2b. Origin script (A5). Online use only while the script runs; a hardened device yields no copyable key (R1).
 3. **Get a rogue device bound.**
    - 3a. Answer a link offer. Needs the secret (A2) and the person's confirmation of the hijacker's code. Blocked by PrismLinkHijack.
    - 3b. Inject a bind. Blocked by PrismRogueBind.
@@ -113,7 +128,11 @@ Every row below is a Security facet row. The tests are in `tests/prism-id.test.j
 
 **G3. Lock the person out.** Paths:
 
-1. **Revoke every device.** Needs a member device (A3). Mutual revocation revokes the thief as well. Recovery is M4 (residual R4).
+1. **Revoke every device.** Needs a member device (A3). The thief cannot revoke or replace the recovery device. Guardians release shares, recovery revokes the thief, and the thief's revocations stop counting.
+4. **Lose every device.** Threshold recovery (PrismRecoveryLoss).
+5. **Deceive or corrupt guardians (A9).** Below the threshold, nothing is learned. At the threshold, takeover is visible to every remaining device.
+
+**G4. Link the person across hosts (A6).** Each host holds a different persona prism with different device keys. Hosts that collude still see unrelated prism ids and keys. What remains is network-level correlation (addresses, timing), which the protocol does not address.
 2. **Flood or withhold sync.** Bounds apply. Devices stay authoritative offline, and merge converges once traffic resumes.
 3. **Withhold a rotation.** The device refuses to seal and keeps reading old content.
 
@@ -134,10 +153,10 @@ All classes speak the same records with the same primitives: P-256 ECDSA and ECD
 
 | Category | Exposure | Status |
 | --- | --- | --- |
-| Linkability | The same prism id and device keys appear at every host. | Open. Pairwise per-host ids derived from the prism (M3). |
+| Linkability | Each host sees its own persona prism and persona keys. | Holds at the protocol layer. Network addresses and timing remain (R3). |
 | Identifiability | The prism id is pseudonymous. Content in the private boundary never reaches hosts. | Holds. |
 | Non-repudiation (privacy harm) | Signed actions are attributable to the prism. | By design for authority; hosts should not publish them. |
-| Detectability | Relays see a topic exists and its traffic volume. | Residual R5. |
+| Detectability | Relays see a topic exists, message timing and bucketed sizes. | Reduced: exact sizes are hidden by padding (R5). |
 | Disclosure | Sealed content needs a member key. | Holds, under C1 to C3. |
 | Unawareness | The person must understand a QR code links a device. | The confirmation code makes the step explicit. |
 | Non-compliance | No personal data is required to create a prism. | Holds. |
@@ -149,24 +168,26 @@ All classes speak the same records with the same primitives: P-256 ECDSA and ECD
 - **C3.** Non-extractable keys cannot be exported by the platform API. Hardware stores resist extraction as their vendors state.
 - **C4.** The out-of-band channel reaches the device the person intends. Its confidentiality only needs to hold until the code is confirmed.
 - **C5.** Hosts keep a replay set for at least their time window, and their clocks are within that window.
+- **C6.** Fewer than the threshold of guardians collude, and a guardian confirms the person out of band before releasing a share.
+- **C7.** ML-KEM-768 is secure, so a hybrid wrap holds if either ECDH or ML-KEM holds.
 
 ## 10. Residual risks
 
-| Id | Residual | Plan |
+| Id | Residual | Status after closing the gaps |
 | --- | --- | --- |
-| R1 | Origin script can use browser key handles and read the extractable boundary keyring while it runs. | Wrap the keyring under a non-extractable key held in a native or hardware member; keep browsers as members of lower assurance (M3 host policy) |
+| R1 | Origin script can use browser key handles and read the extractable boundary keyring while it runs. | Reduced. A hardened device holds no extractable key, so script can use keys only while it runs and can exfiltrate none. Script running in the origin can still act during that time; that limit is fundamental to any web origin. Sharing (linking members, recovery setup) needs a non-hardened device, preferably native. |
 | R2 | A revoked device keeps everything it already held, and any content sealed under keys it held. | Inherent. Re-seal sensitive content after rotation if needed. |
-| R3 | A host can link the person across hosts. | Pairwise per-host ids (M3) |
-| R4 | Losing every member device loses the prism. A thief can race revocations. | Threshold recovery shares in shared boundaries (M4) |
-| R5 | Relays see topic existence, timing, sizes and addresses. | Padding and cover traffic are options for the substrate (M2) |
-| R6 | All primitives are classical, and recorded traffic could be decrypted by a future quantum adversary. | Hybrid ML-KEM for wraps once WebCrypto and secure elements ship it; κ (SHA-256) is unaffected |
-| R7 | The protection claim is unverified without attestation. | Host-side attestation verifiers per platform |
+| R3 | A host can link the person across hosts. | Closed at the protocol layer by per-host personas. Network addresses and timing remain observable to colluding hosts. |
+| R4 | Losing every member device loses the prism. A thief can race revocations. | Closed by threshold recovery and recovery precedence. Remaining: guardians colluding at the threshold (C6), and the recovering device must obtain a copy of the prism log (from the substrate, which the recovery keyring can open, or from any holder; transport is M2). |
+| R5 | Relays see topic existence, timing, sizes and addresses. | Reduced. Sizes are padded to power-of-two buckets. Timing and addresses remain; cover traffic is a substrate option (M2). |
+| R6 | All primitives are classical, and recorded traffic could be decrypted by a future quantum adversary. | Closed for confidentiality where the platform has ML-KEM-768 (WebCrypto in Node 24; browsers as they ship it): wraps are hybrid and downgrade is refused. Signatures stay P-256, which a quantum adversary could forge only in the future, not retroactively. Devices without ML-KEM still get classical wraps. |
+| R7 | The protection claim is unverified without attestation. | Closed in the protocol: `admitDevice` requires a host-pinned verifier that binds the attestation to the device's signing key. Per-platform verifiers (App Attest, Android key attestation, TPM) are host code that plugs into it. |
 
 ## 11. Verification map
 
 | Layer | Evidence |
 | --- | --- |
 | Rules | `Stitch.PrismId` theorems, attested by `lexlean verify --all` (`product/source-attestation.json`) |
-| Runtime | `tests/prism-id.test.js`: 22 executable tests, each named after the behavior it shows |
+| Runtime | `tests/prism-id.test.js`: 32 executable tests, each named after the behavior it shows |
 | Cross-runtime | `tests/fixtures/prism-id-vectors.json` and `scripts/verify-prism-id-vectors.py` |
 | Facet | `Product.Security` rows `Prism*`, each with gate, review and proof evidence |
