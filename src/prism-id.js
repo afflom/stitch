@@ -14,7 +14,9 @@
  * Only P-256 ECDSA/ECDH, HKDF-SHA-256, HMAC-SHA-256, AES-256-GCM and SHA-256
  * are required, so native, mobile (Secure Enclave, Android Keystore), TPM 2.0
  * and secure-element devices can implement the same protocol. Where the
- * platform has ML-KEM-768, every key wrap is hybrid (ECDH + ML-KEM).
+ * platform has ML-KEM-768, every key wrap is hybrid (ECDH + ML-KEM); where it
+ * has ML-DSA-65, every record is also signed with ML-DSA. Actions a host marks
+ * as needing the person's approval carry a WebAuthn user-verified assertion.
  * See docs/prism-id.md and docs/prism-id-threat-model.md.
  */
 import { model } from './layer1-uor/generated-model.js';
@@ -43,7 +45,8 @@ export const KIND = Object.freeze({
   recoveryShare: 'prism/recovery-share/1',
   persona: 'prism/persona/1',
   personaKey: 'prism/persona-key/1',
-  personaRecovery: 'prism/persona-recovery/1'
+  personaRecovery: 'prism/persona-recovery/1',
+  cover: 'prism/cover/1'
 });
 
 /** Kinds of device that take part. Every one uses the same records and primitives. */
@@ -142,6 +145,8 @@ const SIGN_HASH = { name: 'ECDSA', hash: 'SHA-256' };
 const AGREE = { name: 'ECDH', namedCurve: 'P-256' };
 const KEM = { name: 'ML-KEM-768' };
 const KEM_PUBLIC_BYTES = 1184;
+const PQSIGN = { name: 'ML-DSA-65' };
+const PQSIGN_PUBLIC_BYTES = 1952;
 const publicJwk = ({ kty, crv, x, y }) => ({ crv, kty, x, y });
 
 let kemSupport;
@@ -154,14 +159,25 @@ export async function postQuantumAvailable() {
   return kemSupport;
 }
 
+let pqSignSupport;
+/** Whether this platform offers ML-DSA-65 (FIPS 204) in WebCrypto. */
+export async function postQuantumSignaturesAvailable() {
+  if (pqSignSupport === undefined) {
+    try { await subtle.generateKey(PQSIGN, false, ['sign', 'verify']); pqSignSupport = true; }
+    catch { pqSignSupport = false; }
+  }
+  return pqSignSupport;
+}
+
 async function newKeys(extractable) {
   const signing = await subtle.generateKey(SIGN, extractable, ['sign', 'verify']);
   const agreement = await subtle.generateKey(AGREE, extractable, ['deriveBits']);
   const kem = await postQuantumAvailable() ? await subtle.generateKey(KEM, extractable, ['encapsulateBits', 'decapsulateBits']) : null;
-  return { signing, agreement, kem };
+  const pqsign = await postQuantumSignaturesAvailable() ? await subtle.generateKey(PQSIGN, extractable, ['sign', 'verify']) : null;
+  return { signing, agreement, kem, pqsign };
 }
 
-async function deviceFromKeys({ signing, agreement, kem }, deviceClass, protection) {
+async function deviceFromKeys({ signing, agreement, kem, pqsign }, deviceClass, protection, presence) {
   const record = {
     kind: KIND.device,
     class: deviceClass,
@@ -170,42 +186,94 @@ async function deviceFromKeys({ signing, agreement, kem }, deviceClass, protecti
     agree: publicJwk(await subtle.exportKey('jwk', agreement.publicKey))
   };
   if (kem) record.kem = toBase64Url(await subtle.exportKey('raw-public', kem.publicKey));
-  return Object.freeze({ id: await kappa(record), record, signingKey: signing.privateKey, agreementKey: agreement.privateKey, kemKey: kem?.privateKey ?? null });
+  if (pqsign) record.pqsign = toBase64Url(await subtle.exportKey('raw-public', pqsign.publicKey));
+  if (presence) record.presence = presence;
+  return Object.freeze({ id: await kappa(record), record, signingKey: signing.privateKey, agreementKey: agreement.privateKey,
+    kemKey: kem?.privateKey ?? null, pqSigningKey: pqsign?.privateKey ?? null });
 }
 
 /**
  * A device holds non-extractable private keys: one signs prism records, one
  * agrees keys for wrapping, and where the platform has it an ML-KEM-768 key
- * makes every wrap to this device hybrid. Only its public record leaves the
- * device. `deviceClass` and `protection` are claims the device makes about itself.
+ * makes every wrap to this device hybrid, and where it has ML-DSA-65 every
+ * record this device signs carries a second, post-quantum signature. Only its
+ * public record leaves the device. `deviceClass` and `protection` are claims
+ * the device makes about itself.
+ *
+ * `presence` binds a WebAuthn credential (a passkey) to the device:
+ * `{ rp, origin, key }` with the credential's P-256 public key as a JWK. A
+ * host can then require that an action carry an assertion the person made
+ * with user verification (see signAction). WebAuthn credentials are scoped to
+ * one relying party, so use one per persona.
  */
-export async function createDevice({ deviceClass = 'browser', protection = 'software' } = {}) {
+export async function createDevice({ deviceClass = 'browser', protection = 'software', presence } = {}) {
   if (!DEVICE_CLASSES.includes(deviceClass) || deviceClass === 'recovery') refuse('device', `unknown device class ${deviceClass}`);
   if (!KEY_PROTECTION.includes(protection) || protection === 'threshold-shares') refuse('device', `unknown key protection ${protection}`);
-  return deviceFromKeys(await newKeys(false), deviceClass, protection);
+  if (presence !== undefined) checkPresenceBinding(presence);
+  return deviceFromKeys(await newKeys(false), deviceClass, protection, presence === undefined ? undefined : { rp: presence.rp, origin: presence.origin, key: publicJwk(presence.key) });
 }
 
 const okKey = k => k && k.kty === 'EC' && k.crv === 'P-256' && typeof k.x === 'string' && typeof k.y === 'string' && Object.keys(k).length === 4;
 
+function checkPresenceBinding(presence) {
+  const key = presence?.key && publicJwk(presence.key);
+  if (!presence || typeof presence.rp !== 'string' || !presence.rp || typeof presence.origin !== 'string' || !presence.origin.startsWith('https://') || !okKey(key))
+    refuse('device', 'presence must name rp, an https origin and a P-256 credential key');
+}
+
+const OPTIONAL_DEVICE_FIELDS = Object.freeze({
+  kem: v => fromBase64Url(v).length === KEM_PUBLIC_BYTES,
+  pqsign: v => fromBase64Url(v).length === PQSIGN_PUBLIC_BYTES,
+  presence: v => { checkPresenceBinding(v); return Object.keys(v).length === 3 && Object.keys(v.key).length === 4; }
+});
+
 export function checkDeviceRecord(record) {
-  const keys = record ? Object.keys(record).length : 0;
-  const kemOk = record?.kem === undefined ? keys === 5 : keys === 6 && fromBase64Url(record.kem).length === KEM_PUBLIC_BYTES;
-  if (!record || record.kind !== KIND.device || !kemOk || !DEVICE_CLASSES.includes(record.class) ||
-    !KEY_PROTECTION.includes(record.protection) || !okKey(record.sign) || !okKey(record.agree)) refuse('device', 'malformed device record');
+  const ok = () => {
+    if (!record || typeof record !== 'object' || record.kind !== KIND.device || !DEVICE_CLASSES.includes(record.class) ||
+      !KEY_PROTECTION.includes(record.protection) || !okKey(record.sign) || !okKey(record.agree)) return false;
+    for (const key of Object.keys(record)) {
+      if (['kind', 'class', 'protection', 'sign', 'agree'].includes(key)) continue;
+      if (!OPTIONAL_DEVICE_FIELDS[key] || typeof record[key] !== (key === 'presence' ? 'object' : 'string') || !OPTIONAL_DEVICE_FIELDS[key](record[key])) return false;
+    }
+    return true;
+  };
+  let valid;
+  try { valid = ok(); } catch (error) { if (!(error instanceof PrismIdError)) throw error; valid = false; }
+  if (!valid) refuse('device', 'malformed device record');
   return record;
 }
 
 async function signRecord(device, body) {
-  const signature = await subtle.sign(SIGN_HASH, device.signingKey, canonicalBytes(body));
-  return { body, signer: device.id, signature: toBase64Url(signature) };
+  const bytes = canonicalBytes(body);
+  const envelope = { body, signer: device.id, signature: toBase64Url(await subtle.sign(SIGN_HASH, device.signingKey, bytes)) };
+  if (device.pqSigningKey) envelope.pqsignature = toBase64Url(await subtle.sign(PQSIGN, device.pqSigningKey, bytes));
+  return envelope;
 }
 
-async function signatureValid(envelope, deviceRecord) {
+/**
+ * Hybrid signature check (Stitch.PrismId.hybridSignatureAccepted). The P-256
+ * signature must always verify. When the signer advertises an ML-DSA-65 key
+ * and this verifier has ML-DSA, the ML-DSA signature must verify too, so
+ * stripping it is refused. A verifier without ML-DSA checks P-256 alone; a
+ * host that must resist a quantum forger refuses such verifiers with
+ * `{ requirePostQuantum: true }`.
+ */
+async function signatureValid(envelope, deviceRecord, { requirePostQuantum = false } = {}) {
   try {
     checkDeviceRecord(deviceRecord);
     if (await kappa(deviceRecord) !== envelope.signer) return false;
+    const bytes = canonicalBytes(envelope.body);
     const key = await subtle.importKey('jwk', { ...deviceRecord.sign, ext: true }, SIGN, false, ['verify']);
-    return await subtle.verify(SIGN_HASH, key, fromBase64Url(envelope.signature), canonicalBytes(envelope.body));
+    const classical = await subtle.verify(SIGN_HASH, key, fromBase64Url(envelope.signature), bytes);
+    const advertised = typeof deviceRecord.pqsign === 'string';
+    const verifierHasPq = await postQuantumSignaturesAvailable();
+    if (requirePostQuantum && !(advertised && verifierHasPq)) return false;
+    let pq = false;
+    if (advertised && verifierHasPq && typeof envelope.pqsignature === 'string') {
+      const pqKey = await subtle.importKey('raw-public', fromBase64Url(deviceRecord.pqsign), PQSIGN, false, ['verify']);
+      pq = await subtle.verify(PQSIGN, pqKey, fromBase64Url(envelope.pqsignature), bytes);
+    }
+    return model['Stitch.PrismId.hybridSignatureAccepted'](classical, advertised, verifierHasPq, pq);
   } catch (error) {
     if (error instanceof PrismIdError || error instanceof DOMException || error instanceof TypeError) return false;
     throw error;
@@ -725,6 +793,7 @@ async function exportDeviceSecret(keys) {
     agree: await subtle.exportKey('jwk', keys.agreement.privateKey)
   };
   if (keys.kem) secret.kem = toBase64Url(await subtle.exportKey('pkcs8', keys.kem.privateKey));
+  if (keys.pqsign) secret.pqsign = toBase64Url(await subtle.exportKey('pkcs8', keys.pqsign.privateKey));
   return secret;
 }
 
@@ -733,7 +802,8 @@ async function importDeviceSecret(record, secret) {
   const signingKey = await subtle.importKey('jwk', strip(secret.sign), SIGN, false, ['sign']);
   const agreementKey = await subtle.importKey('jwk', strip(secret.agree), AGREE, false, ['deriveBits']);
   const kemKey = secret.kem ? await subtle.importKey('pkcs8', fromBase64Url(secret.kem), KEM, false, ['decapsulateBits']) : null;
-  return Object.freeze({ id: await kappa(record), record, signingKey, agreementKey, kemKey });
+  const pqSigningKey = secret.pqsign ? await subtle.importKey('pkcs8', fromBase64Url(secret.pqsign), PQSIGN, false, ['sign']) : null;
+  return Object.freeze({ id: await kappa(record), record, signingKey, agreementKey, kemKey, pqSigningKey });
 }
 
 /**
@@ -800,13 +870,15 @@ export async function recoveryCode(prism, newDeviceRecord) {
  * guardians so the recovered secret is retired at once. Personas are carried
  * over when their host-held logs are supplied.
  */
-export async function recoverPrism({ prism, records, shares, device, personas = {}, rotateRecovery }) {
-  const log = await logFromRecords(records);
-  const state = await resolvePrism(prism, log);
-  if (!state.recovery) refuse('recovery', 'this prism has no active recovery device');
+export async function recoverPrism({ prism, records, bus, shares, device, personas = {}, rotateRecovery }) {
+  let log = records === undefined ? null : await logFromRecords(records);
+  let state = log ? await resolvePrism(prism, log) : null;
+  if (!log && typeof bus?.retained !== 'function') refuse('recovery', 'give the prism log, or a bus that retains sync messages');
+  const recoveryId = state ? state.recovery : shares.find(s => s?.kind === KIND.recoveryShare && s.prism === prism)?.recovery;
+  if (!recoveryId) refuse('recovery', 'this prism has no active recovery device');
   const parts = [];
   for (const s of shares) {
-    if (s.kind !== KIND.recoveryShare || s.prism !== prism || s.recovery !== state.recovery) continue;
+    if (s.kind !== KIND.recoveryShare || s.prism !== prism || s.recovery !== recoveryId) continue;
     if (parts.some(p => p.index === s.index)) continue;
     const bytes = s.guardian === 'paper' ? fromBase64Url(s.share) : await unwrapFrom(device, s.wrap, shareContext(prism, s.index));
     parts.push({ index: s.index, threshold: s.threshold, bytes });
@@ -818,10 +890,20 @@ export async function recoverPrism({ prism, records, shares, device, personas = 
   let secret;
   try { secret = JSON.parse(decoder.decode(secretBytes)); } catch { refuse('recovery', 'the shares do not combine to a recovery secret'); }
   secretBytes.fill(0);
-  if (secret.kind !== KIND.recoverySecret || secret.prism !== prism || await kappa(secret.device) !== state.recovery) refuse('recovery', 'the shares belong to another recovery device');
+  if (secret.kind !== KIND.recoverySecret || secret.prism !== prism || await kappa(secret.device) !== recoveryId) refuse('recovery', 'the shares belong to another recovery device');
   const recovery = await importDeviceSecret(secret.device, secret.keys);
+  const snapshot = new Map();
+  for (const [id, raw] of Object.entries(secret.keyring)) snapshot.set(id, await boundaryFromRaw(fromBase64Url(raw), true));
+  let carried = personas;
+  if (!log) {
+    const found = await collectFromBus(prism, bus, recovery, snapshot);
+    log = found.log;
+    carried = { ...found.personas, ...personas };
+    state = await resolvePrism(prism, log);
+    if (state.recovery !== recoveryId) refuse('recovery', 'the substrate holds no log in which this recovery device is active');
+  }
   let custodian = emptySession(prism, recovery, log);
-  for (const [id, raw] of Object.entries(secret.keyring)) custodian.keyring.set(id, await boundaryFromRaw(fromBase64Url(raw), true));
+  custodian.keyring = snapshot;
   custodian.keyring = await absorbRekeys(custodian, state);
   // Bind the new device, then revoke every other device; each revocation rotates the boundary.
   const bind = await signRecord(recovery, { kind: KIND.bind, prism, device: device.record, role: 'member', scope: [] });
@@ -834,7 +916,7 @@ export async function recoverPrism({ prism, records, shares, device, personas = 
     const now = await resolvePrism(prism, custodian.log);
     pending = now.active.filter(id => !done.has(id));
   }
-  custodian = await recoverPersonas(custodian, recovery, device, secret, personas);
+  custodian = await recoverPersonas(custodian, recovery, device, secret, carried);
   let result = { ...emptySession(prism, device, custodian.log), personas: custodian.personas, personaDevices: custodian.personaDevices };
   result.keyring = await absorbRekeys(result, await resolvePrism(prism, custodian.log));
   for (const [id, entry] of custodian.keyring) if (!result.keyring.has(id) && entry.raw) result.keyring.set(id, await boundaryFromRaw(entry.raw, true));
@@ -847,6 +929,41 @@ export async function recoverPrism({ prism, records, shares, device, personas = 
     newShares = rotated.shares;
   }
   return { session: result, shares: newShares };
+}
+
+/**
+ * Rebuild the prism log from sync messages the substrate retained, with no
+ * device and no other copy. The recovery device holds a snapshot of the
+ * keyring, and every rotation wraps the next boundary key to it, so it can
+ * open the retained messages on each sync topic in turn and follow the chain
+ * of rotations to the current key. Messages it cannot open are skipped.
+ */
+async function collectFromBus(prism, bus, device, keyring) {
+  const session = { ...emptySession(prism, device, new Map()), keyring: new Map(keyring) };
+  const personas = {};
+  const visited = new Set();
+  for (let pending = [...session.keyring.keys()]; pending.length; pending = [...session.keyring.keys()].filter(id => !visited.has(id))) {
+    for (const id of pending) {
+      visited.add(id);
+      for (const bytes of await bus.retained(await syncTopic(session, id))) {
+        try {
+          if (!(bytes instanceof Uint8Array) || bytes.length > MAX_SYNC_BYTES) continue;
+          const message = await openPrivate(session, JSON.parse(decoder.decode(bytes)));
+          if (message.kind !== KIND.sync || message.prism !== prism) continue;
+          const log = mergeLogs(session.log, await logFromRecords(message.records));
+          if (log.size > MAX_LOG_RECORDS) continue;
+          session.log = log;
+          for (const [pid, recs] of Object.entries(message.personas ?? {})) if (Array.isArray(recs)) personas[pid] = [...(personas[pid] ?? []), ...recs];
+        } catch (error) {
+          // A retained message this device cannot open or parse is not evidence of anything; skip it.
+          if (!(error instanceof PrismIdError || error instanceof SyntaxError || error instanceof DOMException || error instanceof TypeError)) throw error;
+        }
+      }
+    }
+    if (session.log.size) session.keyring = await absorbRekeys(session, await resolvePrism(prism, session.log));
+  }
+  if (!session.log.size) refuse('recovery', 'the substrate holds no sync message this recovery device can open');
+  return { log: session.log, personas };
 }
 
 // ---------------------------------------------------------------- personas: one unlinkable id per host
@@ -863,20 +980,20 @@ export async function recoverPrism({ prism, records, shares, device, personas = 
  * recovery device whose private keys are wrapped to the main recovery device.
  * No member keeps them, so a revoked member cannot hijack a persona.
  */
-export async function ensurePersona(session, audience) {
+export async function ensurePersona(session, audience, { presence } = {}) {
   if (typeof audience !== 'string' || !audience) refuse('persona', 'audience must name a host');
   const state = await mayActForPersona(session);
   const existing = choosePersona(session, audience);
   if (existing) {
     if (!session.personaDevices.has(audience)) {
-      const own = await createDevice({ deviceClass: session.device.record.class, protection: session.device.record.protection });
+      const own = await createDevice({ deviceClass: session.device.record.class, protection: session.device.record.protection, presence });
       const request = await signRecord(session.device, { kind: KIND.personaKey, prism: session.prism, audience, persona: existing.persona, device: own.record });
       const personaDevices = new Map(session.personaDevices).set(audience, own);
       return servicePersonas({ ...session, personaDevices, log: await addRecord(session.log, request) });
     }
     return session;
   }
-  const own = await createDevice({ deviceClass: session.device.record.class, protection: session.device.record.protection });
+  const own = await createDevice({ deviceClass: session.device.record.class, protection: session.device.record.protection, presence });
   const genesis = await signRecord(own, { kind: KIND.genesis, device: own.record, nonce: toBase64Url(random(16)) });
   const persona = await kappa(genesis.body);
   let personaLog = await logFromRecords([genesis]);
@@ -926,9 +1043,9 @@ export async function personaFor(session, audience) {
 }
 
 /** Sign an action for a host under this device's persona there. */
-export async function signPersonaAction(session, audience, action, payload, { now }) {
+export async function signPersonaAction(session, audience, action, payload, { now, presence }) {
   const { persona } = await personaFor(session, audience);
-  return signAction({ prism: persona, device: session.personaDevices.get(audience) }, action, payload, { now, audience });
+  return signAction({ prism: persona, device: session.personaDevices.get(audience) }, action, payload, { now, audience, presence });
 }
 
 /**
@@ -1012,11 +1129,82 @@ async function recoverPersonas(custodian, recovery, device, secret, hostLogs) {
  * sink). `audience` names the host, so the envelope is useless anywhere else;
  * a fresh nonce lets the host refuse replays. Prefer signPersonaAction, which
  * shows the host only that host's persona.
+ *
+ * `presence(challenge)` asks the person to approve: in a browser it calls
+ * navigator.credentials.get with `challenge` and userVerification
+ * 'required', and returns `{ authenticatorData, clientDataJSON, signature }`
+ * as base64url. The challenge is the SHA-256 of the action body, so the
+ * assertion approves exactly this action. Script in the origin cannot make
+ * one without the person's gesture and verification.
  */
-export async function signAction(session, action, payload, { now, audience }) {
+export async function signAction(session, action, payload, { now, audience, presence }) {
   if (typeof action !== 'string' || !action) refuse('action', 'action must be a name');
   if (typeof audience !== 'string' || !audience) refuse('action', 'action must name its audience');
-  return signRecord(session.device, { kind: KIND.action, prism: session.prism, action, audience, payload, at: now, nonce: toBase64Url(random(16)) });
+  const envelope = await signRecord(session.device, { kind: KIND.action, prism: session.prism, action, audience, payload, at: now, nonce: toBase64Url(random(16)) });
+  if (typeof presence === 'function') {
+    if (!session.device.record.presence) refuse('presence', 'this device has no passkey bound to it');
+    const assertion = await presence(await presenceChallenge(envelope.body));
+    envelope.presence = { authenticatorData: assertion.authenticatorData, clientDataJSON: assertion.clientDataJSON, signature: assertion.signature };
+  }
+  return envelope;
+}
+
+/** The WebAuthn challenge that approves an action: SHA-256 of its canonical body. */
+export async function presenceChallenge(body) {
+  return new Uint8Array(await subtle.digest('SHA-256', canonicalBytes(body)));
+}
+
+/** ECDSA signatures from WebAuthn are DER; WebCrypto verifies the raw r || s form. */
+function derToRaw(der) {
+  let i = 0;
+  const fail = () => refuse('presence', 'malformed assertion signature');
+  if (der[i++] !== 0x30) fail();
+  const total = der[i++];
+  if (total & 0x80 || total + 2 !== der.length) fail();
+  const integer = () => {
+    if (der[i++] !== 0x02) fail();
+    const length = der[i++];
+    if (length < 1 || length > 33 || i + length > der.length) fail();
+    let value = der.subarray(i, i + length);
+    i += length;
+    if (value.length === 33) { if (value[0] !== 0) fail(); value = value.subarray(1); }
+    const out = new Uint8Array(32);
+    out.set(value, 32 - value.length);
+    return out;
+  };
+  const r = integer(), s = integer();
+  if (i !== der.length) fail();
+  return concat(r, s);
+}
+
+const sameBytes = (a, b) => a.length === b.length && a.every((x, i) => x === b[i]);
+
+/**
+ * Check a WebAuthn assertion against the passkey bound in the device record:
+ * type webauthn.get, the challenge for this action body, the bound origin and
+ * rp id, the user-present and user-verified flags, and the signature over
+ * authenticatorData || SHA-256(clientDataJSON).
+ */
+async function presenceEvidence(record, body, presence) {
+  const none = { userPresent: false, userVerified: false, challengeMatches: false, assertionValid: false };
+  const binding = record?.presence;
+  if (!binding || !presence || typeof presence !== 'object') return none;
+  try {
+    const authData = fromBase64Url(presence.authenticatorData);
+    const clientDataBytes = fromBase64Url(presence.clientDataJSON);
+    const clientData = JSON.parse(decoder.decode(clientDataBytes));
+    if (authData.length < 37) return none;
+    const rpHash = new Uint8Array(await subtle.digest('SHA-256', encoder.encode(binding.rp)));
+    const challengeMatches = clientData?.type === 'webauthn.get' && clientData.origin === binding.origin &&
+      clientData.challenge === toBase64Url(await presenceChallenge(body)) && sameBytes(authData.subarray(0, 32), rpHash);
+    const key = await subtle.importKey('jwk', { ...binding.key, ext: true }, SIGN, false, ['verify']);
+    const signed = concat(authData, new Uint8Array(await subtle.digest('SHA-256', clientDataBytes)));
+    const assertionValid = await subtle.verify(SIGN_HASH, key, derToRaw(fromBase64Url(presence.signature)), signed);
+    return { userPresent: (authData[32] & 0x01) !== 0, userVerified: (authData[32] & 0x04) !== 0, challengeMatches, assertionValid };
+  } catch (error) {
+    if (error instanceof PrismIdError || error instanceof SyntaxError || error instanceof DOMException || error instanceof TypeError) return none;
+    throw error;
+  }
 }
 
 /**
@@ -1025,18 +1213,27 @@ export async function signAction(session, action, payload, { now, audience }) {
  * Stitch.PrismId.actionAllowed holds (an active member, or a delegate acting
  * inside its scope; a recovery device never acts). `seen` is the host's replay
  * set for the window. `prism` and `log` are the persona the device presented.
+ *
+ * `requirePresence` (true, or a list of action names) makes the host accept
+ * those actions only with the person's user-verified WebAuthn approval of
+ * exactly this action (Stitch.PrismId.presenceSatisfied). `requirePostQuantum`
+ * refuses an action whose ML-DSA signature this host cannot check.
  */
-export async function verifyAction(prism, log, envelope, { audience, now, window = 60000, seen = new Set() }) {
+export async function verifyAction(prism, log, envelope, { audience, now, window = 60000, seen = new Set(), requirePresence = false, requirePostQuantum = false }) {
   const body = envelope?.body;
   if (body?.kind !== KIND.action || body.prism !== prism || !Number.isSafeInteger(body.at) || body.at < 0 || typeof body.nonce !== 'string')
     return { allowed: false, reason: 'not an action of this prism' };
   const state = await resolvePrism(prism, log);
   const id = envelope.signer;
   if (!state.devices[id] && !state.revoked.includes(id)) return { allowed: false, reason: 'unknown device' };
-  if (!state.devices[id] || !await signatureValid(envelope, state.devices[id])) return { allowed: false, reason: 'signature or revocation' };
+  if (!state.devices[id] || !await signatureValid(envelope, state.devices[id], { requirePostQuantum })) return { allowed: false, reason: 'signature or revocation' };
   const replayKey = `${id} ${body.nonce}`;
   if (!model['Stitch.PrismId.actionFresh'](body.audience === audience, !seen.has(replayKey), body.at, now, window))
     return { allowed: false, reason: 'audience, replay or time window' };
+  const required = requirePresence === true || (Array.isArray(requirePresence) && requirePresence.includes(body.action));
+  const evidence = required ? await presenceEvidence(state.devices[id], body, envelope.presence) : {};
+  if (!model['Stitch.PrismId.presenceSatisfied'](required, evidence.userPresent === true, evidence.userVerified === true,
+    evidence.challengeMatches === true, evidence.assertionValid === true)) return { allowed: false, reason: 'approval' };
   const role = state.roles[id];
   const scoped = role !== 'member';
   const allowed = model['Stitch.PrismId.actionAllowed'](true, state.revoked.includes(id), scoped, role === 'delegate' && state.scopes[id].includes(body.action));
@@ -1088,8 +1285,9 @@ export function boundaryVisibleTo(boundary, prism) {
  * Sealed plaintext is padded (ISO/IEC 7816-4) to a power-of-two bucket of at
  * least 1 KiB, so observers learn only the bucket, not the exact size.
  */
-export function padToBucket(bytes) {
-  let size = 1024;
+export function padToBucket(bytes, minimum = 1024) {
+  if (!Number.isSafeInteger(minimum) || minimum < 1024 || (minimum & (minimum - 1)) !== 0) refuse('padding', 'bucket must be a power of two of at least 1024');
+  let size = minimum;
   while (size < bytes.length + 1) size *= 2;
   const out = new Uint8Array(size);
   out.set(bytes);
@@ -1110,11 +1308,12 @@ export async function sealPrivate(session, value) {
   return sealWith(session, keyId, value);
 }
 
-async function sealWith(session, keyId, value) {
+async function sealWith(session, keyId, value, { bucket = 1024 } = {}) {
   const entry = session.keyring.get(keyId);
   if (!entry) refuse('stale-key', 'this device does not hold that boundary key');
-  const sealed = { kind: KIND.sealed, boundary: 'private', key: keyId, ...await encryptWith(entry.seal, padToBucket(canonicalBytes(value)), session.prism) };
-  return { address: await kappa(sealed), sealed };
+  const padded = padToBucket(canonicalBytes(value), bucket);
+  const sealed = { kind: KIND.sealed, boundary: 'private', key: keyId, ...await encryptWith(entry.seal, padded, session.prism) };
+  return { address: await kappa(sealed), sealed, bucket: padded.length };
 }
 
 /** Open sealed content with whichever key it names, including keys from before a rotation. */
@@ -1138,17 +1337,47 @@ export async function syncTopic(session, keyId) {
  * Publish this device's log and persona logs to its other member devices,
  * sealed in the private boundary. After a rotation, publish once under the
  * previous key so devices still listening there can take up the new key.
+ * Returns the padded bucket, so a cadence can keep every message that size.
  */
-export async function publishSync(session, bus, { keyId } = {}) {
+export async function publishSync(session, bus, { keyId, bucket } = {}) {
   const id = keyId ?? (await currentBoundary(session)).keyId;
-  const { sealed } = await sealWith(session, id, { kind: KIND.sync, prism: session.prism, records: [...session.log.values()], personas: personaRecords(session) });
-  await bus.publish(await syncTopic(session, id), canonicalBytes(sealed));
+  const sealed = await sealWith(session, id, { kind: KIND.sync, prism: session.prism, records: [...session.log.values()], personas: personaRecords(session) }, { bucket });
+  await bus.publish(await syncTopic(session, id), canonicalBytes(sealed.sealed));
+  return { bucket: sealed.bucket };
+}
+
+/** A cover message: sealed and padded like a sync message, ignored by receivers. */
+export async function publishCover(session, bus, { bucket = 1024 } = {}) {
+  const { keyId } = await currentBoundary(session);
+  const sealed = await sealWith(session, keyId, { kind: KIND.cover, prism: session.prism }, { bucket });
+  await bus.publish(await syncTopic(session, keyId), canonicalBytes(sealed.sealed));
+  return { bucket: sealed.bucket };
+}
+
+/**
+ * Constant-cadence sync. Call `tick` on a fixed timer: it publishes a pending
+ * sync if there is one, otherwise a cover message, always padded to the same
+ * bucket. A relay then sees one message of one size per interval whether or
+ * not anything changed. The bucket only grows, when the log outgrows it.
+ */
+export function createSyncCadence({ bucket = 1024 } = {}) {
+  let pending = false, size = bucket;
+  return {
+    queue() { pending = true; },
+    get bucket() { return size; },
+    async tick(session, bus) {
+      const sent = pending ? await publishSync(session, bus, { bucket: size }) : await publishCover(session, bus, { bucket: size });
+      pending = false;
+      size = Math.max(size, sent.bucket);
+    }
+  };
 }
 
 /** Merge a sync message. Records that do not resolve for this prism are refused. */
 export async function receiveSync(session, bytes) {
   if (!(bytes instanceof Uint8Array) || bytes.length > MAX_SYNC_BYTES) refuse('sync', `sync message exceeds ${MAX_SYNC_BYTES} bytes`);
   const message = await openPrivate(session, JSON.parse(decoder.decode(bytes)));
+  if (message.kind === KIND.cover && message.prism === session.prism) return session;
   if (message.kind !== KIND.sync || message.prism !== session.prism) refuse('sync', 'sync message for another prism');
   const log = mergeLogs(session.log, await logFromRecords(message.records));
   if (log.size > MAX_LOG_RECORDS) refuse('log', `log exceeds ${MAX_LOG_RECORDS} records`);
@@ -1159,15 +1388,28 @@ export async function receiveSync(session, bytes) {
   return servicePersonas(next);
 }
 
+/** How many messages per topic the in-memory bus retains. */
+export const MAX_RETAINED = 256;
+
 /**
- * The bus contract the substrate implements: publish bytes to a topic and
- * deliver them to subscribers. This in-memory bus is for tests and single-page use.
+ * The bus contract the substrate implements: publish bytes to a topic, deliver
+ * them to subscribers, and retain recent messages per topic so a device that
+ * was offline, or a recovering device with no copy of the log, can read them
+ * later (`retained`). This in-memory bus is for tests and single-page use.
  */
 export function createMemoryBus() {
   const subscribers = new Map();
+  const kept = new Map();
   return {
     async publish(topic, bytes) {
+      const list = kept.get(topic) ?? [];
+      list.push(new Uint8Array(bytes));
+      if (list.length > MAX_RETAINED) list.shift();
+      kept.set(topic, list);
       for (const fn of [...(subscribers.get(topic) ?? [])]) await fn(new Uint8Array(bytes));
+    },
+    async retained(topic) {
+      return (kept.get(topic) ?? []).map(b => new Uint8Array(b));
     },
     subscribe(topic, fn) {
       if (!subscribers.has(topic)) subscribers.set(topic, new Set());

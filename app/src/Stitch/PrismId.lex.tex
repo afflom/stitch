@@ -151,6 +151,26 @@ definition{
   body: (published || member)
 }
 
+definition{
+  name: hybridSignatureAccepted,
+  parameters: [classicalValid : Bool, pqAdvertised : Bool, verifierHasPq : Bool, pqValid : Bool],
+  result: Bool,
+  body: (classicalValid && ((not (pqAdvertised && verifierHasPq)) || pqValid))
+}
+
+definition{
+  name: presenceSatisfied,
+  parameters: [
+    required : Bool,
+    userPresent : Bool,
+    userVerified : Bool,
+    challengeMatches : Bool,
+    assertionValid : Bool
+  ],
+  result: Bool,
+  body: ((not required) || (userPresent && (userVerified && (challengeMatches && assertionValid))))
+}
+
 theorem{
   name: unlinkedDeviceCannotSign,
   parameters: [revoked : Bool],
@@ -368,6 +388,41 @@ theorem{
   parameters: [],
   statement: ((boundaryVisibleTo false false) = false),
   proof: reflexivity{}
+}
+
+theorem{
+  name: classicalSignatureAlwaysRequired,
+  parameters: [pqAdvertised : Bool, verifierHasPq : Bool, pqValid : Bool],
+  statement: ((hybridSignatureAccepted false pqAdvertised verifierHasPq pqValid) = false),
+  proof: reflexivity{}
+}
+
+theorem{
+  name: postQuantumSignatureStripRefused,
+  parameters: [],
+  statement: (forall (classicalValid : Bool), ((hybridSignatureAccepted classicalValid true true false) = false)),
+  proof: decide{}
+}
+
+theorem{
+  name: unverifiedApprovalRefused,
+  parameters: [],
+  statement: (forall (userPresent : Bool), (forall (challengeMatches : Bool), (forall (assertionValid : Bool), ((presenceSatisfied true userPresent false challengeMatches assertionValid) = false)))),
+  proof: decide{}
+}
+
+theorem{
+  name: approvalOfOtherActionRefused,
+  parameters: [],
+  statement: (forall (userPresent : Bool), (forall (userVerified : Bool), (forall (assertionValid : Bool), ((presenceSatisfied true userPresent userVerified false assertionValid) = false)))),
+  proof: decide{}
+}
+
+theorem{
+  name: forgedApprovalRefused,
+  parameters: [],
+  statement: (forall (userPresent : Bool), (forall (userVerified : Bool), (forall (challengeMatches : Bool), ((presenceSatisfied true userPresent userVerified challengeMatches false) = false)))),
+  proof: decide{}
 }
 \end{semanticmodule}
 \end{lexlean}

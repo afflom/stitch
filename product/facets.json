@@ -109,7 +109,7 @@
     },
     {
       "path": "app/src/Stitch/PrismId.lex.tex",
-      "sha256": "22749c7ee5a6c0ff130ba9ac8325cabce5000a8114d272d5eef0658d5c4a752f"
+      "sha256": "1d3d73a831097b3cc6897b94e191d38b52902496b18951e2c188055e0897f935"
     },
     {
       "path": "docs/authenticated-signaling.md",
@@ -137,7 +137,7 @@
     },
     {
       "path": "docs/prism-id-threat-model.md",
-      "sha256": "8524ef6260cd8708c0dacb6fdfdb9133dedee143216ec57decc6ecb1bccc9a0e"
+      "sha256": "1e57d29089fc844874ad01b758bd379e9d5b9bbfe2d2461cfe2b740697031d94"
     },
     {
       "path": "docs/prism-model.md",
@@ -193,7 +193,7 @@
     },
     {
       "path": "scripts/check-facets.mjs",
-      "sha256": "bac6b8d94e4f926236752d9a54f2c9b7bd99063e35646aa21bbb61954ef8fa8a"
+      "sha256": "4ccdee319cf9cec4066570e2bae311dfd0828a29891e88bc2ea2e6bc445bee51"
     },
     {
       "path": "scripts/check-product.mjs",
@@ -329,7 +329,7 @@
     },
     {
       "path": "tests/prism-id.test.js",
-      "sha256": "1536964878588a95439d68c747318a7939302c973f8401db8aed8eb83dd375ad"
+      "sha256": "ade2eb4cfca393f21034c974a315c560e4bc7b2f87e4cafa9c37dc0280556aa9"
     },
     {
       "path": "tests/product-experience.test.js",
@@ -441,7 +441,7 @@
     {
       "module": "Product.Security",
       "path": "app/src/Product/Security.lex.tex",
-      "records": 245,
+      "records": 252,
       "sourcePaths": [
         "app/src/Product/Architecture.lex.tex",
         "app/src/Product/Model.lex.tex",
@@ -469,8 +469,8 @@
         "tests/source-evidence.test.js",
         "tests/vm-administration.test.js"
       ],
-      "declarations": 248,
-      "sha256": "7723ba9b8e98ad3610eb2138a541a0a7bde6263de726ae111177de39b3407da8"
+      "declarations": 255,
+      "sha256": "4eb9b799086128e191af7c5dbe44da2d4ffd95938e61591cc43fb47a95dfc0fc"
     },
     {
       "module": "Product.Quality",
@@ -492,7 +492,7 @@
         "tests/runtime-admission.test.js"
       ],
       "declarations": 48,
-      "sha256": "25aa9f459fbf2640161d506b72e1b35dc54c7e949a3fd954e59bcf5adc3149c9"
+      "sha256": "568af2bafa27a50917dfffac0de44c9b83f05069c2ef8f961ff70071d0f07785"
     },
     {
       "module": "Product.Brand",
@@ -579,7 +579,7 @@
         "tests/product-facets.test.js"
       ],
       "declarations": 17,
-      "sha256": "2c7f6fffde822ce16d591f67d80f5c4bc032e3c3cd04592b448e13a0c63522a9"
+      "sha256": "ee1cf13e35d64e467075ef7bff835dca1d7d5370bde59e19f82a2daf487f40e6"
     }
   ],
   "operatorActionCount": 31,
@@ -1782,13 +1782,16 @@
       "likelihood": "medium",
       "impact": "critical",
       "threat": "Script running in the prism origin (XSS, compromised dependency or static host) uses device key handles and reads the boundary keyring.",
-      "control": "Device keys are non-extractable; a hardened device keeps only non-extractable derived boundary keys and cannot link members or set up recovery, so script can use keys only while it runs and can copy none out.",
+      "control": "Device keys are non-extractable; a hardened device keeps only non-extractable derived boundary keys and cannot link members or set up recovery, so script can copy no key out; actions a host marks need a user-verified WebAuthn assertion over exactly that action body, which script cannot make without the person.",
       "evidence": [
         "tests/prism-id.test.js",
         "docs/prism-id-threat-model.md"
       ],
       "proofs": [
-        "Stitch.PrismId::hardenedDeviceCannotShare"
+        "Stitch.PrismId::hardenedDeviceCannotShare",
+        "Stitch.PrismId::unverifiedApprovalRefused",
+        "Stitch.PrismId::approvalOfOtherActionRefused",
+        "Stitch.PrismId::forgedApprovalRefused"
       ],
       "index": 19,
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
@@ -1813,6 +1816,25 @@
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
     },
     {
+      "id": "PrismQuantumForgery",
+      "asset": "prismId",
+      "category": "spoofing",
+      "likelihood": "low",
+      "impact": "critical",
+      "threat": "A future quantum adversary forges P-256 signatures to bind a device or sign actions.",
+      "control": "Every record and action from a device with an ML-DSA-65 key also carries an ML-DSA signature; verifiers with ML-DSA refuse a missing or invalid one, and hosts can refuse verifiers without it.",
+      "evidence": [
+        "tests/prism-id.test.js",
+        "docs/prism-id-threat-model.md"
+      ],
+      "proofs": [
+        "Stitch.PrismId::postQuantumSignatureStripRefused",
+        "Stitch.PrismId::classicalSignatureAlwaysRequired"
+      ],
+      "index": 21,
+      "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
+    },
+    {
       "id": "PrismQuantumHarvest",
       "asset": "prismId",
       "category": "informationDisclosure",
@@ -1827,7 +1849,7 @@
       "proofs": [
         "Stitch.PrismId::postQuantumDowngradeRefused"
       ],
-      "index": 21,
+      "index": 22,
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
     },
     {
@@ -1837,7 +1859,7 @@
       "likelihood": "medium",
       "impact": "critical",
       "threat": "Every member device is lost, so the prism is lost.",
-      "control": "Threshold recovery: the recovery key exists only as shares sealed to guardians; recovery binds a new device, revokes the rest, carries personas and rotates itself.",
+      "control": "Threshold recovery: the recovery key exists only as shares sealed to guardians; with no surviving copy of the log, recovery rebuilds it from sealed sync the substrate retained by following the rotations wrapped to the recovery device; it binds a new device, revokes the rest, carries personas and rotates itself.",
       "evidence": [
         "tests/prism-id.test.js",
         "docs/prism-id-threat-model.md"
@@ -1846,7 +1868,7 @@
         "Stitch.PrismId::belowThresholdRefused",
         "Stitch.PrismId::memberCannotRevokeRecovery"
       ],
-      "index": 22,
+      "index": 23,
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
     },
     {
@@ -1864,7 +1886,7 @@
       "proofs": [
         "Stitch.PrismId::staleBoundaryKeyRefused"
       ],
-      "index": 23,
+      "index": 24,
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
     },
     {
@@ -1880,7 +1902,7 @@
         "docs/prism-id-threat-model.md"
       ],
       "proofs": [],
-      "index": 24,
+      "index": 25,
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
     },
     {
@@ -1900,7 +1922,7 @@
         "Stitch.PrismId::delegateCannotBind",
         "Stitch.PrismId::invalidBindSignatureRefused"
       ],
-      "index": 25,
+      "index": 26,
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
     },
     {
@@ -1920,7 +1942,7 @@
         "Stitch.PrismId::revokedDeviceActionRefused",
         "Stitch.PrismId::staleBoundaryKeyRefused"
       ],
-      "index": 26,
+      "index": 27,
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
     },
     {
@@ -1930,13 +1952,13 @@
       "likelihood": "high",
       "impact": "major",
       "threat": "Bus relays and federation nodes read sync content or infer it from message sizes.",
-      "control": "Sync topic is an HMAC under a derived boundary key; every message is AES-GCM sealed, bound to the prism id and padded to a power-of-two bucket; timing and network addresses remain observable.",
+      "control": "Sync topic is an HMAC under a derived boundary key; every message is AES-GCM sealed, bound to the prism id and padded to a power-of-two bucket; constant-cadence sync sends one message of one size per interval, real or cover; network addresses remain observable.",
       "evidence": [
         "tests/prism-id.test.js",
         "docs/prism-id-threat-model.md"
       ],
       "proofs": [],
-      "index": 27,
+      "index": 28,
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
     },
     {
@@ -1952,7 +1974,7 @@
         "docs/prism-model.md"
       ],
       "proofs": [],
-      "index": 28,
+      "index": 29,
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
     },
     {
@@ -1968,7 +1990,7 @@
         "docs/authenticated-signaling.md"
       ],
       "proofs": [],
-      "index": 29,
+      "index": 30,
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
     },
     {
@@ -1984,7 +2006,7 @@
         "docs/recovery.md"
       ],
       "proofs": [],
-      "index": 30,
+      "index": 31,
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
     },
     {
@@ -2000,7 +2022,7 @@
         "docs/vendor-provenance.md"
       ],
       "proofs": [],
-      "index": 31,
+      "index": 32,
       "assessment": "Conservative qualitative design assessment. High: directly supplied adversarial input; medium: environmental/host privilege or failure required. Impact describes possible consequence, not probability."
     }
   ],

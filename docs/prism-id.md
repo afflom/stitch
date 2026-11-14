@@ -21,7 +21,7 @@ LexLean's `kappa` package and PrismPM ADR-017. It differs from the older
 
 | Kind | Signed by | Meaning |
 | --- | --- | --- |
-| `prism/device/1` | none (public record) | A device's class (`browser`, `native`, `mobile`, `embedded`, `recovery`), its claimed key protection (`software`, `platform`, `secure-element`, `threshold-shares`), its P-256 signing and agreement public keys, and an optional ML-KEM-768 public key (`kem`). Its kappa is the device id. Private keys are non-extractable. |
+| `prism/device/1` | none (public record) | A device's class (`browser`, `native`, `mobile`, `embedded`, `recovery`), its claimed key protection (`software`, `platform`, `secure-element`, `threshold-shares`), its P-256 signing and agreement public keys, an optional ML-KEM-768 public key (`kem`), an optional ML-DSA-65 public key (`pqsign`), and an optional passkey binding (`presence`: rp id, origin, P-256 credential key). Its kappa is the device id. Private keys are non-extractable. |
 | `prism/genesis/1` | the first device | Creates the prism. prism id = kappa of this body. The first device is a member. |
 | `prism/bind/1` | an active member | Links a device as a `member` (no scope), a `delegate` (a non-empty list of actions), or the `recovery` device. Once a recovery device exists, only it may bind a new one. |
 | `prism/revoke/1` | a linked member | Removes a device. `keep` lists the binds the revoked device made that stay valid. `epoch` and `wraps` carry a new private boundary key wrapped to each remaining member. |
@@ -85,14 +85,21 @@ rotation, publish once under the previous key so that devices still listening
 there take up the new key. Content sealed under earlier keys stays readable to
 the devices that hold them.
 
-## Post-quantum wraps
+## Post-quantum wraps and signatures
 
 Every key wrap (linking, rotation, recovery shares, persona recovery) is
 hybrid when the recipient's device record carries `kem`: both the ECDH and the
 ML-KEM-768 shared secrets feed HKDF, so the wrap holds if either does. A wrap to
 such a device without the KEM part is refused, and so is a sender that cannot
 encapsulate (`Stitch.PrismId.hybridWrapRequired`). Devices advertise `kem` when
-their WebCrypto has ML-KEM (Node 24 does). Signatures stay P-256 ECDSA.
+their WebCrypto has ML-KEM (Node 24 does).
+
+A device whose record carries `pqsign` signs every record and action twice:
+P-256 ECDSA in `signature` and ML-DSA-65 in `pqsignature`, both over the same
+canonical body. A verifier with ML-DSA requires both
+(`Stitch.PrismId.hybridSignatureAccepted`), so stripping the ML-DSA signature
+is refused. A verifier without ML-DSA checks P-256 alone; a host that must
+resist a quantum forger passes `requirePostQuantum: true`.
 
 ## Recovery
 
@@ -110,8 +117,14 @@ screens, and calls `releaseShare`, which re-wraps the share to the new device.
 binds the new device as a member, revokes every other device ever linked
 (including a thief's, whose revocations then stop counting), carries personas
 over, and with `rotateRecovery` replaces the recovery device with fresh shares
-so the recovered secret is retired. The prism log it takes is a copy obtained
-from the substrate, where the recovery keyring can open it, or from any holder.
+so the recovered secret is retired.
+
+Recovery needs no copy of the log. Given `bus` instead of `records`, it reads
+the sync messages the substrate retained (`bus.retained(topic)`), opening them
+with the keyring snapshot in the recovery secret. Every rotation wraps the next
+boundary key to the recovery device, and devices publish once under the
+previous key after a rotation, so recovery follows the chain of rotations to
+the current key and rebuilds the log and the persona logs.
 
 ## Personas: one id per host
 
@@ -124,7 +137,9 @@ requested by active devices with the same role and scope, and revoke persona
 keys of devices the main prism revoked. A persona's recovery key is wrapped to
 the main recovery device, so recovery restores every persona whose log the host
 supplies. `personaFor` returns what a host needs, and `signPersonaAction` signs
-under the persona.
+under the persona. `ensurePersona(session, audience, { presence })` binds that
+host's passkey to the persona device, since a passkey belongs to one relying
+party.
 
 ## Actions at a host
 
@@ -134,6 +149,20 @@ this audience (`Stitch.PrismId.actionFresh`), and it must come from an active
 device inside its scope (`Stitch.PrismId.actionAllowed`). This is how foundry
 grants a stakeholder the permissions of their prism context. Hosts are given
 the persona for their audience, not the main prism.
+
+## Actions the person approves
+
+A host can require the person's approval for chosen actions:
+`verifyAction(..., { requirePresence: ['payments/send'] })`. The device signs
+the action as usual and passes `presence`, a function that calls
+`navigator.credentials.get` with the challenge it is given and
+`userVerification: 'required'`. The challenge is the SHA-256 of the canonical
+action body (`presenceChallenge`), so the approval covers exactly this action.
+The host checks the assertion against the passkey bound in the device record:
+type, challenge, origin, rp id hash, the user-present and user-verified flags,
+and the signature (`Stitch.PrismId.presenceSatisfied`). Script running in the
+origin can still sign with the device key, but it cannot produce that approval
+without the person.
 
 ## Boundaries
 
@@ -148,9 +177,14 @@ the sealed object's kappa is its address.
 Linked devices sync on a topic derived from the private boundary key, so only
 they can find it. Each message is the log and the persona logs, sealed in the
 private boundary, bound to the prism id, and padded (ISO 7816-4) to a
-power-of-two bucket of at least 1 KiB so relays learn only the bucket. Messages over 4 MiB and logs over 4096 records are refused
+power-of-two bucket of at least 1 KiB so relays learn only the bucket.
+`createSyncCadence` goes further: called on a fixed timer, its `tick` sends a
+pending sync or else a cover message (`publishCover`) padded to the same
+bucket, so relays see one message of one size per interval either way.
+Receivers ignore cover messages. Messages over 4 MiB and logs over 4096 records are refused
 before any parsing or signature work. The bus contract is `publish(topic, bytes)` and
-`subscribe(topic, fn)`. `createMemoryBus` implements it for tests; the stitch
+`subscribe(topic, fn)`, and `retained(topic)` returns the messages the
+substrate kept for that topic, which offline devices and recovery read. `createMemoryBus` implements it for tests; the stitch
 substrate implements it across peers and federation nodes.
 
 The threat and security model is in `docs/prism-id-threat-model.md`.
