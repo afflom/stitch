@@ -131,11 +131,19 @@ replay's records. A replay that also signs a second retirement of the old
 recovery device, keeping its own records, is a fork. A recovery device is
 retired once, so a log holding two retirements that keep different records
 does not resolve (`fork`): a host that hears both acts for neither side, and
-the replay never acts as the person. Devices never hold a fork:
+the replay never acts as the person where the recovery is heard. Devices never hold a fork:
 `receiveSync`, and `heardLog(..., { own: true })` for a device checking its
 own log, admit records through `admitRecords`, which refuses a retirement of
 a recovery device the held log already retires. Recovering again with the
 newer kit leaves the retired recovery device as it is.
+
+`replaceRecovery(session, shares, { threshold, guardians })` replaces the
+recovery device while a member is at hand: the current recovery device,
+combined from its shares, binds a new one with fresh shares and retires
+itself. No member holds the recovery secret on the way. A kit of one paper
+share gains a guardian this way: two of two over a paper share and a
+guardian's, so the paper alone no longer recovers, and a guardian that keeps
+its share until it releases it once has nothing to release to a replay.
 
 Recovery needs no copy of the log. Given `bus` instead of `records`, it reads
 the sync messages the substrate retained (`bus.retained(topic)`), opening them
@@ -233,14 +241,27 @@ These belong in the threat model's residuals (section 10) and designs
 (section 12) when its next revision is attested; they are kept here so that
 change does not invalidate the retained proof evidence.
 
-- **A replayed old recovery, forked.** A replayed old kit binds and revokes
-  nothing (see Recovery), but whoever holds it can still sign a second
-  retirement and publish it on the public log topic. Hosts that hear it then
-  act for neither side until the person stops using that prism id: the old
-  kit cannot take the id over, but it can deny it at hosts. Set union has no
-  order, so only an outside witness tells the two retirements apart; ordering
-  by the witnessed time of threat-model D4 closes it, and keeping an old kit
-  as secret as the current one keeps it from arising.
+- **A replayed old paper kit.** A replayed old kit binds and revokes
+  nothing where the recovery that used it is heard (see Recovery), but
+  whoever holds it can still sign a second retirement and publish it on the
+  public log topic. Hosts that hear both then act for neither side, and a host
+  that hears only the replay, because nothing retains the recovery any more,
+  takes it for a recovery. So an old kit is denial wherever the recovery is
+  heard, and as strong as the current kit wherever it is not.
+  No element of stitch can close this for a kit that is only paper shares:
+  a recovery after losing every device leaves nothing that knows it happened
+  except the kit itself, so whoever later holds a copy of the kit holds
+  everything the person held, and only the order of the two uses tells them
+  apart. That order needs a witness that outlasts the devices. Guardians
+  already are one: a guardian confirms the person out of band before
+  `releaseShare`, and refuses whoever replays later. `replaceRecovery` adds
+  one to a paper kit. A kit of paper shares alone has none, so it is to be
+  kept as secret after use as before, and a paper kit that never left the
+  device it was made on, replaced before it was saved, was never exposed. The
+  person's own devices are never denied: they hold their log and admit what
+  they hear through `admitRecords`.
+  The witnessed time of threat-model D4 would close it for paper kits too,
+  but needs witnesses that run somewhere, which stitch does not add.
 - **Retention when every member is offline.** The refresh cadence keeps a
   recent sync and public log on the warm relay while a member is online. After
   every member has been offline longer than the relay keeps messages, log-free
