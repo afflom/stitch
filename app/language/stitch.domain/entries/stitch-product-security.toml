@@ -1,0 +1,17 @@
+spec = "lexlean/entry/1"
+id = "stitch-product-security"
+category = "label-word"
+surface_arity = 0
+frame = "atom"
+
+[denotation]
+kind = "document"
+module = "Product.Security"
+component = "sources"
+
+[[form]]
+id = "stitch-product-security"
+channel = "text"
+surface = "Stitch security and threat model"
+canonical_source = true
+features = ["sentence-case", "singular"]

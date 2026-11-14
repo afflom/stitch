@@ -1,0 +1,38 @@
+\begin{lexlean}{Foundation.Qual}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Boolean}
+\begin{semanticmodule}
+structure{
+  name: ProductQualityCharacteristic,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: index, type: Nat}]
+}
+
+structure{
+  name: QualitySubcharacteristic,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: index, type: Nat}, {name: characteristicIndex, type: Nat}]
+}
+
+structure{
+  name: QualityRequirement,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: index, type: Nat}, {name: subcharacteristicIndex, type: Nat}]
+}
+
+structure{
+  name: QualityMeasure,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: index, type: Nat},
+    {name: requirementIndex, type: Nat},
+    {name: threshold, type: Nat}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

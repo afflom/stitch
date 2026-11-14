@@ -1,0 +1,72 @@
+name: Stitch source authoring artifact
+on:
+  push:
+    branches: [feat/complete-stitch-prism]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: stitch-source-authoring-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  source-authoring:
+    if: github.repository == 'afflom/stitch' && github.ref == 'refs/heads/feat/complete-stitch-prism'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 55
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Record exact source and unchanged SDK pin
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p verification-output
+          node --input-type=module <<'JS'
+          import fs from 'node:fs';
+          import {createHash} from 'node:crypto';
+          const bytes=fs.readFileSync('prismpm.lock'), lock=JSON.parse(bytes);
+          if(!/^ghcr\.io\/uor-foundation\/[a-z0-9-]+@sha256:[0-9a-f]{64}$/.test(lock.sdk_image))throw Error('unpinned SDK');
+          fs.appendFileSync(process.env.GITHUB_ENV,`SDK_IMAGE=${lock.sdk_image}\n`);
+          fs.writeFileSync('verification-output/authoring-input.json',JSON.stringify({
+            scope:'Source authoring only; not native Prism acceptance',revision:process.env.GITHUB_SHA,
+            sdk_image:lock.sdk_image,lock_sha256:createHash('sha256').update(bytes).digest('hex')
+          },null,2)+'\n');
+          JS
+      - name: Run actual pinned authoring and source verification
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash scripts/author-source.sh 2>&1 | tee verification-output/authoring.log
+      - name: Check generated source and host projections
+        run: npm test
+      - name: Retain the exact authoring patch, including failure diagnostics
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p verification-output
+          git diff --binary --full-index > verification-output/authoring.patch
+          git status --short > verification-output/authoring-status.txt
+          git diff --check
+      - name: Upload source authoring output for review, never push it
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: stitch-source-authoring-${{ github.sha }}
+          include-hidden-files: true
+          path: |
+            verification-output/
+            app/src/
+            app/language/
+            app/lexlean.lock
+            app/.lexlean/
+            .lexlean/axioms/
+            product/
+            site/facets.json
+            src/layer1-uor/generated-model.js
+          if-no-files-found: error

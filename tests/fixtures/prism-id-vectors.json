@@ -1,0 +1,230 @@
+{
+  "format": "prism-id/vectors/1",
+  "note": "Canonical form and kappa vectors, and one signed prism log (genesis, member bind, delegate bind). Generated once; signatures are ECDSA P-256 IEEE-P1363 over the canonical body.",
+  "canonical": [
+    {
+      "name": "empty object",
+      "value": {},
+      "canonical": "{}",
+      "kappa": "sha256:44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "name": "empty array",
+      "value": [],
+      "canonical": "[]",
+      "kappa": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "name": "literals",
+      "value": [
+        null,
+        true,
+        false
+      ],
+      "canonical": "[null,true,false]",
+      "kappa": "sha256:37257214f22b92121c5ff4d7e29ed2d31b3f1129ee698e96e581ec05cb2e3cf7"
+    },
+    {
+      "name": "integers",
+      "value": [
+        0,
+        -1,
+        1,
+        9007199254740991,
+        -9007199254740991
+      ],
+      "canonical": "[0,-1,1,9007199254740991,-9007199254740991]",
+      "kappa": "sha256:3b00efdcc5873e0489c35510830ca26ec1f66a3a7e81ea23b099b1269c7de798"
+    },
+    {
+      "name": "member order by UTF-8 bytes",
+      "value": {
+        "b": 1,
+        "a": 2,
+        "Z": 3,
+        "\u00e9": 4,
+        "\uff61": 5,
+        "\ud83d\ude00": 6,
+        "": 7
+      },
+      "canonical": "{\"\":7,\"Z\":3,\"a\":2,\"b\":1,\"\u00e9\":4,\"\uff61\":5,\"\ud83d\ude00\":6}",
+      "kappa": "sha256:5438aafe1a5d5b723ea9d91e1b8757f525b428d73d7dd3ef9f5a0ec73708875f"
+    },
+    {
+      "name": "nested",
+      "value": {
+        "outer": {
+          "z": [
+            1,
+            {
+              "y": "x",
+              "x": "y"
+            }
+          ],
+          "a": null
+        }
+      },
+      "canonical": "{\"outer\":{\"a\":null,\"z\":[1,{\"x\":\"y\",\"y\":\"x\"}]}}",
+      "kappa": "sha256:883962075d2b0456bc116478f3b1c456d2f9fcaa8ff2ca13ac2d0645f1c0a503"
+    },
+    {
+      "name": "escapes",
+      "value": "\"\\\b\f\n\r\t\u0000\u001f/\u007f",
+      "canonical": "\"\\\"\\\\\\b\\f\\n\\r\\t\\u0000\\u001f/\u007f\"",
+      "kappa": "sha256:d5fa4d2f0e5f28e15a8b67a4baadadf5fef5f25068ef7040bc9f0ec085e083d7"
+    },
+    {
+      "name": "non-ASCII is emitted raw",
+      "value": "caf\u00e9 \ud83d\ude00 \uff61",
+      "canonical": "\"caf\u00e9 \ud83d\ude00 \uff61\"",
+      "kappa": "sha256:a3c5237ac6e8d4c85f24e4c2574b3d7ae79c1c057a09159fad2b5a46b2518e4a"
+    },
+    {
+      "name": "device record shape",
+      "value": {
+        "kind": "prism/device/1",
+        "class": "embedded",
+        "protection": "secure-element",
+        "sign": {
+          "crv": "P-256",
+          "kty": "EC",
+          "x": "AA",
+          "y": "BB"
+        },
+        "agree": {
+          "crv": "P-256",
+          "kty": "EC",
+          "x": "CC",
+          "y": "DD"
+        }
+      },
+      "canonical": "{\"agree\":{\"crv\":\"P-256\",\"kty\":\"EC\",\"x\":\"CC\",\"y\":\"DD\"},\"class\":\"embedded\",\"kind\":\"prism/device/1\",\"protection\":\"secure-element\",\"sign\":{\"crv\":\"P-256\",\"kty\":\"EC\",\"x\":\"AA\",\"y\":\"BB\"}}",
+      "kappa": "sha256:6eb864bec8807b3c755c984d04faaa8085ebca23af22e26351ca401dfbcef3ee"
+    }
+  ],
+  "refused": [
+    {
+      "name": "fraction",
+      "value": 1.5
+    },
+    {
+      "name": "beyond safe integer",
+      "value": 9007199254740992
+    },
+    {
+      "name": "decomposed (not NFC) string",
+      "value": "e\u0301"
+    },
+    {
+      "name": "decomposed member name",
+      "value": {
+        "e\u0301": 1
+      }
+    },
+    {
+      "name": "lone surrogate",
+      "value": "\ud800"
+    }
+  ],
+  "prism": {
+    "id": "sha256:249229b4963bdc7c5bc221f58cfd2e57433d9279f952fc3a1baa04dba529f08f",
+    "records": [
+      {
+        "body": {
+          "kind": "prism/genesis/1",
+          "device": {
+            "kind": "prism/device/1",
+            "class": "browser",
+            "protection": "software",
+            "sign": {
+              "crv": "P-256",
+              "kty": "EC",
+              "x": "ipB9juAIPtvzxUTeViI1hD2Q-SWBuL_jtap5YV8SvYE",
+              "y": "qRol4ibl2MhLVRfZuDyla1HdbNRCXr2bbZu3rdA-hiQ"
+            },
+            "agree": {
+              "crv": "P-256",
+              "kty": "EC",
+              "x": "DhobWnt4pEB44Ij47aNzj536a-nZ920inrta3QGx7dA",
+              "y": "exHsINEq3TC3WH28gYc2J098RLQOSIWszY2_BofF2to"
+            }
+          },
+          "nonce": "-0a0z0nxg6NEFC_9SO95Fw"
+        },
+        "signer": "sha256:217eadeb921af71af077930fa78f604478a9e70a7c1dd9bcddfa376fb9a16205",
+        "signature": "L91y34XN_GOaZyA7_urWTxNlr8lD7_h0MWsPdFY6QGN_oBwUpsNfYILLP11C3mkiQjQfMgLYqzMZ8bjuD-EZ1Q"
+      },
+      {
+        "body": {
+          "kind": "prism/bind/1",
+          "prism": "sha256:249229b4963bdc7c5bc221f58cfd2e57433d9279f952fc3a1baa04dba529f08f",
+          "device": {
+            "kind": "prism/device/1",
+            "class": "mobile",
+            "protection": "platform",
+            "sign": {
+              "crv": "P-256",
+              "kty": "EC",
+              "x": "S5jvd0PMst-rcXVkdmCe4zQpKbTX5ET8d0eT7AU88f4",
+              "y": "oQwLDnKM2_JcLVNG9_2mAQCEP4ja7c_on3RZ8Dtsee0"
+            },
+            "agree": {
+              "crv": "P-256",
+              "kty": "EC",
+              "x": "HdWfUD7ywEor0UqcF3bOdX1_zubKAgPiLQsQbnnnvxg",
+              "y": "gqKDAcb-tFBOE0EccYy1LvGu35GrvwhUGvIyeqUHzXw"
+            }
+          },
+          "role": "member",
+          "scope": []
+        },
+        "signer": "sha256:217eadeb921af71af077930fa78f604478a9e70a7c1dd9bcddfa376fb9a16205",
+        "signature": "XVl8evnA5TYV7xON0FrOVCmRWNWVKFI2t8PZ8sgMrdmr9fFQxPUijRKlYvYFS-RXfFkZeXtVcCEazZjBxj-hrQ"
+      },
+      {
+        "body": {
+          "kind": "prism/bind/1",
+          "prism": "sha256:249229b4963bdc7c5bc221f58cfd2e57433d9279f952fc3a1baa04dba529f08f",
+          "device": {
+            "kind": "prism/device/1",
+            "class": "embedded",
+            "protection": "secure-element",
+            "sign": {
+              "crv": "P-256",
+              "kty": "EC",
+              "x": "oTI_jEtxaxJI6GhRSDex8eWxu879RhMeah6npjTVwrY",
+              "y": "ILnZixWeFLH1B_1yCJKwKLHGdikw9EGYjW8koGqS3UM"
+            },
+            "agree": {
+              "crv": "P-256",
+              "kty": "EC",
+              "x": "Qq5ZJu9JmgekyuMDTRpaLCav6YlZPIswJHrpIDkD6k4",
+              "y": "Zn1N5WcVO1Byig7RrSiO-IbVQq1bj5PmU6Pjp9zQ6kA"
+            }
+          },
+          "role": "delegate",
+          "scope": [
+            "telemetry/write"
+          ]
+        },
+        "signer": "sha256:217eadeb921af71af077930fa78f604478a9e70a7c1dd9bcddfa376fb9a16205",
+        "signature": "wTglGK7pLqCraSX9aridxFHZsPvdCsmk4OCojb43rZwYqPQ-3W187NaXecWny71wu1_VxN9p1MGmAztFmI97uA"
+      }
+    ],
+    "active": [
+      "sha256:217eadeb921af71af077930fa78f604478a9e70a7c1dd9bcddfa376fb9a16205",
+      "sha256:c6834c58d720c3142e7ef4a42af02de3196799540ba9f29f919695224afb8255",
+      "sha256:f91173d4e798c1a7fff0dcb85f48db514eb0e9b5c160ea4f2ca741ba160739e3"
+    ],
+    "roles": {
+      "sha256:217eadeb921af71af077930fa78f604478a9e70a7c1dd9bcddfa376fb9a16205": "member",
+      "sha256:c6834c58d720c3142e7ef4a42af02de3196799540ba9f29f919695224afb8255": "member",
+      "sha256:f91173d4e798c1a7fff0dcb85f48db514eb0e9b5c160ea4f2ca741ba160739e3": "delegate"
+    },
+    "scopes": {
+      "sha256:f91173d4e798c1a7fff0dcb85f48db514eb0e9b5c160ea4f2ca741ba160739e3": [
+        "telemetry/write"
+      ]
+    }
+  }
+}

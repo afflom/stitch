@@ -1,0 +1,184 @@
+\begin{lexlean}{Foundation.Experience.V1.Model}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\importmodule{Foundation.Arch}
+\title{Boolean}
+\begin{semanticmodule}
+inductive{
+  name: BrandElementKind,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: name, fields: []},
+    {name: tagline, fields: []},
+    {name: promise, fields: []},
+    {name: positioning, fields: []},
+    {name: mission, fields: []},
+    {name: value, fields: []},
+    {name: steward, fields: []},
+    {name: callToAction, fields: []},
+    {name: mark, fields: []},
+    {name: palette, fields: []},
+    {name: typography, fields: []},
+    {name: productName, fields: []},
+    {name: productPromise, fields: []}
+  ]
+}
+
+inductive{
+  name: TokenType,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: color, fields: []},
+    {name: dimension, fields: []},
+    {name: number, fields: []},
+    {name: gradient, fields: []},
+    {name: fontFamily, fields: []}
+  ]
+}
+
+inductive{
+  name: ContrastCriterion,
+  type_parameters: [],
+  parameters: [],
+  constructors: [{name: text, fields: []}, {name: nonText, fields: []}]
+}
+
+inductive{
+  name: EnvironmentKind,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: technical, fields: []},
+    {name: physical, fields: []},
+    {name: social, fields: []}
+  ]
+}
+
+inductive{
+  name: UsabilityOutcome,
+  type_parameters: [],
+  parameters: [],
+  constructors: [
+    {name: effectiveness, fields: []},
+    {name: efficiency, fields: []},
+    {name: satisfaction, fields: []}
+  ]
+}
+
+structure{
+  name: Authority,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: framework, type: String},
+    {name: repository, type: String},
+    {name: commit, type: String}
+  ]
+}
+
+structure{
+  name: Source,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: record, type: String},
+    {name: path, type: String},
+    {name: firstLine, type: Nat},
+    {name: lastLine, type: Nat},
+    {name: kappa, type: String}
+  ]
+}
+
+structure{
+  name: BrandElement,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: kind, type: BrandElementKind},
+    {name: text, type: String},
+    {name: source, type: Nat}
+  ]
+}
+
+structure{
+  name: DesignToken,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: name, type: String},
+    {name: type, type: TokenType},
+    {name: value, type: String},
+    {name: hex, type: String},
+    {name: source, type: Nat}
+  ]
+}
+
+structure{
+  name: ContrastPair,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: foreground, type: Nat},
+    {name: background, type: Nat},
+    {name: backgroundAlphaMilli, type: Nat},
+    {name: criterion, type: ContrastCriterion},
+    {name: observedMilli, type: Nat},
+    {name: requiredMilli, type: Nat},
+    {name: source, type: Nat}
+  ]
+}
+
+structure{
+  name: UserGroup,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: stakeholder, type: Foundation.Arch::Stakeholder},
+    {name: characteristics, type: String}
+  ]
+}
+
+structure{
+  name: Goal,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: user, type: Nat},
+    {name: journey, type: Foundation.Arch::Journey},
+    {name: outcome, type: String}
+  ]
+}
+
+structure{
+  name: Task,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: goal, type: Nat},
+    {name: order, type: Nat},
+    {name: feature, type: Foundation.Arch::Feature}
+  ]
+}
+
+structure{
+  name: Environment,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: kind, type: EnvironmentKind}, {name: component, type: Foundation.Arch::Component}]
+}
+
+structure{
+  name: UsabilityMeasure,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: goal, type: Nat},
+    {name: outcome, type: UsabilityOutcome},
+    {name: observed, type: (Option Nat)},
+    {name: method, type: String}
+  ]
+}
+\end{semanticmodule}
+\end{lexlean}

@@ -1,0 +1,17 @@
+spec = "lexlean/entry/1"
+id = "stitch-product-brand"
+category = "label-word"
+surface_arity = 0
+frame = "atom"
+
+[denotation]
+kind = "document"
+module = "Product.Brand"
+component = "sources"
+
+[[form]]
+id = "stitch-product-brand"
+channel = "text"
+surface = "Stitch brand and design system"
+canonical_source = true
+features = ["sentence-case", "singular"]

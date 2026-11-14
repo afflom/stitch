@@ -1,0 +1,63 @@
+\begin{lexlean}{Foundation.Sec}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\title{Boolean}
+\begin{semanticmodule}
+inductive{
+  name: Likelihood,
+  type_parameters: [],
+  parameters: [],
+  constructors: [{name: low, fields: []}, {name: medium, fields: []}, {name: high, fields: []}]
+}
+
+inductive{
+  name: Impact,
+  type_parameters: [],
+  parameters: [],
+  constructors: [{name: minor, fields: []}, {name: major, fields: []}, {name: critical, fields: []}]
+}
+
+structure{
+  name: Asset,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: index, type: Nat}, {name: componentIndex, type: Nat}]
+}
+
+structure{name: Threat, type_parameters: [], parameters: [], fields: [{name: index, type: Nat}]}
+
+structure{
+  name: Risk,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: index, type: Nat},
+    {name: assetIndex, type: Nat},
+    {name: threatIndex, type: Nat},
+    {name: likelihood, type: Likelihood},
+    {name: impact, type: Impact}
+  ]
+}
+
+structure{
+  name: ApplicationSecurityControl,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: index, type: Nat}, {name: riskIndex, type: Nat}]
+}
+
+structure{
+  name: SecurityActivity,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: index, type: Nat}, {name: controlIndex, type: Nat}]
+}
+
+structure{
+  name: VerificationMeasurement,
+  type_parameters: [],
+  parameters: [],
+  fields: [{name: index, type: Nat}, {name: controlIndex, type: Nat}, {name: passed, type: Bool}]
+}
+\end{semanticmodule}
+\end{lexlean}

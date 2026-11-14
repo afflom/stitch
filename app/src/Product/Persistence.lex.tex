@@ -1,0 +1,149 @@
+\begin{lexlean}{Product.Persistence}
+\useglossary{lexlean.std.bool@1.2.0}
+\useglossary{lexlean.std.nat@1.2.0}
+\useglossary{stitch.domain@1.0.0}
+\importmodule{Stitch.Effects}
+\title{Stitch identity persistence and safe automation}
+\begin{semanticmodule}
+structure{
+  name: Source,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: record, type: String},
+    {name: path, type: String},
+    {name: firstLine, type: Nat},
+    {name: lastLine, type: Nat},
+    {name: sha256, type: String}
+  ]
+}
+
+definition{
+  name: sources,
+  parameters: [],
+  result: (List Source),
+  body: (cons (record Source {record := "Product.Persistence", path := "docs/browser-authority.md", firstLine := 0, lastLine := 0, sha256 := "642c15248bd22ef2de107c9ca1e1b9dcecc24bb5ac8b59b78b14b98c6995a3c9"}) (cons (record Source {record := "Product.Persistence", path := "docs/recovery.md", firstLine := 0, lastLine := 0, sha256 := "32cb3e8e5579de6e05afd3a716bf97837032ae6efba6dd12748decf9b57cd4db"}) (cons (record Source {record := "Product.Persistence", path := "src/layer1-uor/browser-authority.js", firstLine := 0, lastLine := 0, sha256 := "3b9ba8d4a23fbe056358791d4e2d5ad377faf5a9a3cc2ac3d2dc1c3906087d09"}) (cons (record Source {record := "Product.Persistence", path := "src/layer2-schedulers/policy.js", firstLine := 0, lastLine := 0, sha256 := "8f2074f8fe07a7b1fda51896d78f11a797564afb64accebc7291261e5c00639f"}) (cons (record Source {record := "Product.Persistence", path := "src/layer3-storage/custody.js", firstLine := 0, lastLine := 0, sha256 := "70ec7500e9a1aea0a2f383344bebea4acbe410c3aff76ccadd8869feaac24aee"}) (cons (record Source {record := "Product.Persistence", path := "src/layer4-compute/replay.js", firstLine := 0, lastLine := 0, sha256 := "112653100e2ea57c6b732e64dbc2086fd5237eb2129fe255cb5627498494f1d3"}) (cons (record Source {record := "Product.Persistence", path := "src/layer4-compute/vm-administration.js", firstLine := 0, lastLine := 0, sha256 := "2a307a700e38dfb7f38af4a5cfc3207e3d2b274b6c89b943e6b17add424376bc"}) (cons (record Source {record := "Product.Persistence", path := "src/recovery.js", firstLine := 0, lastLine := 0, sha256 := "89c7b3abcd713ee1c2131d6a841a94526f59c0a6118ac09834a2e6cf43c3a2c0"}) (cons (record Source {record := "Product.Persistence", path := "tests/browser-authority.test.js", firstLine := 0, lastLine := 0, sha256 := "e49b0285c9a1706e73b2e56686f6db8061c91914e2a70dd74654349b43e53c0d"}) (cons (record Source {record := "Product.Persistence", path := "tests/dns-publication.test.js", firstLine := 0, lastLine := 0, sha256 := "02fe2e5e85a715481cd11b55534dffe42b7f27305f63f1fb3bdb03815225d98c"}) (cons (record Source {record := "Product.Persistence", path := "tests/execution-identity.test.js", firstLine := 0, lastLine := 0, sha256 := "cd680245065fa6be6ed51fc77324022c29938298f3f53c76b67fc36415e55a56"}) (cons (record Source {record := "Product.Persistence", path := "tests/placement-repair.test.js", firstLine := 0, lastLine := 0, sha256 := "295ba55268bbcb3be7bd3c9b77a11b4938167ef0bebf83b85facedd536e1ad85"}) (cons (record Source {record := "Product.Persistence", path := "tests/pointer-recovery.test.js", firstLine := 0, lastLine := 0, sha256 := "57eb8bab548b1e0f5cd4ee66a3a71dda8057859f18ecf4c751fbd930b4ac0fc4"}) (cons (record Source {record := "Product.Persistence", path := "tests/recovery.test.js", firstLine := 0, lastLine := 0, sha256 := "da7f23c8411b4adc63fffa602351ad3ecd0999909717c48bf91aeb21bc5f9d11"}) (cons (record Source {record := "Product.Persistence", path := "tests/runtime-admission.test.js", firstLine := 0, lastLine := 0, sha256 := "684901ac8a287078f86958f414d3d514e910cd44fa6f6be1b80cd6435c4c3404"}) (cons (record Source {record := "Product.Persistence", path := "tests/vm-administration.test.js", firstLine := 0, lastLine := 0, sha256 := "db3a943b140e27bf10d8da74140b6359e6570f490eaafe2ddb9d4f492aa566b4"}) (nil Source)))))))))))))))))
+}
+
+structure{
+  name: Mechanism,
+  type_parameters: [],
+  parameters: [],
+  fields: [
+    {name: id, type: String},
+    {name: storage, type: String},
+    {name: restore, type: String},
+    {name: automatic, type: Bool},
+    {name: trust, type: String},
+    {name: failure, type: String},
+    {name: source, type: String},
+    {name: evidence, type: String}
+  ]
+}
+
+definition{
+  name: mechanismSavedSigner,
+  parameters: [],
+  result: Mechanism,
+  body: (record Mechanism {id := "SavedSigner", storage := "Origin IndexedDB nonextractable CryptoKey", restore := "Startup restores only a valid active existing record.", automatic := true, trust := "Missing, malformed or revoked records never authorize automatic replacement.", failure := "Origin eviction or device loss can destroy the only key.", source := "src/layer1-uor/browser-authority.js", evidence := "tests/browser-authority.test.js"})
+}
+
+definition{
+  name: mechanismTrustedHead,
+  parameters: [],
+  result: Mechanism,
+  body: (record Mechanism {id := "TrustedHead", storage := "Origin IndexedDB exact name/key/digest with history", restore := "Admitted successors persist by exact CAS before the live head changes; live restore is explicit.", automatic := false, trust := "Independent exact key and recent digest acceptance is not derived from a self-signature.", failure := "Storage failure preserves the previous live head; total loss requires independent recent evidence.", source := "src/layer1-uor/browser-authority.js", evidence := "tests/pointer-recovery.test.js"})
+}
+
+definition{
+  name: mechanismUnknownPublication,
+  parameters: [],
+  result: Mechanism,
+  body: (record Mechanism {id := "UnknownPublication", storage := "Origin IndexedDB strict write-ahead intent", restore := "Load the exact scoped candidate and perform read-only reconciliation.", automatic := false, trust := "No timer takeover, blind retry or deletion of unresolved intent.", failure := "An absent provider read does not prove the old mutation never occurred.", source := "src/layer1-uor/browser-authority.js", evidence := "tests/dns-publication.test.js"})
+}
+
+definition{
+  name: mechanismObjectCustody,
+  parameters: [],
+  result: Mechanism,
+  body: (record Mechanism {id := "ObjectCustody", storage := "Session RAM plus conditionally reachable peer fragments", restore := "Automatically verify received bytes; repair only within admitted budgets and checked receipts.", automatic := true, trust := "Different peer IDs do not prove failure-domain independence or future retention.", failure := "All-byte loss cannot be repaired; local storage persistence does not make object cache durable.", source := "src/layer3-storage/custody.js", evidence := "tests/placement-repair.test.js"})
+}
+
+definition{
+  name: mechanismPureCheckpoint,
+  parameters: [],
+  result: Mechanism,
+  body: (record Mechanism {id := "PureCheckpoint", storage := "Session state or explicitly exported recovery bundle", restore := "Every received checkpoint is replayed against its exact program/input/execution identity.", automatic := true, trust := "Replay does not grant exclusive execution or prove arbitrary guest effects.", failure := "Older execution identities are refused without explicit revalidation.", source := "src/layer4-compute/replay.js", evidence := "tests/execution-identity.test.js"})
+}
+
+definition{
+  name: mechanismRecoveryVault,
+  parameters: [],
+  result: Mechanism,
+  body: (record Mechanism {id := "RecoveryVault", storage := "Session-only checked vault and user-saved external file", restore := "Verify complete bundle atomically; export strips accepted-trust status.", automatic := false, trust := "Imported keys and anchors are supplied evidence, not trusted authority.", failure := "External export is not a durability certificate; stale/conflicting imports refuse.", source := "src/recovery.js", evidence := "tests/recovery.test.js"})
+}
+
+definition{
+  name: mechanismBudgetLedger,
+  parameters: [],
+  result: Mechanism,
+  body: (record Mechanism {id := "BudgetLedger", storage := "Session-local epochs plus explicit history export", restore := "Unknown effects remain charged; renewal is a deliberate new allowance.", automatic := false, trust := "No automatic refund or epoch rollover.", failure := "Browser reload is not durable preservation of the budget ledger.", source := "src/layer2-schedulers/policy.js", evidence := "tests/runtime-admission.test.js"})
+}
+
+definition{
+  name: mechanismVmCommand,
+  parameters: [],
+  result: Mechanism,
+  body: (record Mechanism {id := "VmCommand", storage := "Retained host command handles and observed lifecycle", restore := "Observe the selected old command result without dispatching it again.", automatic := false, trust := "A timeout is an unknown outcome, not cancellation or rollback.", failure := "Stop/destroy are pending until host confirmation; external effects are not reversible.", source := "src/layer4-compute/vm-administration.js", evidence := "tests/vm-administration.test.js"})
+}
+
+definition{
+  name: mechanisms,
+  parameters: [],
+  result: (List Mechanism),
+  body: (cons (mechanismSavedSigner) (cons (mechanismTrustedHead) (cons (mechanismUnknownPublication) (cons (mechanismObjectCustody) (cons (mechanismPureCheckpoint) (cons (mechanismRecoveryVault) (cons (mechanismBudgetLedger) (cons (mechanismVmCommand) (nil Mechanism)))))))))
+}
+
+definition{
+  name: restoreExistingSignerAllowed,
+  parameters: [present : Bool, valid : Bool, revoked : Bool, storageAvailable : Bool],
+  result: Bool,
+  body: (present && (valid && ((not revoked) && storageAvailable)))
+}
+
+theorem{
+  name: absentSignerIsNeverRestored,
+  parameters: [],
+  statement: (forall (valid : Bool), (forall (revoked : Bool), (forall (available : Bool), ((restoreExistingSignerAllowed false valid revoked available) = false)))),
+  proof: decide{}
+}
+
+theorem{
+  name: revokedSignerIsNeverRestored,
+  parameters: [],
+  statement: (forall (present : Bool), (forall (valid : Bool), (forall (available : Bool), ((restoreExistingSignerAllowed present valid true available) = false)))),
+  proof: decide{}
+}
+
+theorem{
+  name: unknownPublicationRetainsReadOnlyBoundary,
+  parameters: [],
+  statement: ((not (Stitch.Effects::dnsMayWritePhase (ctor Stitch.Effects::DnsPhase.Unknown))) = true),
+  proof: decide{}
+}
+
+theorem{
+  name: unknownPublicationOffersReconciliation,
+  parameters: [],
+  statement: ((Stitch.Effects::dnsMayReconcile (ctor Stitch.Effects::DnsPhase.Unknown)) = true),
+  proof: decide{}
+}
+
+definition{
+  name: identitySeparation,
+  parameters: [],
+  result: String,
+  body: "Object commitments, peer transport keys, saved Ed25519 name authority and human account identity are distinct. No new account issuer, passkey registry, cross-device trust synchronization or private-key backup is implemented by these facets."
+}
+\end{semanticmodule}
+\end{lexlean}

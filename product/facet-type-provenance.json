@@ -1,0 +1,46 @@
+{
+  "format": "stitch/facet-type-provenance/1",
+  "license": "MIT; upstream PrismPM notice retained in product/PRISMPM-LICENSE-MIT.txt; UORust source copyright/license notices reproduced in product/UORUST-LICENSE-MIT.txt.",
+  "types": [
+    {
+      "path": "app/src/Foundation/Arch.lex.tex",
+      "source": "https://github.com/afflom/UORust/blob/1d531dfe0120d1cbdac2dd599f6cde513118f0ce/app/src/Foundation/Arch.lex.tex",
+      "sourceSha256": "ac98d00c82c37d523361ef2fa01419e796c359b74c4a87ac39d53d4821aa80d8",
+      "derivedSha256": "efb3f79f7f956463305800e76b5bfa197d0dc885ae5aca7d40436223cff3eda9",
+      "method": "Type declarations only, preserving each structure/inductive verbatim; examples, instances and proofs omitted; title Boolean uses builtin vocabulary.",
+      "declarations": 29
+    },
+    {
+      "path": "app/src/Foundation/Sec.lex.tex",
+      "source": "https://github.com/afflom/UORust/blob/1d531dfe0120d1cbdac2dd599f6cde513118f0ce/app/src/Foundation/Sec.lex.tex",
+      "sourceSha256": "f49c249319cc411f24a73722998bc6ec93b81851625ce6c5a914f528750214e5",
+      "derivedSha256": "a58632af4038e6e046aae1848f4c64d89fc497cfbbdb53be2a576358a1f977aa",
+      "method": "Type declarations only, preserving each structure/inductive verbatim; examples, instances and proofs omitted; title Boolean uses builtin vocabulary.",
+      "declarations": 8
+    },
+    {
+      "path": "app/src/Foundation/Qual.lex.tex",
+      "source": "https://github.com/afflom/UORust/blob/1d531dfe0120d1cbdac2dd599f6cde513118f0ce/app/src/Foundation/Qual.lex.tex",
+      "sourceSha256": "a50a9591f4227994e44a64f01ba565da7abb87b9c40ddc13b3e69025c9b7ec50",
+      "derivedSha256": "f1dbfafde6cb4d7262b12371699be38a9683fa7525a9519eb856d74f01b3ee81",
+      "method": "Type declarations only, preserving each structure/inductive verbatim; examples, instances and proofs omitted; title Boolean uses builtin vocabulary.",
+      "declarations": 4
+    },
+    {
+      "path": "app/src/Production/ThreatModel.lex.tex",
+      "source": "https://github.com/afflom/UORust/blob/1d531dfe0120d1cbdac2dd599f6cde513118f0ce/app/src/Production/ThreatModel.lex.tex",
+      "sourceSha256": "bc6acde21335954805485e15c86d9f35178dceda8563d1dabdc062dcff6acc29",
+      "derivedSha256": "649bd4a4531915fd1dc9449a37f4022380d79261907378e136257df50ac4c1bc",
+      "method": "Type declarations only, preserving each structure/inductive verbatim; examples, instances and proofs omitted; title Boolean uses builtin vocabulary.",
+      "declarations": 10
+    },
+    {
+      "path": "app/src/Foundation/Experience/V1/Model.lex.tex",
+      "source": "https://github.com/afflom/UORust/blob/1d531dfe0120d1cbdac2dd599f6cde513118f0ce/app/src/Foundation/Experience/V1/Model.lex.tex",
+      "sourceSha256": "06894027e36989253657731d2cdb88c04c1be2893d506a9335fee101988f0629",
+      "derivedSha256": "fc7d2edf2c123de2232ed8166db425721696219e7454a36113eb41867e99b813",
+      "method": "Type declarations only, preserving each structure/inductive verbatim; examples, instances and proofs omitted; title Boolean uses builtin vocabulary.",
+      "declarations": 15
+    }
+  ]
+}

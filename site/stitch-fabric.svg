@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1080" viewBox="0 0 960 720" role="img" aria-labelledby="title desc">
+<title id="title">One object, three fragments, one exact recovery</title>
+<desc id="desc">An object becomes fragments A, B and parity. The route through B is unavailable; A and parity reach recovery. Two compatible checked fragments reconstruct the exact object. This diagram represents the protocol, not live peers.</desc>
+<defs>
+ <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#263431" stroke-width=".6"/></pattern>
+ <linearGradient id="flow" x1="0" x2="1"><stop stop-color="#4f9a80"/><stop offset="1" stop-color="#c6eedb"/></linearGradient>
+ <radialGradient id="halo"><stop stop-color="#23493b" stop-opacity=".45"/><stop offset="1" stop-color="#0c1110" stop-opacity="0"/></radialGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="5"/></filter>
+</defs>
+<rect width="960" height="720" rx="16" fill="#0c1110"/>
+<rect width="960" height="720" rx="16" fill="url(#grid)" opacity=".45"/>
+<ellipse cx="480" cy="380" rx="440" ry="340" fill="url(#halo)"/>
+<g fill="none" stroke="#6ca68e" stroke-width="2">
+ <path d="M478 170V218Q478 244 452 244H206Q180 244 180 270V302"/>
+ <path d="M478 170V302" stroke-dasharray="5 8" stroke="#56615b"/>
+ <path d="M478 170V218Q478 244 504 244H754Q780 244 780 270V302"/>
+ <path d="M180 410V458Q180 484 206 484H452Q478 484 478 510V554"/>
+ <path d="M780 410V458Q780 484 754 484H504Q478 484 478 510V554"/>
+</g>
+<g fill="#b9e5cf"><circle cx="180" cy="276" r="4"/><circle cx="780" cy="440" r="4"/><circle cx="478" cy="527" r="4"/></g>
+<g font-family="ui-monospace,monospace">
+ <text x="42" y="46" font-size="13" letter-spacing="2" fill="#9eafa6">STITCH / RECOVERY PATH</text>
+ <text x="42" y="68" font-size="11" fill="#74877d">ILLUSTRATIVE TOPOLOGY · NO LIVE NETWORK</text>
+ <rect x="348" y="94" width="260" height="78" rx="8" fill="#17201c" stroke="#6e927f"/>
+ <path d="M375 119h21v30h-21zM379 127h13M379 133h13M379 139h9" fill="none" stroke="#c5ead8"/>
+ <text x="414" y="126" font-size="18" fill="#eff6f0">Exact object</text>
+ <text x="414" y="150" font-size="12" fill="#a5b7ac">bytes + commitment</text>
+ <g>
+  <rect x="82" y="302" width="196" height="108" rx="8" fill="#17231c" stroke="#78ad90"/>
+  <text x="102" y="330" font-size="11" fill="#8cae9b">FRAGMENT 01</text><text x="102" y="363" font-size="26" fill="#dbf3e5">A</text>
+  <text x="102" y="390" font-size="12" fill="#b3d3c1">first byte half</text>
+  <rect x="382" y="302" width="196" height="108" rx="8" fill="#141614" stroke="#495149" stroke-dasharray="5 6"/>
+  <text x="402" y="330" font-size="11" fill="#798379">FRAGMENT 02</text><text x="402" y="363" font-size="26" fill="#89948b">B</text>
+  <text x="402" y="390" font-size="12" fill="#909b92">unavailable</text>
+  <path d="m541 347 14 14m0-14-14 14" fill="none" stroke="#9d7965" stroke-width="2"/>
+  <rect x="682" y="302" width="196" height="108" rx="8" fill="#17231c" stroke="#78ad90"/>
+  <text x="702" y="330" font-size="11" fill="#8cae9b">FRAGMENT 03</text><text x="702" y="363" font-size="26" fill="#dbf3e5">A ⊕ B</text>
+  <text x="702" y="390" font-size="12" fill="#b3d3c1">XOR parity</text>
+ </g>
+ <rect x="316" y="554" width="324" height="88" rx="8" fill="#1c3025" stroke="#b7e3c9"/>
+ <circle cx="352" cy="596" r="14" fill="none" stroke="#b7e3c9"/><path d="m345 596 5 5 9-10" fill="none" stroke="#b7e3c9" stroke-width="2"/>
+ <text x="378" y="589" font-size="17" fill="#edfaf0">Reconstruct. Verify.</text><text x="378" y="616" font-size="12" fill="#b7d5c3">A ⊕ (A ⊕ B) = B</text>
+ <text x="480" y="688" text-anchor="middle" font-size="12" fill="#99ab9e">ANY 2 COMPATIBLE FRAGMENTS · EXACT DIGEST CHECK</text>
+</g>
+</svg>
