@@ -137,6 +137,14 @@ own log, admit records through `admitRecords`, which refuses a retirement of
 a recovery device the held log already retires. Recovering again with the
 newer kit leaves the retired recovery device as it is.
 
+`replaceRecovery(session, shares, { threshold, guardians })` replaces the
+recovery device while a member is at hand: the current recovery device,
+combined from its shares, binds a new one with fresh shares and retires
+itself. No member holds the recovery secret on the way. A kit of one paper
+share gains a guardian this way: two of two over a paper share and a
+guardian's, so the paper alone no longer recovers, and a guardian that keeps
+its share until it releases it once has nothing to release to a replay.
+
 Recovery needs no copy of the log. Given `bus` instead of `records`, it reads
 the sync messages the substrate retained (`bus.retained(topic)`), opening them
 with the keyring snapshot in the recovery secret. Every rotation wraps the next
@@ -246,8 +254,10 @@ change does not invalidate the retained proof evidence.
   everything the person held, and only the order of the two uses tells them
   apart. That order needs a witness that outlasts the devices. Guardians
   already are one: a guardian confirms the person out of band before
-  `releaseShare`, and refuses whoever replays later. A kit of paper shares
-  alone has none, so it is to be kept as secret after use as before. The
+  `releaseShare`, and refuses whoever replays later. `replaceRecovery` adds
+  one to a paper kit. A kit of paper shares alone has none, so it is to be
+  kept as secret after use as before, and a paper kit that never left the
+  device it was made on, replaced before it was saved, was never exposed. The
   person's own devices are never denied: they hold their log and admit what
   they hear through `admitRecords`.
   The witnessed time of threat-model D4 would close it for paper kits too,
