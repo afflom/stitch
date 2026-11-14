@@ -7,7 +7,7 @@ account, password, email, OAuth provider or server is involved.
 - Model: `app/src/Stitch/PrismId.lex.tex` (`Stitch.PrismId`). Every
   authorization decision in the runtime calls its generated binding.
 - Runtime: `src/prism-id.js`.
-- Tests: `tests/prism-id.test.js`.
+- Tests: `tests/prism-id.test.js`; the substrate bus, `tests/prism-bus.test.js`.
 
 ## Kappa
 
@@ -72,7 +72,10 @@ A native implementation checks itself against `tests/fixtures/prism-id-vectors.j
    unwraps the keyring if it is a member, and holds the full log.
 
 The offer URI is plain text, so any channel works: a QR code, NFC, a USB or
-serial provisioning line, or typed text.
+serial provisioning line, or typed text. `linkQr(uri)` gives its QR code
+(ISO/IEC 18004, byte mode, level M, the smallest version and the mask with the
+lowest penalty) as `{ size, modules }`, `modules[y][x]` true for dark; a host
+draws it with a four-module quiet zone.
 
 ## Revocation rotates the private boundary
 
@@ -150,6 +153,14 @@ device inside its scope (`Stitch.PrismId.actionAllowed`). This is how foundry
 grants a stakeholder the permissions of their prism context. Hosts are given
 the persona for their audience, not the main prism.
 
+A host also hears revocations the signing device does not present. Every
+prism has a public log topic (`logTopic(prism)`, derived from the prism id
+alone) where devices publish the signed public records (`publishLog`) after a
+bind or revocation and on the refresh cadence. `verifyAction(..., { bus })`
+merges what that topic retains (`heardLog`) before deciding, so a stolen
+device that never syncs is refused once any other device has published its
+removal. Only signed records count, so anything else on the topic is ignored.
+
 ## Actions the person approves
 
 A host can require the person's approval for chosen actions:
@@ -181,10 +192,46 @@ power-of-two bucket of at least 1 KiB so relays learn only the bucket.
 `createSyncCadence` goes further: called on a fixed timer, its `tick` sends a
 pending sync or else a cover message (`publishCover`) padded to the same
 bucket, so relays see one message of one size per interval either way.
-Receivers ignore cover messages. Messages over 4 MiB and logs over 4096 records are refused
+Receivers ignore cover messages. With `refresh: n`, every n-th tick sends a
+real sync and the public log even when nothing changed, so a substrate that
+keeps messages only for a while always holds a recent one while any member
+is online. Messages over 4 MiB and logs over 4096 records are refused
 before any parsing or signature work. The bus contract is `publish(topic, bytes)` and
 `subscribe(topic, fn)`, and `retained(topic)` returns the messages the
-substrate kept for that topic, which offline devices and recovery read. `createMemoryBus` implements it for tests; the stitch
-substrate implements it across peers and federation nodes.
+substrate kept for that topic, which offline devices and recovery read.
+`createMemoryBus` implements it for tests. `createRelayBus` implements it on
+stitch's substrate: stitch's warm relay with its relay framing across devices
+and origins, and BroadcastChannel within one origin. The relay sees a name
+hashed from the prism topic and the sealed or HMAC-bound bytes. It retains a
+message for the warm lifetime (30 minutes) and promises nothing longer; a
+cadence whose refresh is shorter keeps a recent sync there while a member is
+online. A device away longer, or a log-free recovery after every member has
+been offline that long, catches up only from the next message a member
+publishes. Link offers use the same bus
+on their `prism-rendezvous:` topic.
 
 The threat and security model is in `docs/prism-id-threat-model.md`.
+
+## Open
+
+These belong in the threat model's residuals (section 10) and designs
+(section 12) when its next revision is attested; they are kept here so that
+change does not invalidate the retained proof evidence.
+
+- **A replayed old recovery.** Recovery replaces its recovery device, but the
+  old shares still combine. Run against a log from before that recovery, they
+  bind a second recovery device and members of their own; merged with the
+  current log, the prism has two active recovery devices. Set union has no
+  order, so no rule on the log alone tells the replay from the real recovery.
+  Every device and host that merges the logs sees both (the public log topic
+  carries them), and the Foundry frame refuses a recovery that shows another
+  active recovery device. Design: order recoveries by the witnessed time of
+  threat-model D4, so a recovery device's binds after its replacement was
+  witnessed count for nothing (`recoveryBindCounts(replacedWitnessedAt, bindWitnessedAt)`).
+- **Retention when every member is offline.** The refresh cadence keeps a
+  recent sync and public log on the warm relay while a member is online. After
+  every member has been offline longer than the relay keeps messages, log-free
+  recovery and hosts wait for the next publish, until a colder tier of the
+  substrate retains them.
+- **Hosts that do not read the public log** hear a removal only from the log
+  the signing device presents (threat-model G1 2a).
