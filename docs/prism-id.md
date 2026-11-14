@@ -122,6 +122,21 @@ binds the new device as a member, revokes every other device ever linked
 over, and with `rotateRecovery` replaces the recovery device with fresh shares
 so the recovered secret is retired.
 
+A retired recovery device stays retired. Its retirement lists in `keep` every
+bind and revocation it made, and nothing else it signs counts
+(`revocationCounts`, with the retirement as the keep list). So the old shares,
+still combining after a recovery, replayed against a log from before it, bind
+and revoke nothing: the retirement in the current log never listed the
+replay's records. A replay that also signs a second retirement of the old
+recovery device, keeping its own records, is a fork. A recovery device is
+retired once, so a log holding two retirements that keep different records
+does not resolve (`fork`): a host that hears both acts for neither side, and
+the replay never acts as the person. Devices never hold a fork:
+`receiveSync`, and `heardLog(..., { own: true })` for a device checking its
+own log, admit records through `admitRecords`, which refuses a retirement of
+a recovery device the held log already retires. Recovering again with the
+newer kit leaves the retired recovery device as it is.
+
 Recovery needs no copy of the log. Given `bus` instead of `records`, it reads
 the sync messages the substrate retained (`bus.retained(topic)`), opening them
 with the keyring snapshot in the recovery secret. Every rotation wraps the next
@@ -218,16 +233,14 @@ These belong in the threat model's residuals (section 10) and designs
 (section 12) when its next revision is attested; they are kept here so that
 change does not invalidate the retained proof evidence.
 
-- **A replayed old recovery.** Recovery replaces its recovery device, but the
-  old shares still combine. Run against a log from before that recovery, they
-  bind a second recovery device and members of their own; merged with the
-  current log, the prism has two active recovery devices. Set union has no
-  order, so no rule on the log alone tells the replay from the real recovery.
-  Every device and host that merges the logs sees both (the public log topic
-  carries them), and the Foundry frame refuses a recovery that shows another
-  active recovery device. Design: order recoveries by the witnessed time of
-  threat-model D4, so a recovery device's binds after its replacement was
-  witnessed count for nothing (`recoveryBindCounts(replacedWitnessedAt, bindWitnessedAt)`).
+- **A replayed old recovery, forked.** A replayed old kit binds and revokes
+  nothing (see Recovery), but whoever holds it can still sign a second
+  retirement and publish it on the public log topic. Hosts that hear it then
+  act for neither side until the person stops using that prism id: the old
+  kit cannot take the id over, but it can deny it at hosts. Set union has no
+  order, so only an outside witness tells the two retirements apart; ordering
+  by the witnessed time of threat-model D4 closes it, and keeping an old kit
+  as secret as the current one keeps it from arising.
 - **Retention when every member is offline.** The refresh cadence keeps a
   recent sync and public log on the warm relay while a member is online. After
   every member has been offline longer than the relay keeps messages, log-free

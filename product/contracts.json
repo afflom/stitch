@@ -1372,8 +1372,8 @@
       "origin": "Project-owned source checkout",
       "licenseStatus": "Project declares MIT; audit applies",
       "redistributionCleared": true,
-      "bytes": 94894,
-      "sha256": "eefc04c53d581308dee9033384050616849ef93996e8cb7858cd1435934b16d7"
+      "bytes": 98032,
+      "sha256": "5ae9114fbc7d34c50b2736ed4813d6ab52b678435c1342c97874ab57762fe87f"
     },
     {
       "declaration": "assetProductExperience",
@@ -2842,7 +2842,7 @@
     },
     {
       "path": "docs/prism-id.md",
-      "sha256": "bd27711d3dcbaef87a013a44127affc605343b3867b3d037e09079e7d5386612"
+      "sha256": "b1076262092ea2416b282aa81541614cc68c2490de1ac2fd3bbddd9690e86a81"
     },
     {
       "path": "docs/prism-model.md",
@@ -3133,6 +3133,10 @@
       "sha256": "ade2eb4cfca393f21034c974a315c560e4bc7b2f87e4cafa9c37dc0280556aa9"
     },
     {
+      "path": "tests/prism-replay.test.js",
+      "sha256": "ebd67c105fe741c83cb75f358961b784778dbbec4678cc387ad21053f05157f9"
+    },
+    {
       "path": "tests/product-experience.test.js",
       "sha256": "a519f9b5c014eada46bd6c016be966c7fbe6f84971ac9408185c89422f68439b"
     },
@@ -3201,5 +3205,5 @@
       "sha256": "02263c2d4bf1a1913a673466554c19593b5a6c39b22a2da32ce4375675868347"
     }
   ],
-  "sourceDigest": "sha256:ee763415941e91dd262b72a8176388aa693156d38d88e1fc5fbb23cf29d96fcd"
+  "sourceDigest": "sha256:6df26232d612c8f74579999e58483c020829afb29253e6174c54cf348a07b92c"
 }
