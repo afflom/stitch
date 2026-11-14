@@ -20,7 +20,7 @@
       "name": "Product.Security",
       "source": "app/src/Product/Security.lex.tex",
       "summary": "Assets, STRIDE threats, qualitative risk assessments and traceable controls without false pass claims.",
-      "count": 248,
+      "count": 255,
       "evidenceStatus": "Source-derived inventory; exact-revision SDK and browser qualification required"
     },
     {

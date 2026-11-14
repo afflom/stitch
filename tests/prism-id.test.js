@@ -8,7 +8,8 @@ import {
   mergeLogs, logRoot, addRecord, logFromRecords, describeBoundary, boundaryVisibleTo, sealPrivate, openPrivate,
   currentBoundary, syncTopic, publishSync, receiveSync, createMemoryBus, signAction, verifyAction, hostAdmitsDevice,
   PrismIdError, KIND, MAX_LOG_RECORDS, MAX_SYNC_BYTES, postQuantumAvailable, hardenSession, createRecovery, releaseShare,
-  recoveryCode, recoverPrism, splitSecret, combineShares, ensurePersona, personaFor, signPersonaAction, admitDevice, padToBucket, unpad
+  recoveryCode, recoverPrism, splitSecret, combineShares, ensurePersona, personaFor, signPersonaAction, admitDevice, padToBucket, unpad,
+  postQuantumSignaturesAvailable, presenceChallenge, publishCover, createSyncCadence, toBase64Url
 } from '../src/prism-id.js';
 
 const NOW = 1_800_000_000_000;
@@ -87,7 +88,8 @@ test('every device class uses the same record; keys are non-extractable and clai
     assert.equal(device.signingKey.extractable, false);
     assert.equal(device.agreementKey.extractable, false);
     assert.equal(device.id, await kappa(device.record));
-    const fields = ['agree', 'class', 'kind', 'protection', 'sign', ...(await postQuantumAvailable() ? ['kem'] : [])].sort();
+    const fields = ['agree', 'class', 'kind', 'protection', 'sign', ...(await postQuantumAvailable() ? ['kem'] : []),
+      ...(await postQuantumSignaturesAvailable() ? ['pqsign'] : [])].sort();
     assert.deepEqual(Object.keys(device.record).sort(), fields);
     assert.equal(checkDeviceRecord(device.record), device.record);
   }
@@ -529,4 +531,143 @@ test('R7: a host admits a hardware-requiring device only on an attestation bound
   assert.equal(await admitDevice(policy, device.record, { format: 'test', hardware: true, key: other.record.sign }, verifiers), false);
   assert.equal(await admitDevice(policy, device.record, { format: 'test', hardware: false, key: device.record.sign }, verifiers), false);
   assert.equal(await admitDevice(policy, device.record, { format: 'test', hardware: true, key: device.record.sign }, verifiers), true);
+});
+
+// ---------------------------------------------------------------- closing the remaining gaps
+
+const subtle = globalThis.crypto.subtle;
+const utf8 = text => new TextEncoder().encode(text);
+const sha256 = async bytes => new Uint8Array(await subtle.digest('SHA-256', bytes));
+const join = (a, b) => { const out = new Uint8Array(a.length + b.length); out.set(a); out.set(b, a.length); return out; };
+
+function rawToDer(raw) {
+  const integer = bytes => {
+    let i = 0;
+    while (i < bytes.length - 1 && bytes[i] === 0) i++;
+    let v = bytes.subarray(i);
+    if (v[0] & 0x80) v = join(new Uint8Array([0]), v);
+    return join(new Uint8Array([0x02, v.length]), v);
+  };
+  const body = join(integer(raw.subarray(0, 32)), integer(raw.subarray(32)));
+  return join(new Uint8Array([0x30, body.length]), body);
+}
+
+/** A software stand-in for a platform authenticator (passkey), producing real WebAuthn assertions. */
+async function passkey(rp = 'foundry.uor.foundation', origin = HOST) {
+  const pair = await subtle.generateKey({ name: 'ECDSA', namedCurve: 'P-256' }, true, ['sign', 'verify']);
+  const { crv, kty, x, y } = await subtle.exportKey('jwk', pair.publicKey);
+  const approve = ({ flags = 0x05, seenOrigin = origin, challengeFor } = {}) => async challenge => {
+    const authData = new Uint8Array(37);
+    authData.set(await sha256(utf8(rp)));
+    authData[32] = flags;
+    const clientData = utf8(JSON.stringify({ type: 'webauthn.get', challenge: toBase64Url(challengeFor ?? challenge), origin: seenOrigin }));
+    const raw = new Uint8Array(await subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, pair.privateKey, join(authData, await sha256(clientData))));
+    return { authenticatorData: toBase64Url(authData), clientDataJSON: toBase64Url(clientData), signature: toBase64Url(rawToDer(raw)) };
+  };
+  return { binding: { rp, origin, key: { crv, kty, x, y } }, approve };
+}
+
+test('R1: an action the host marks as needing approval carries the person\'s user-verified passkey assertion for exactly that action', async () => {
+  const key = await passkey();
+  const session = await createPrism({ presence: key.binding });
+  const host = { ...AT, requirePresence: ['payments/send'] };
+  const check = async envelope => verifyAction(session.prism, session.log, envelope, { ...host, seen: new Set() });
+  const approved = await signAction(session, 'payments/send', { amount: 5 }, { ...AT, presence: key.approve() });
+  assert.deepEqual(await check(approved).then(r => [r.allowed, r.reason]), [true, 'ok']);
+  // Script in the origin can sign with the device key, but without the person it has no assertion.
+  assert.equal((await check(await signAction(session, 'payments/send', { amount: 5 }, AT))).reason, 'approval');
+  assert.equal((await check(await signAction(session, 'payments/send', { amount: 5 }, { ...AT, presence: key.approve({ flags: 0x01 }) }))).reason, 'approval');
+  assert.equal((await check(await signAction(session, 'payments/send', { amount: 5 }, { ...AT, presence: key.approve({ seenOrigin: 'https://evil.example' }) }))).reason, 'approval');
+  // An approval obtained for a harmless action cannot be moved onto another one.
+  const harmless = await signAction(session, 'payments/send', { amount: 1 }, AT);
+  const moved = await signAction(session, 'payments/send', { amount: 900 }, { ...AT, presence: key.approve({ challengeFor: await presenceChallenge(harmless.body) }) });
+  assert.equal((await check(moved)).reason, 'approval');
+  const swapped = { ...harmless, presence: approved.presence };
+  assert.equal((await check(swapped)).allowed, false);
+  // Another passkey's assertion does not count; actions the host does not mark need none.
+  const other = await passkey();
+  assert.equal((await check(await signAction(session, 'payments/send', {}, { ...AT, presence: other.approve() }))).reason, 'approval');
+  assert.equal((await check(await signAction(session, 'profile/view', {}, AT))).allowed, true);
+  await assert.rejects(signAction(await createPrism(), 'payments/send', {}, { ...AT, presence: key.approve() }), /no passkey bound/);
+  assert.throws(() => checkDeviceRecord({ ...session.device.record, presence: { ...key.binding, origin: 'http://foundry.uor.foundation' } }), /malformed device record/);
+});
+
+test('R1: a persona carries its own passkey for its host', async () => {
+  const key = await passkey();
+  let session = await createPrism();
+  session = await ensurePersona(session, HOST, { presence: key.binding });
+  const view = await personaFor(session, HOST);
+  const envelope = await signPersonaAction(session, HOST, 'payments/send', {}, { now: NOW, presence: key.approve() });
+  assert.equal((await verifyAction(view.persona, await logFromRecords(view.records), envelope, { ...AT, requirePresence: true })).allowed, true);
+});
+
+test('R6: every record is also signed with ML-DSA-65 where available, and stripping that signature is refused', async () => {
+  const session = await createPrism();
+  const { origin, joined } = await link(session);
+  const bind = [...origin.log.values()].find(e => e.body.kind === KIND.bind);
+  const action = await signAction(origin, 'profile/update', {}, AT);
+  if (await postQuantumSignaturesAvailable()) {
+    assert.equal(typeof session.device.record.pqsign, 'string');
+    assert.equal(typeof bind.pqsignature, 'string');
+    const stripped = { ...bind };
+    delete stripped.pqsignature;
+    const records = [...origin.log.values()].map(e => (e === bind ? stripped : e));
+    assert.equal((await resolvePrism(session.prism, await logFromRecords(records))).active.includes(joined.device.id), false);
+    const forged = { ...bind, pqsignature: toBase64Url(new Uint8Array(3309)) };
+    const forgedRecords = [...origin.log.values()].map(e => (e === bind ? forged : e));
+    assert.equal((await resolvePrism(session.prism, await logFromRecords(forgedRecords))).active.includes(joined.device.id), false);
+    assert.equal((await verifyAction(session.prism, origin.log, action, { ...AT, requirePostQuantum: true })).allowed, true);
+    const bare = { ...action };
+    delete bare.pqsignature;
+    assert.equal((await verifyAction(session.prism, origin.log, bare, { ...AT, seen: new Set() })).allowed, false);
+  } else {
+    assert.equal(session.device.record.pqsign, undefined);
+    assert.equal(bind.pqsignature, undefined);
+    assert.equal((await verifyAction(session.prism, origin.log, action, { ...AT, requirePostQuantum: true })).allowed, false);
+  }
+  assert.ok((await resolvePrism(session.prism, origin.log)).active.includes(joined.device.id));
+});
+
+test('R4: with every device and every copy of the log lost, recovery rebuilds the prism from sealed sync the substrate retained', async () => {
+  const bus = createMemoryBus();
+  const { session, guardians, shares, recovery } = await withRecovery();
+  const early = await createDevice();
+  await assert.rejects(recoverPrism({ prism: session.prism, bus, device: early,
+    shares: [shares[2], await releaseShare(guardians[1], shares[1], early.record)] }), /no sync message/);
+  let { origin, joined } = await link(session);
+  origin = await ensurePersona(origin, HOST);
+  await publishSync(origin, bus);
+  const sealedBefore = await sealPrivate(origin, { diary: 'kept' });
+  origin = await revokeDevice(origin, joined.device.id);
+  await publishSync(origin, bus, { keyId: session.prism });
+  await publishSync(origin, bus);
+  const atHost = await personaFor(origin, HOST);
+  // Everything is lost; only the guardians, the paper share and the substrate remain.
+  const fresh = await createDevice();
+  const { session: recovered } = await recoverPrism({ prism: session.prism, bus, device: fresh,
+    shares: [await releaseShare(guardians[0], shares[0], fresh.record), shares[2]] });
+  const after = await resolvePrism(session.prism, recovered.log);
+  assert.deepEqual(after.active, [fresh.id, recovery].sort());
+  assert.ok(after.revoked.includes(joined.device.id) && after.revoked.includes(session.device.id));
+  assert.deepEqual(await openPrivate(recovered, sealedBefore.sealed), { diary: 'kept' });
+  assert.equal((await personaFor(recovered, HOST)).persona, atHost.persona);
+});
+
+test('R5: constant-cadence sync makes a change and no change look the same to a relay', async () => {
+  const bus = createMemoryBus();
+  const { origin, joined } = await link(await createPrism());
+  const sizes = [];
+  bus.subscribe(await syncTopic(origin), bytes => { sizes.push(bytes.length); });
+  const cadence = createSyncCadence({ bucket: 65536 });
+  await cadence.tick(origin, bus);
+  cadence.queue();
+  await cadence.tick(origin, bus);
+  await cadence.tick(origin, bus);
+  assert.equal(sizes.length, 3);
+  assert.equal(new Set(sizes).size, 1);
+  const [cover, real] = await bus.retained(await syncTopic(origin));
+  assert.equal(await receiveSync(joined, cover), joined);
+  assert.ok((await receiveSync(joined, real)).log.size >= joined.log.size);
+  assert.throws(() => padToBucket(new Uint8Array(1), 1000), /power of two/);
+  assert.equal((await publishCover(origin, bus, { bucket: 2048 })).bucket, 2048);
 });

@@ -50,10 +50,10 @@ test('the relay sees a hashed topic and the framed bytes; another bus gets them,
   assert.equal(relay.posted[0].name, await relayTopic(topic));
   assert.ok(!relay.posted[0].name.includes('ab'.repeat(8)) && relay.posted[0].name.length <= 64);
   // Later, and only for this topic: what the relay still holds.
-  assert.deepEqual((await b.fetch(topic)).map(parse), [{ n: 1 }]);
-  assert.deepEqual(await b.fetch('prism-sync:' + 'cd'.repeat(32)), []);
+  assert.deepEqual((await b.retained(topic)).map(parse), [{ n: 1 }]);
+  assert.deepEqual(await b.retained('prism-sync:' + 'cd'.repeat(32)), []);
   // A bus never hears itself.
-  assert.deepEqual(await a.fetch(topic), []);
+  assert.deepEqual(await a.retained(topic), []);
   stop();
   assert.equal(relay.sockets.size, 0);
   assert.throws(() => a.subscribe('not-a-topic', () => {}), TypeError);
@@ -64,7 +64,7 @@ test('a message larger than one relay frame arrives whole', async () => {
   const big = new Uint8Array(40000).map((_, i) => i % 251);
   await bus(relay).publish('prism-sync:' + '01'.repeat(32), big);
   assert.ok(relay.posted.length > 1);
-  const [got] = await bus(relay).fetch('prism-sync:' + '01'.repeat(32));
+  const [got] = await bus(relay).retained('prism-sync:' + '01'.repeat(32));
   assert.deepEqual(got, big);
 });
 
@@ -115,7 +115,7 @@ test('two devices link over the relay, with the six-digit code, and then sync a 
   await publishSync(first, firstBus);
   await publishSync(first, firstBus, { keyId: before });
   let synced = second;
-  for (const bytes of await bus(relay).fetch(await syncTopic(second))) {
+  for (const bytes of await bus(relay).retained(await syncTopic(second))) {
     try { synced = await receiveSync(synced, bytes); } catch (error) { if (!(error instanceof PrismIdError)) throw error; }
   }
   const state = await resolvePrism(synced.prism, synced.log);

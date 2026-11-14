@@ -59,7 +59,7 @@ Likelihood and impact are conservative engineering judgements, not measured prob
 | A7 | Malicious member prism | A different prism sharing a boundary with this one | Membership in this prism's private boundary |
 | A8 | Divergent implementation | A runtime with a canonicalization or validation bug | n/a |
 | A9 | Guardian | Holds one share; may be deceived by an impostor or collude with other guardians | More than threshold minus one guardians colluding |
-| A10 | Harvest-now quantum adversary | Records wraps today, runs a quantum computer later | Breaking ML-KEM-768 or AES-256 |
+| A10 | Quantum adversary | Records wraps today and runs a quantum computer later; later forges P-256 signatures | Breaking ML-KEM-768, ML-DSA-65 or AES-256 |
 
 ## 4. Assets
 
@@ -92,15 +92,16 @@ Every row below is a Security facet row. The tests are in `tests/prism-id.test.j
 | PrismLogFlooding | Denial of service | A1 | At most 4 MiB per sync message and 4096 records per log, checked before parsing and before any signature work. | (bound in code, test) |
 | PrismMutualRevocation | Denial of service | A3 | Recovery revocations take precedence: a device the recovery device revoked has no revocations that count. Members cannot revoke or replace the recovery device. Recovery binds a new device and revokes every other device ever linked. | revokedByRecoveryCannotRevoke, memberCannotRevokeRecovery, memberCannotReplaceRecovery |
 | PrismRekeyWithholding | Denial of service | A1 | A device without the current key refuses to seal rather than sealing to the old key. A publish under the previous key delivers the rotation. | staleBoundaryKeyRefused |
-| PrismSyncObservation | Information disclosure | A1 | The sync topic is an HMAC under a derived boundary key. Messages are sealed with AES-GCM bound to the prism id and padded (ISO 7816-4) to a power-of-two bucket of at least 1 KiB. Timing and network addresses remain observable. | (crypto, test) |
+| PrismSyncObservation | Information disclosure | A1 | The sync topic is an HMAC under a derived boundary key. Messages are sealed with AES-GCM bound to the prism id and padded (ISO 7816-4) to a power-of-two bucket of at least 1 KiB. Constant-cadence sync (`createSyncCadence`) sends one message of one size per interval, a real sync or a cover message. Network addresses remain observable. | (crypto, test) |
 | PrismLinkability | Information disclosure (LINDDUN: linkability) | A6 | Each host sees only its own persona: a separate prism with per-device persona keys. The main prism log travels sealed between members and is never given to a host. | nonMemberSeesOnlyPublished, singleIdentityBoundaryPrivate |
-| PrismOriginScript | Elevation | A5 | Device keys are non-extractable. A hardened device (`hardenSession`) keeps only non-extractable derived boundary keys and cannot link members or set up recovery, so script can use keys only while it runs and can copy none out. | hardenedDeviceCannotShare |
+| PrismOriginScript | Elevation | A5 | Device keys are non-extractable. A hardened device (`hardenSession`) keeps only non-extractable derived boundary keys and cannot link members or set up recovery, so script can copy no key out. Actions a host marks (`requirePresence`) need a user-verified WebAuthn assertion whose challenge is the SHA-256 of exactly that action body, bound to the passkey, rp id and origin in the device record. | hardenedDeviceCannotShare, unverifiedApprovalRefused, approvalOfOtherActionRefused, forgedApprovalRefused |
 | PrismCanonicalDivergence | Tampering | A8 | uor-addr canonical form with explicit refusals, published vectors (`tests/fixtures/prism-id-vectors.json`), and an independent Python implementation (`scripts/verify-prism-id-vectors.py`). | (vectors, test) |
 | PrismRepudiation | Repudiation | n/a | Every action and administrative record is signed by a device bound in the log. | (signature, test) |
-| PrismRecoveryLoss | Denial of service | loss | Threshold recovery: the recovery key exists only as shares sealed to guardians. Recovery binds a new device, revokes the rest, carries personas over, and rotates itself. | belowThresholdRefused, memberCannotRevokeRecovery |
+| PrismRecoveryLoss | Denial of service | loss | Threshold recovery: the recovery key exists only as shares sealed to guardians. With no surviving copy of the log, recovery rebuilds it from sealed sync the substrate retained, following the rotations wrapped to the recovery device. It binds a new device, revokes the rest, carries personas over, and rotates itself. | belowThresholdRefused, memberCannotRevokeRecovery |
 | PrismGuardianCollusion | Elevation | A9 | Shares combine only at the threshold (at least 1). Guardians are prisms or devices the person chose. A recovery is visible to every remaining device as revocations. | belowThresholdRefused, zeroThresholdRefused |
 | PrismGuardianDeception | Spoofing | A9 | A guardian releases a share only re-wrapped to the requesting device, after confirming the person out of band and comparing a code bound to that device. One deceived guardian is below the threshold. | belowThresholdRefused |
 | PrismPersonaHijack | Elevation | A3 | Revoking a device revokes its persona keys at every host on the next sync. Persona recovery keys are wrapped to the main recovery device, and no member keeps them. | revokedDeviceActionRefused, revokedDeviceCannotSign |
+| PrismQuantumForgery | Spoofing | A10 | Every record and action from a device with an ML-DSA-65 key also carries an ML-DSA signature (FIPS 204). A verifier with ML-DSA refuses a missing or invalid one; a host can refuse verifiers without ML-DSA (`requirePostQuantum`). The P-256 signature is always required too. | postQuantumSignatureStripRefused, classicalSignatureAlwaysRequired |
 | PrismQuantumHarvest | Information disclosure | A10 | Every wrap to a device that advertises ML-KEM-768 is hybrid ECDH plus ML-KEM (both secrets feed HKDF). A classical wrap to such a device is refused. Content keys are AES-256. | postQuantumDowngradeRefused |
 
 ## 6. Attack trees
@@ -169,25 +170,39 @@ All classes speak the same records with the same primitives: P-256 ECDSA and ECD
 - **C4.** The out-of-band channel reaches the device the person intends. Its confidentiality only needs to hold until the code is confirmed.
 - **C5.** Hosts keep a replay set for at least their time window, and their clocks are within that window.
 - **C6.** Fewer than the threshold of guardians collude, and a guardian confirms the person out of band before releasing a share.
-- **C7.** ML-KEM-768 is secure, so a hybrid wrap holds if either ECDH or ML-KEM holds.
+- **C7.** ML-KEM-768 and ML-DSA-65 are secure, so a hybrid wrap holds if either ECDH or ML-KEM holds, and a hybrid signature holds if either P-256 or ML-DSA holds.
+- **C8.** The platform authenticator asks for user verification before it signs a WebAuthn assertion, and the substrate retains sealed sync messages per topic (`retained`) for as long as recovery may need them.
 
 ## 10. Residual risks
 
-| Id | Residual | Status after closing the gaps |
+| Id | Residual | Status |
 | --- | --- | --- |
-| R1 | Origin script can use browser key handles and read the extractable boundary keyring while it runs. | Reduced. A hardened device holds no extractable key, so script can use keys only while it runs and can exfiltrate none. Script running in the origin can still act during that time; that limit is fundamental to any web origin. Sharing (linking members, recovery setup) needs a non-hardened device, preferably native. |
-| R2 | A revoked device keeps everything it already held, and any content sealed under keys it held. | Inherent. Re-seal sensitive content after rotation if needed. |
-| R3 | A host can link the person across hosts. | Closed at the protocol layer by per-host personas. Network addresses and timing remain observable to colluding hosts. |
-| R4 | Losing every member device loses the prism. A thief can race revocations. | Closed by threshold recovery and recovery precedence. Remaining: guardians colluding at the threshold (C6), and the recovering device must obtain a copy of the prism log (from the substrate, which the recovery keyring can open, or from any holder; transport is M2). |
-| R5 | Relays see topic existence, timing, sizes and addresses. | Reduced. Sizes are padded to power-of-two buckets. Timing and addresses remain; cover traffic is a substrate option (M2). |
-| R6 | All primitives are classical, and recorded traffic could be decrypted by a future quantum adversary. | Closed for confidentiality where the platform has ML-KEM-768 (WebCrypto in Node 24; browsers as they ship it): wraps are hybrid and downgrade is refused. Signatures stay P-256, which a quantum adversary could forge only in the future, not retroactively. Devices without ML-KEM still get classical wraps. |
-| R7 | The protection claim is unverified without attestation. | Closed in the protocol: `admitDevice` requires a host-pinned verifier that binds the attestation to the device's signing key. Per-platform verifiers (App Attest, Android key attestation, TPM) are host code that plugs into it. |
+| R1 | Origin script can use browser key handles while it runs. | Reduced twice. No key can be copied out (hardened devices), and every action a host marks needs the person's user-verified passkey approval of that exact action. Open: a WebAuthn prompt does not show what is being approved, so a person can be tricked into approving script's action at the moment they expect a prompt (section 12, D1). |
+| R2 | A revoked device keeps everything it already held, and any content sealed under keys it held. | Inherent for what it already read. Rotation on revocation already gives post-compromise security for later content. Forward secrecy inside an epoch is section 12, D2. |
+| R3 | A host can link the person across hosts. | Closed at the protocol layer by per-host personas, each with its own passkey. Network addresses remain (section 12, D3). |
+| R4 | Losing every member device loses the prism. A thief can race revocations. | Closed. Recovery needs no surviving device and no copy of the log: it rebuilds the log from sealed sync the substrate retained. Recovery precedence defeats the thief. Open: guardians colluding at the threshold (C6), mitigated by section 12, D4. |
+| R5 | Relays see topic existence, timing, sizes and addresses. | Sizes and timing closed by bucket padding and constant-cadence cover traffic, at the cost of one message per interval. The bucket grows once when the log outgrows it. Addresses remain (D3). |
+| R6 | Classical primitives fall to a future quantum adversary. | Closed where the platform has ML-KEM-768 and ML-DSA-65 (Node 24 WebCrypto today; browsers as they ship the WICG modern-algorithms work): hybrid wraps and hybrid signatures, with stripping and downgrade refused. A verifier without ML-DSA checks P-256 alone; hosts refuse such verifiers with `requirePostQuantum`. |
+| R7 | The protection claim is unverified without attestation. | Closed in the protocol (`admitDevice`). Per-platform verifiers are host code (section 12, D5). |
 
 ## 11. Verification map
 
 | Layer | Evidence |
 | --- | --- |
 | Rules | `Stitch.PrismId` theorems, attested by `lexlean verify --all` (`product/source-attestation.json`) |
-| Runtime | `tests/prism-id.test.js`: 32 executable tests, each named after the behavior it shows |
+| Runtime | `tests/prism-id.test.js`: 37 executable tests, each named after the behavior it shows |
 | Cross-runtime | `tests/fixtures/prism-id-vectors.json` and `scripts/verify-prism-id-vectors.py` |
 | Facet | `Product.Security` rows `Prism*`, each with gate, review and proof evidence |
+
+## 12. Designed next closures, extrapolated from current industry work
+
+These are designs, not yet code. Each names the model rule it would add.
+
+| Id | Gap | Design | Prior art it builds on |
+| --- | --- | --- | --- |
+| D1 | A WebAuthn prompt does not show what it approves (R1). | Approve through a surface script cannot draw: the browser-rendered transaction dialog of Secure Payment Confirmation where available, otherwise a second member device (phone) that shows the decoded action and signs the approval. The model rule is the same `presenceSatisfied`, with the evidence coming from a device outside the origin. | W3C Secure Payment Confirmation; WebAuthn L3 cross-device (hybrid) authenticators |
+| D2 | No forward secrecy inside an epoch (R2). | Ratchet the sync key per message and delete each key after use, and treat each linked device as an MLS leaf so that a member update rotates the group secret without a revocation. Rule: `messageKeyUsable(epoch, counter, deleted)`. | MLS (RFC 9420); Signal double ratchet |
+| D3 | Relays and colluding hosts see network addresses (R3, R5). | Send persona actions and sync through Oblivious HTTP relays run by different federation members, so no single node sees both the address and the topic or host. Where a stronger guarantee is wanted, route sync through a mixnet with Poisson cover traffic, which the cadence already provides. | Oblivious HTTP (RFC 9458) with HPKE (RFC 9180); Loopix and Nym mixnets; Tor |
+| D4 | Guardians colluding at the threshold (R4, C6). | Make a recovery take effect only after a delay, during which any member device can veto it with a user-verified approval (D1). A delay needs time no single party asserts: recovery records carry timestamps cosigned by a quorum of federation witnesses, which kappa-registry's append-only directory and transparency checkpoints can provide. Rules: `recoveryEffective(witnessedAt, now, delay, vetoed)` and `vetoCounts(activeMember, userVerified)`. | Social-recovery wallets with security periods; Apple Recovery Contacts; key transparency (AKD) and witness cosigning |
+| D5 | Hosts need verifiers for each platform's attestation (R7). | Ship verifiers for WebAuthn attestation statements (packed, tpm, android-key, apple), Android Key Attestation and Apple App Attest, each with roots the host pins, as plug-ins to `admitDevice`. | WebAuthn attestation formats; FIDO Metadata Service |
+
