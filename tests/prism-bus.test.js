@@ -1,9 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import {
   createPrism, createDevice, resolvePrism, revokeDevice, createLinkOffer, parseLinkUri, requestLink, acceptLinkRequest,
   completeLink, rendezvousTopic, linkCode, currentBoundary, syncTopic, publishSync, receiveSync, signAction, verifyAction, PrismIdError,
-  createRelayBus, relayTopic
+  createRelayBus, relayTopic, linkQr, createMemoryBus, publishLog, heardLog, logTopic, createSyncCadence
 } from '../src/prism-id.js';
 
 const HOST = 'https://foundry.uor.foundation';
@@ -130,4 +131,71 @@ test('a copied genesis with another signature cannot make the log unresolvable',
   const log = new Map([...session.log, ['forged', forged]]);
   assert.deepEqual((await resolvePrism(session.prism, log)).active, [session.device.id]);
   await assert.rejects(resolvePrism(session.prism, new Map([['forged', forged]])), refused('genesis'));
+});
+
+test('a link offer becomes a QR code: version 13 at level M for a 301-character link, finder patterns in three corners, the same modules every time', async () => {
+  const offer = { expires: 1800000000000, kind: 'prism/link-offer/1', prism: 'sha256:' + 'ab'.repeat(32), role: 'member', scope: [], secret: 'A'.repeat(43) };
+  const uri = 'prism-link:' + Buffer.from(JSON.stringify(offer)).toString('base64url');
+  const qr = linkQr(uri);
+  assert.equal(qr.size, 69);
+  const finder = (x, y) => [0, 1, 2, 3, 4, 5, 6].map(dy => [0, 1, 2, 3, 4, 5, 6].map(dx => qr.modules[y + dy][x + dx] ? 1 : 0).join('')).join('/');
+  const expected = '1111111/1000001/1011101/1011101/1011101/1000001/1111111';
+  assert.deepEqual([finder(0, 0), finder(qr.size - 7, 0), finder(0, qr.size - 7)], [expected, expected, expected]);
+  // Checked against an independent decoder (jsQR 1.4.0), which reads this matrix back as the URI.
+  const digest = createHash('sha256').update(qr.modules.map(row => row.map(Number).join('')).join('\n')).digest('hex');
+  assert.equal(digest, 'a9f2dd10239cef525de976795c8ab9a771fb05381e1f0b81b0b3bcfe2628687e');
+
+  const prism = await createPrism();
+  const { uri: live } = await createLinkOffer(prism, { now: Date.now() });
+  assert.equal(linkQr(live).size, linkQr(live).modules.length);
+  assert.throws(() => linkQr('https://example.test'), refused('offer'));
+});
+
+// Link a second member device directly, as the relay test above does over the bus.
+async function linkMember(session, now) {
+  const joining = await createDevice();
+  const { uri, pending } = await createLinkOffer(session, { now });
+  const offer = parseLinkUri(uri);
+  const accepted = await acceptLinkRequest(session, pending, await requestLink(joining, offer), { now, confirmCode: await linkCode(offer.secret, joining.record) });
+  return { first: accepted.session, second: await completeLink(joining, offer, accepted.response) };
+}
+
+test('a host hears a removal the removed device never presents, from the prism public log', async () => {
+  const now = Date.now();
+  const relay = fakeRelay();
+  const { first, second } = await linkMember(await createPrism(), now);
+  const removed = await revokeDevice(first, second.device.id);
+  await publishLog(removed, bus(relay));
+
+  // The removed device never syncs: it signs with the log it holds, where it is still active.
+  const action = await signAction(second, 'prism/session/1', { app: 1 }, { now, audience: HOST });
+  assert.equal((await verifyAction(second.prism, second.log, action, { audience: HOST, now })).allowed, true);
+  const heard = await verifyAction(second.prism, second.log, action, { audience: HOST, now, bus: bus(relay) });
+  assert.deepEqual([heard.allowed, heard.reason], [false, 'signature or revocation']);
+
+  // Anything else on the topic counts for nothing: another prism's log, junk, a forged revocation.
+  const other = await createPrism();
+  const memory = createMemoryBus(), topic = await logTopic(second.prism);
+  await memory.publish(topic, json({ kind: 'prism/public-log/1', prism: other.prism, records: [...other.log.values()] }));
+  await memory.publish(topic, new TextEncoder().encode('not json'));
+  const [revocation] = [...removed.log.values()].filter(e => e.body.kind === 'prism/revoke/1');
+  const forged = { ...revocation, signature: revocation.signature.slice(0, -4) + 'AAAA' };
+  await memory.publish(topic, json({ kind: 'prism/public-log/1', prism: second.prism, records: [...second.log.values(), forged] }));
+  const log = await heardLog(second.prism, second.log, memory);
+  assert.ok((await resolvePrism(second.prism, log)).active.includes(second.device.id));
+  assert.equal((await verifyAction(second.prism, second.log, action, { audience: HOST, now, bus: memory })).allowed, true);
+});
+
+test('the sync cadence refreshes: a real sync and the public log every refresh ticks, cover otherwise', async () => {
+  const relay = fakeRelay();
+  const session = await createPrism();
+  const cadence = createSyncCadence({ refresh: 3 });
+  const syncName = await relayTopic(await syncTopic(session)), logName = await relayTopic(await logTopic(session.prism));
+  for (let i = 0; i < 6; i++) await cadence.tick(session, bus(relay));
+  assert.equal(relay.posted.filter(p => p.name === syncName).length >= 6, true);
+  assert.equal(relay.posted.filter(p => p.name === logName).length > 0, true);
+  const kept = await bus(relay).retained(await logTopic(session.prism));
+  assert.equal(kept.length, 2);
+  assert.equal((await heardLog(session.prism, new Map(), bus(relay))).size, session.log.size);
+  assert.throws(() => createSyncCadence({ refresh: 0 }), refused('sync'));
 });
