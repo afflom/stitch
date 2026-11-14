@@ -7,7 +7,7 @@ account, password, email, OAuth provider or server is involved.
 - Model: `app/src/Stitch/PrismId.lex.tex` (`Stitch.PrismId`). Every
   authorization decision in the runtime calls its generated binding.
 - Runtime: `src/prism-id.js`.
-- Tests: `tests/prism-id.test.js`.
+- Tests: `tests/prism-id.test.js`; the substrate bus, `tests/prism-bus.test.js`.
 
 ## Kappa
 
@@ -150,7 +150,13 @@ they can find it. Each message is the log and the persona logs, sealed in the
 private boundary, bound to the prism id, and padded (ISO 7816-4) to a
 power-of-two bucket of at least 1 KiB so relays learn only the bucket. Messages over 4 MiB and logs over 4096 records are refused
 before any parsing or signature work. The bus contract is `publish(topic, bytes)` and
-`subscribe(topic, fn)`. `createMemoryBus` implements it for tests; the stitch
-substrate implements it across peers and federation nodes.
+`subscribe(topic, fn)`. `createMemoryBus` implements it for tests.
+`createRelayBus` implements it on stitch's substrate:
+stitch's warm relay with its relay framing across devices and origins, and
+BroadcastChannel within one origin. The relay sees a name hashed from the
+prism topic and the sealed or HMAC-bound bytes; it holds a message for the
+warm lifetime (30 minutes) and promises no retention, so a device that was
+away longer catches up from the next message another member publishes. Link
+offers use the same bus on their `prism-rendezvous:` topic.
 
 The threat and security model is in `docs/prism-id-threat-model.md`.

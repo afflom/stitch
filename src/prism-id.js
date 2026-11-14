@@ -18,6 +18,8 @@
  * See docs/prism-id.md and docs/prism-id-threat-model.md.
  */
 import { model } from './layer1-uor/generated-model.js';
+import { RELAY_EVENT_BYTES, RELAY_LIFETIMES, RelayReassembler, frameRelayMessage, newRelaySession, relayChannel, snapshotRelayMessage }
+  from './layer5-transport/relay-framing.js';
 
 const subtle = globalThis.crypto.subtle;
 const encoder = new TextEncoder();
@@ -384,11 +386,15 @@ function bindShape(body) {
  */
 export async function resolvePrism(prism, log) {
   const entries = [...log.entries()].sort(byKey);
-  const geneses = [];
-  for (const [, e] of entries) if (e?.body?.kind === KIND.genesis && await kappa(e.body) === prism) geneses.push(e);
-  if (geneses.length !== 1) refuse('genesis', 'the log does not hold exactly one genesis for this prism');
-  const genesis = geneses[0];
-  if (!await signatureValid(genesis, genesis.body.device)) refuse('genesis', 'genesis signature does not verify');
+  // Every genesis of this prism has the same body (its kappa is the prism);
+  // envelopes differ only by signature encoding (ECDSA signatures are
+  // malleable), so any one that verifies is the genesis. A copy with a bad
+  // signature cannot make the log unresolvable.
+  let genesis = null;
+  for (const [, e] of entries) {
+    if (e?.body?.kind === KIND.genesis && await kappa(e.body) === prism && await signatureValid(e, e.body.device)) { genesis = e; break; }
+  }
+  if (!genesis) refuse('genesis', 'the log holds no genesis of this prism that verifies');
 
   const devices = new Map([[genesis.signer, genesis.body.device]]);
   const binds = [], revokes = [];
@@ -1175,4 +1181,145 @@ export function createMemoryBus() {
       return () => subscribers.get(topic)?.delete(fn);
     }
   };
+}
+
+// ---------------------------------------------------------------- the substrate bus
+
+/*
+ * The bus contract above on stitch's own transport, so a prism needs no
+ * server of its own:
+ *
+ * - Across devices and origins: stitch's warm relay (ntfy, with stitch's relay
+ *   framing, docs/relay-framing.md). The relay topic is hashed from the prism
+ *   topic, which only holders of the secret can derive, so the relay sees an
+ *   opaque name and sealed or HMAC-bound bytes. A message stays fetchable for
+ *   the warm lifetime (30 minutes); the relay promises no retention.
+ * - In one origin: BroadcastChannel, so tabs of one app hear each other at once.
+ *
+ * Every message carries its prism topic, a subscriber delivers only messages
+ * for the topic it asked for, and a bus never hears itself. Bytes are
+ * delivered as received; receiveSync and completeLink check every one.
+ */
+const BUS_KIND = 'prism/bus/1';
+const BUS_TOPIC = /^prism-[a-z]+:[0-9a-f]{64}$/;
+const WARM_SINCE = `${Math.floor(RELAY_LIFETIMES.warm / 60000)}m`;
+const POLL_BYTES = 2 * 1024 * 1024;
+
+function checkBusTopic(topic) {
+  if (typeof topic !== 'string' || !BUS_TOPIC.test(topic)) throw new TypeError('not a prism topic');
+  return topic;
+}
+
+/** The relay's name for a prism topic: a domain-separated hash, at most 64 characters as ntfy requires. */
+export async function relayTopic(topic) {
+  return 'prism-' + (await relayChannel(checkBusTopic(topic))).slice(7, 65);
+}
+
+/**
+ * The bus. `relay` is the warm relay's base URL; `relay: null` keeps the bus
+ * in this origin. Effects are injectable for tests and other hosts.
+ */
+export function createRelayBus({
+  relay = 'https://ntfy.sh',
+  fetch: fetchImpl = globalThis.fetch?.bind(globalThis),
+  WebSocket: Socket = globalThis.WebSocket,
+  BroadcastChannel: Channel = globalThis.BroadcastChannel
+} = {}) {
+  const from = newRelaySession();
+  const wsBase = relay && relay.replace(/^http/, 'ws');
+  const channels = new Map();
+  const local = topic => {
+    if (!Channel) return null;
+    if (!channels.has(topic)) channels.set(topic, new Channel(`stitch:${topic}`));
+    return channels.get(topic);
+  };
+  const envelope = (topic, bytes) => ({ kind: BUS_KIND, from, topic, bytes: toBase64Url(bytes) });
+  // A message for this topic from another bus, or null.
+  const unwrap = (topic, value) => value?.kind === BUS_KIND && value.topic === topic && value.from !== from && typeof value.bytes === 'string'
+    ? fromBase64Url(value.bytes) : null;
+  const assembler = topic => new RelayReassembler({ channelKey: topic, scope: 'warm' });
+  // One bounded line of ntfy's JSON stream: a framed stitch message, or nothing.
+  const frameOf = line => {
+    if (typeof line !== 'string' || !line || line.length > RELAY_EVENT_BYTES) return null;
+    const event = JSON.parse(line);
+    return event.event === 'message' && typeof event.message === 'string' && !event.attachment ? event.message : null;
+  };
+
+  /** Resolves true when every frame was acknowledged by the relay (or there is no relay). Not a delivery receipt. */
+  async function publish(topic, bytes) {
+    checkBusTopic(topic);
+    const value = envelope(topic, bytes);
+    local(topic)?.postMessage(value);
+    if (!relay || !fetchImpl) return true;
+    const snapshot = snapshotRelayMessage(value);
+    const { frames } = await frameRelayMessage(snapshot, { channelKey: topic, session: from, scope: 'warm' });
+    const url = `${relay}/${await relayTopic(topic)}`;
+    for (const body of frames) {
+      const response = await fetchImpl(url, { method: 'POST', body, headers: { 'Content-Type': 'text/plain; charset=utf-8', Cache: 'yes' } });
+      if (!response.ok) return false;
+    }
+    return true;
+  }
+
+  /** The messages other buses left on the relay for a topic within the warm lifetime, oldest first. */
+  async function fetchTopic(topic) {
+    checkBusTopic(topic);
+    if (!relay || !fetchImpl) return [];
+    const response = await fetchImpl(`${relay}/${await relayTopic(topic)}/json?poll=1&since=${WARM_SINCE}`);
+    if (!response.ok) return [];
+    const text = await response.text();
+    if (text.length > POLL_BYTES) return [];
+    const reassembler = assembler(topic), out = [];
+    try {
+      for (const line of text.split('\n')) {
+        try {
+          const frame = frameOf(line);
+          const message = frame && unwrap(topic, await reassembler.accept(frame));
+          if (message) out.push(message);
+        } catch { /* a refused frame is skipped; the others still count */ }
+      }
+    } finally { reassembler.dispose(); }
+    return out;
+  }
+
+  /**
+   * Calls fn(bytes) for each message on the topic: those the relay still
+   * holds, then new ones from the relay and from this origin. Returns a
+   * function that stops it. A failing fn does not stop the subscription.
+   */
+  function subscribe(topic, fn) {
+    checkBusTopic(topic);
+    let open = true, socket = null, reassembler = null;
+    const deliver = bytes => { if (open && bytes) Promise.resolve().then(() => fn(bytes)).catch(() => {}); };
+    const channel = local(topic);
+    const onLocal = event => deliver(unwrap(topic, event.data));
+    channel?.addEventListener('message', onLocal);
+    if (relay && fetchImpl) fetchTopic(topic).then(list => list.forEach(deliver), () => {});
+    if (relay && Socket) {
+      reassembler = assembler(topic);
+      relayTopic(topic).then(name => {
+        if (!open) return;
+        socket = new Socket(`${wsBase}/${name}/ws`);
+        socket.onmessage = async event => {
+          try {
+            const frame = frameOf(event.data);
+            deliver(frame && unwrap(topic, await reassembler.accept(frame)));
+          } catch { /* a refused frame is skipped */ }
+        };
+      }, () => {});
+    }
+    return () => {
+      open = false;
+      channel?.removeEventListener('message', onLocal);
+      socket?.close();
+      reassembler?.dispose();
+    };
+  }
+
+  function close() {
+    for (const channel of channels.values()) channel.close();
+    channels.clear();
+  }
+
+  return { publish, subscribe, fetch: fetchTopic, close };
 }
