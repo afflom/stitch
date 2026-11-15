@@ -2133,6 +2133,10 @@
       "sha256": "4fe595efda75eabd6d81db25b87a44d0d3fa186deb37b1c50b040095f488d093"
     },
     {
+      "path": ".github/workflows/ratchet.yml",
+      "sha256": "d687028f7cc906b64af52c1b3439f79d0ac39b9c11bee88a0ffbde93203ed7cc"
+    },
+    {
       "path": ".github/workflows/source-authoring.yml",
       "sha256": "28ddee0d1feebc5bf0eae419c1e3c30b570d3e08d1c6e064bfcaf65ddafef374"
     },
@@ -2949,6 +2953,14 @@
       "sha256": "7aacb22c351ee9b032b5ee4236a26f85aad3504e1fac34d77b11af4116bfe297"
     },
     {
+      "path": "scripts/check-prism-ratchet-tests.mjs",
+      "sha256": "0775b2c3b0005b48a304de758215979b1676d41a588543d915b7b5f9c1b295e4"
+    },
+    {
+      "path": "scripts/check-prism-ratchet.mjs",
+      "sha256": "47936c9c3d64e6f21f298a8ce8325160386b35579f288f0c68b4df2137a7fca5"
+    },
+    {
       "path": "scripts/check-product.mjs",
       "sha256": "63f6d356456b89c13a17b017b0a6d4fb2b2ba43e126b2d98b5dd059fabf83829"
     },
@@ -3209,5 +3221,5 @@
       "sha256": "02263c2d4bf1a1913a673466554c19593b5a6c39b22a2da32ce4375675868347"
     }
   ],
-  "sourceDigest": "sha256:1de8da497644d607610fb331cfa7d3056c8b8846886889e85cc6b3916b4587ff"
+  "sourceDigest": "sha256:6db33466ecb20b1303e4022fd3289ecca405c17f26a300fc7df3b0c21b87b3cd"
 }
