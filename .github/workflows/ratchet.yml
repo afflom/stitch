@@ -1,0 +1,28 @@
+name: Only Prism is implemented
+# Non-Prism code may only shrink: scripts/check-prism-ratchet.mjs measures the tree against the
+# commit's first parent (a pull request's merge commit has the base branch there). It reads two
+# commits and nothing installed, so it runs on every change.
+on:
+  push:
+    branches: [main, 'feat/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ratchet-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  ratchet:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          # The ceiling is the first parent, so the checkout needs that one commit more.
+          fetch-depth: 2
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24'
+      - run: node scripts/check-prism-ratchet.mjs
